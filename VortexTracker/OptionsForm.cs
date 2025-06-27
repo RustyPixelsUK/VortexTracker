@@ -1123,7 +1123,10 @@ namespace VortexTracker
                 return;
             }
 
-            VortexTracker.HotKeys.ReAssignHotKey(HotKeyList.SelectedIndices[0], shortCutText);
+            ListViewItem listViewItem = HotKeyList.SelectedItems[0];
+            HotKey hotKey = (HotKey)listViewItem.Tag;
+
+            VortexTracker.HotKeys.ReAssignHotKey(hotKey, shortCutText);
             //Shift = new object[] {};
             e.SuppressKeyPress = true;
         }
@@ -1166,6 +1169,17 @@ namespace VortexTracker
             //}
             //MainForm.AutoBackupsMins = BackupEveryMins.Position;
             Globals.MainForm.ChangeBackupTimer();
+        }
+
+        public ListViewItem GetHotKeyListItem(HotKey hotKey)
+        {
+            foreach (ListViewItem listViewItem in HotKeyList.Items)
+            {
+                if (hotKey == listViewItem.Tag)
+                    return listViewItem;
+            }
+
+            return null;
         }
 
         public void InitFileAssociations()
@@ -1383,7 +1397,7 @@ namespace VortexTracker
             if (windowSizeChanged)
             {
                 mainForm.RedrawChilds();
-                mainForm.AutoMetrixForChilds(mainForm.WindowState);
+                mainForm.AutoMetricsForChilds(mainForm.WindowState);
                 mainForm.SetChildsPosition(mainForm.WindowState);
                 newSize = mainForm.GetSizeForChilds(mainForm.WindowState, false);
                 mainForm.AutoCutChilds(newSize);
@@ -1923,7 +1937,7 @@ namespace VortexTracker
         private void OkButton_Click(object sender, EventArgs e)
         {
             Globals.OptionsForm.ApplyFileAssociations();
-            Globals.MainForm.SaveOptions();
+            Globals.MainForm.WriteConfig();
 
             this.DialogResult = DialogResult.OK;
             this.Hide();
@@ -1979,7 +1993,7 @@ namespace VortexTracker
                 MainForm.ChildsEventsBlocked = true;
                 MainForm.EditorFontChanged = true;
                 Globals.MainForm.RedrawChilds();
-                Globals.MainForm.AutoMetrixForChilds(this.WindowState);
+                Globals.MainForm.AutoMetricsForChilds(this.WindowState);
                 Globals.MainForm.SetChildsPosition(this.WindowState);
                 _newSIze = Globals.MainForm.GetSizeForChilds(this.WindowState, false);
                 Globals.MainForm.AutoCutChilds(_newSIze);

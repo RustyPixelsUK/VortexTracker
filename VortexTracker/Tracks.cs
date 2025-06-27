@@ -366,7 +366,7 @@ namespace VortexTracker
             ShowCaret();
         }
 
-        public void InitMetrix()
+        public void InitMetrics()
         {
             int charHalfWidth;
             this.Font = Globals.MainForm.EditorFont;

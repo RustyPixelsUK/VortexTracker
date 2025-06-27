@@ -7,7 +7,8 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<ProductName>Vortex Tracker</ProductName>
+		<AssemblyName>VortexTracker</AssemblyName>
+		<Product>Vortex Tracker</Product>
 		<Copyright>Ben Baker (Rusty Pixels)</Copyright>
 		<ApplicationIcon>Resources\Icons\VortexTracker.ico</ApplicationIcon>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

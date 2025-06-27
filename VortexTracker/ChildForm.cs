@@ -968,7 +968,7 @@ namespace VortexTracker
 
         public void PrepareForm()
         {
-            InitStringGridMetrix();
+            InitStringGridMetrics();
             //PatEmptyBox.Width = 2500;
             TopBackgroundPanel.Top = 0;
 
@@ -1039,8 +1039,8 @@ namespace VortexTracker
             this.SuspendLayout();
             ToolBoxesWidth = JoinTracksBox.Left + JoinTracksBox.Width + 6;
 
-            InitSamplesMetrix();
-            Ornaments.InitMetrix();
+            InitSamplesMetrics();
+            Ornaments.InitMetrics();
 
             // PageControl & tracks width
             TabControl.Width = Tracks.Width + 8;
@@ -1076,7 +1076,7 @@ namespace VortexTracker
 
                 // Patterns positions
                 //PositionsGrid.Width = mainWidth - 10;
-                InitStringGridMetrix();
+                InitStringGridMetrics();
 
                 // Channels box
                 ResizeChannelsBox();
@@ -1374,7 +1374,7 @@ namespace VortexTracker
         public void CreateTracks()
         {
             Tracks = new Tracks(PatternsTab);
-            Tracks.InitMetrix();
+            Tracks.InitMetrics();
             Tracks.ParentWin = this;
             Tracks.BackColor = MainForm.ColorTheme.Colors[(int)ThemeColor.Background];
 
@@ -1437,7 +1437,7 @@ namespace VortexTracker
             }
         }
 
-        public void InitSamplesMetrix()
+        public void InitSamplesMetrics()
         {
             string[] specFonts = { "ProTracker 2", "WST_Germ", "ZX Spectrum" };
 
@@ -1513,7 +1513,7 @@ namespace VortexTracker
             //SamplesDriveSelect.DrawItem += SamplesDriveSelect.OnDrawItem;
             SamplesBrowser.DriveSelectBox = SamplesDriveSelect;
 
-            InitSamplesMetrix();
+            InitSamplesMetrics();
 
             Samples.Show();
             SamplesBrowser.Show();
@@ -1581,7 +1581,7 @@ namespace VortexTracker
             OrnamentsBrowser.DriveSelectBox = OrnamentsDriveSelect;
 
             Ornaments.Browser = OrnamentsBrowser;
-            Ornaments.InitMetrix();
+            Ornaments.InitMetrics();
 
             Ornaments.Show();
             OrnamentsBrowser.Show();
@@ -7671,7 +7671,7 @@ namespace VortexTracker
             }
 
             Globals.MainForm.DeleteWindowListItem(this);
-            Globals.MainForm.Text = $"{MainForm.AppName} {MainForm.VersionString}";
+            Globals.MainForm.Text = MainForm.FullVersString;
             Globals.TrackInfoForm.Hide();
 
             DisposeUndo(true);
@@ -9226,7 +9226,7 @@ namespace VortexTracker
             for (int i = VTM.Positions.Length; i < PositionsGrid.ColumnCount; i++)
                 PositionsGrid[i, 0].Value = "";
 
-            InitStringGridMetrix();
+            InitStringGridMetrics();
         }
 
         public void UnselectPositions()
@@ -9911,7 +9911,7 @@ namespace VortexTracker
             PatternNumEdit.Text = (PatternNumUpDown.Value).ToString();
         } */
 
-        public void InitStringGridMetrix()
+        public void InitStringGridMetrics()
         {
             Size charSize;
             int visibleColCount, colCount;
@@ -18187,7 +18187,7 @@ namespace VortexTracker
             for (int i = 0; i < VTM.Positions.Length; i++)
                 PositionsGrid[i, 0].Value = i == VTM.Positions.Loop ? $"L{VTM.Positions.Value[i]}" : VTM.Positions.Value[i].ToString();
 
-            InitStringGridMetrix();
+            InitStringGridMetrics();
             //Samples = new TSamples(this);
             Samples.ShownSample = VTM.Samples[1];
 

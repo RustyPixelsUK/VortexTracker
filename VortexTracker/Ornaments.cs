@@ -144,7 +144,7 @@ namespace VortexTracker
             CaretVisible = false;
         }
 
-        public void InitMetrix()
+        public void InitMetrics()
         {
             Size textSize;
 

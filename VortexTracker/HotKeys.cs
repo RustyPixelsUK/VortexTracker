@@ -10,12 +10,14 @@
 // 
 // C# Port by Ben Baker https://baker76.com
 
+using LibVT;
 using System;
-using System.Collections.Specialized;
-using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace VortexTracker
 {
@@ -84,6 +86,7 @@ namespace VortexTracker
     {
         public HotKeyType Type { get; set; }
         public string Name { get; set; }
+        public string DefaultShortcutText { get; set; }
         public string ShortcutText { get; set; }
         public Action Action { get; set; }
 
@@ -91,6 +94,7 @@ namespace VortexTracker
         {
             Type = type;
             Name = name;
+            DefaultShortcutText = shortcutText;
             ShortcutText = shortcutText;
             Action = action;
         }
@@ -181,6 +185,8 @@ namespace VortexTracker
             {
                 ListViewItem listViewItem = new ListViewItem(hotKey.Name);
                 listViewItem.SubItems.Add(hotKey.ShortcutText);
+                listViewItem.Tag = hotKey;
+
                 listView.Items.Add(listViewItem);
             }
         }
@@ -188,13 +194,11 @@ namespace VortexTracker
         public static void SetDefaultHotKeys()
         {
             foreach (var hotKey in AllHotKeys)
-                AssignHotKey((int)hotKey.Type, hotKey.ShortcutText);
+                AssignHotKey(hotKey, hotKey.DefaultShortcutText);
         }
 
-        public static void ReAssignHotKey(int hotKeyIndex, string shortCutText)
+        public static void ReAssignHotKey(HotKey hotKey, string shortCutText)
         {
-            var hotKey = AllHotKeys[hotKeyIndex];
-
             if (SystemHotKeys.Contains(shortCutText))
             {
                 MessageBox.Show(Globals.MainForm, $"Error: {hotKey.Name} Key {shortCutText} is a system key.");
@@ -209,32 +213,26 @@ namespace VortexTracker
 
             for (int i = 0; i < AllHotKeys.Length; i++)
             {
-                if (i != hotKeyIndex && AllHotKeys[i].ShortcutText == shortCutText)
+                if (AllHotKeys[i] != hotKey && AllHotKeys[i].ShortcutText == shortCutText)
                 {
-                    var msg = $"{hotKey.Name} Key {shortCutText} already assigned to {AllHotKeys[i].Name}. Assign anyway?";
-                    if (MessageBox.Show(Globals.MainForm, msg, Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+                    var errorMessage = $"{hotKey.Name} Key {shortCutText} already assigned to {AllHotKeys[i].Name}. Assign anyway?";
+                    
+                    if (MessageBox.Show(Globals.MainForm, errorMessage, Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
                         return;
 
-                    AllHotKeys[i].ShortcutText = "";
-                    AssignHotKey(i, "");
-                    Globals.OptionsForm.HotKeyList.Items[i].SubItems[1].Text = "";
+                    AssignHotKey(AllHotKeys[i], "");
                 }
             }
 
-            AllHotKeys[hotKeyIndex].ShortcutText = shortCutText;
-            AssignHotKey(hotKeyIndex, shortCutText);
-            Globals.OptionsForm.HotKeyList.Items[hotKeyIndex].SubItems[1].Text = shortCutText;
+            AssignHotKey(hotKey, shortCutText);
         }
 
-        public static void AssignHotKey(int hotKeyIndex, string shortCutText)
+        public static void AssignHotKey(HotKey hotKey, string shortCutText)
         {
-            if (hotKeyIndex < 0 || hotKeyIndex >= AllHotKeys.Length)
-                return;
+            hotKey.ShortcutText = shortCutText;
 
-            AllHotKeys[hotKeyIndex].ShortcutText = shortCutText;
-
-            // Hook for assigning ToolStripMenuItems/ToolStrips if needed (not all used here)
-            // Example: Globals.MainForm.SomeToolStripMenuItem.Shortcut = TextToShortcut(shortCutText);
+            ListViewItem listViewItem = Globals.OptionsForm.GetHotKeyListItem(hotKey);
+            listViewItem.SubItems[1].Text = shortCutText;
         }
 
         public static void HandleHotKey(Keys keyData)
@@ -268,14 +266,16 @@ namespace VortexTracker
             return (keyOnly == expectedKey) && (modifiers == expectedMods);
         }
 
-        public static string AllHotKeysToText() => string.Join(",", AllHotKeys.Select(h => h.ShortcutText));
-
-        public static void LoadHotKeysFromText(string hotkeysText)
+        public static void ReadConfig(IniFile iniFile)
         {
-            var list = hotkeysText.Split(',');
+            foreach (HotKey hotKey in AllHotKeys)
+                ReAssignHotKey(hotKey, iniFile.GetValue("HotKeys", hotKey.Type.ToString(), hotKey.DefaultShortcutText));
+        }
 
-            for (int i = 0; i < list.Length && i < AllHotKeys.Length; i++)
-                ReAssignHotKey(i, list[i]);
+        public static void WriteConfig(IniFile iniFile)
+        {
+            foreach (HotKey hotKey in AllHotKeys)
+                iniFile.SetValue("HotKeys", hotKey.Type.ToString(), hotKey.ShortcutText);
         }
 
         public static Shortcut TextToShortcut(string shortcutText)

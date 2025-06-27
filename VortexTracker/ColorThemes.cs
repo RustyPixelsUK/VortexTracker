@@ -111,7 +111,6 @@ namespace VortexTracker
         public static ColorTheme[] DefaultColorThemes =
         {
             new ColorTheme("Default",              new string[] { "FFFFFF", "4256A2", "EFEFEF", "FFFFFF", "F5F5F5", "7D7D88", "798EAB", "54545C", "8D8D95", "454455", "ECEDD1", "414050", "515A6F", "FFFED9", "477C80", "FFFED9", "1F1C65", "FFFED9", "5A5E74", "FFFED9", "536B71", "FFFED9", "8E8E9F", "8E8E9F", "FEFFFA", "4256A2", "766A66", "6D7484", "5C4845", "FFFED9", "766A66", "515A6F", "92929A", "766A66", "515A6F", "221C1C" }),
-            new ColorTheme("Peach",                new string[] { "FDFCEF", "393E8C", "FAE7D4", "FBFBE8", "EFEFCC", "AC8576", "B7B85C", "8F8B5B", "C18573", "915D57", "ECEDD1", "6B6844", "5E4C45", "E1E4C8", "A4744E", "E1E4C8", "00219D", "E1E4C8", "7F665D", "E1E4C8", "765F57", "E1E4C8", "D9998D", "B3B3A8", "FCFCEC", "424584", "926858", "714F44", "915D57", "F6F5D3", "915F5C", "63326A", "D9998D", "604D47", "24546E", "221C1C"  }),
             new ColorTheme("Classic Vortex 1.0",   new string[] { "FFFFFF", "0078D7", "EFEFEF", "FEFFFA", "F3F8FE", "000000", "FFFFFF", "000000", "828282", "000000", "FFFFFF", "000000", "000000", "FFFFFF", "000000", "FFFFFF", "000000", "FFFFFF", "000000", "FFFFFF", "000000", "FFFFFF", "404040", "404040", "FFFFFF", "006DC3", "626262", "686868", "252525", "FFFFFF", "626262", "3F3D56", "727272", "626262", "3F3D56", "221C1C" }),
             new ColorTheme("MmcM",                 new string[] { "000000", "0009A5", "000000", "000000", "000000", "808080", "CCCCCC", "D0D0D0", "808080", "808080", "C0C0C0", "D0D0D0", "06A6E1", "CCCCCC", "D47908", "CCCCCC", "CCCCCC", "CCCCCC", "00A30C", "CCCCCC", "C0C000", "CCCCCC", "505050", "505050", "000000", "0009A5", "CCCCCC", "C6C6C6", "808080", "D4D4D4", "EE8809", "EE8809", "606060", "59C40C", "59C40C", "001020" }),
             new ColorTheme("n1k-o",                new string[] { "000000", "0009A5", "1D1D1D", "000000", "181818", "777777", "CCCCCC", "DAA721", "636363", "7F7F7F", "CCCCCC", "BBBBBB", "06A6E1", "CCCCCC", "D47908", "CCCCCC", "CCCCCC", "CCCCCC", "00A30C", "CCCCCC", "C9C804", "CCCCCC", "717171", "3C3C3C", "000000", "0009A5", "CCCCCC", "C6C6C6", "7B7B7B", "D4D4D4", "EE8809", "EE8809", "717171", "59C40C", "59C40C", "001020" }),
@@ -136,8 +135,9 @@ namespace VortexTracker
             new ColorTheme("Aqua",                 new string[] { "0B4152", "3A84BA", "3C4F68", "18415B", "0E4F64", "098285", "FFFFFF", "0A989B", "208D9E", "9DB7C8", "FFFFFF", "A9C0CF", "00F782", "FFFFFF", "EBB54D", "FFFFFF", "E9FFFF", "FFFFFF", "5EE566", "FFFFFF", "CBCA1A", "FFFFFF", "5B86A3", "5B86A3", "0C4A5D", "0865E0", "9AEFF8", "FFFFFF", "9DB7C8", "DDFADC", "EBB54D", "EEC456", "DFDFDF", "FFFFE7", "FFFEA5", "072C38" }),
             new ColorTheme("Red Wine",             new string[] { "290D0D", "911E1E", "350D0D", "280C1B", "31141C", "803030", "ADBA5F", "973939", "6E402D", "CE6262", "FCF9B2", "F88181", "BFDE40", "FCF9B2", "E6D689", "FCF9B2", "D1D400", "FFFD9C", "C28342", "FFFD9C", "BF841A", "FFFD9C", "431D13", "431D13", "2D0E0E", "892B2B", "AB9D74", "C1C298", "B35F5F", "FDFCD2", "E69746", "E3AC75", "431D13", "97BE80", "BDD799", "1D0B1E" }),
             new ColorTheme("Green State",          new string[] { "132416", "1B5E16", "1D331F", "081D13", "172A19", "627A5F", "7CD568", "586D54", "3D5B28", "AEAB6B", "FEFEEC", "B4E19C", "7CDE40", "FEFEEC", "E6CB89", "FEFEEC", "B7F2B2", "FEFEEC", "C9A84B", "FEFEEC", "C2C123", "FEFEEC", "37663A", "37663A", "182D1B", "26681A", "B7F2B2", "EEEBC0", "9CF8BB", "F9E5AA", "FCBE64", "FEE3BA", "38693B", "FDFC73", "C1EC80", "072C38" }),
-            new ColorTheme("Norton",               new string[] { "181F3B", "414186", "232B4E", "0D1536", "192042", "103E59", "399FB6", "355777", "455855", "9C9F7C", "ECEDD1", "C9CB9D", "B5B887", "E0DE92", "847D42", "E0DE92", "FBFBD8", "F4F2A7", "D29673", "E0DE92", "BA7E5A", "E0DE92", "1D3656", "1D3656", "181F3B", "3612A3", "D1D3A9", "F9F7B7", "C9CB9D", "ECEDD1", "D5B380", "E4B771", "0B4569", "D0AB71", "EDC079", "121022" })
-        };
+            new ColorTheme("Norton",               new string[] { "181F3B", "414186", "232B4E", "0D1536", "192042", "103E59", "399FB6", "355777", "455855", "9C9F7C", "ECEDD1", "C9CB9D", "B5B887", "E0DE92", "847D42", "E0DE92", "FBFBD8", "F4F2A7", "D29673", "E0DE92", "BA7E5A", "E0DE92", "1D3656", "1D3656", "181F3B", "3612A3", "D1D3A9", "F9F7B7", "C9CB9D", "ECEDD1", "D5B380", "E4B771", "0B4569", "D0AB71", "EDC079", "121022" }),
+            new ColorTheme("Peach",                new string[] { "FDFCEF", "393E8C", "FAE7D4", "FBFBE8", "EFEFCC", "AC8576", "B7B85C", "8F8B5B", "C18573", "915D57", "ECEDD1", "6B6844", "5E4C45", "E1E4C8", "A4744E", "E1E4C8", "00219D", "E1E4C8", "7F665D", "E1E4C8", "765F57", "E1E4C8", "D9998D", "B3B3A8", "FCFCEC", "424584", "926858", "714F44", "915D57", "F6F5D3", "915F5C", "63326A", "D9998D", "604D47", "24546E", "221C1C" })
+		};
 
         public static string[,] WinColorThemes = new string[,]
         {
@@ -406,7 +406,7 @@ namespace VortexTracker
                 SetupColorBars(theme);
             }
 
-            if (redraw && !MainForm.SyncVTInstanses)
+            if (redraw && !MainForm.SyncVTInstances)
                 Globals.MainForm.RedrawChilds();
         }
 

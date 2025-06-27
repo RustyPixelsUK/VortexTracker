@@ -20,7 +20,6 @@ namespace LibVT
         private ChannelLine Chan0;
         private ChannelLine Chan1;
         private ChannelLine Chan2;
-        //private TChildWin Child;
         private bool Validated = false;
         private bool EntirePattern = false;
         private int CurrentBlockNum = 0;
@@ -32,7 +31,6 @@ namespace LibVT
 
         public PatternsPacker()
         {
-            //Child = activeWindow;
             Validated = false;
             Pattern = null;
             FromLine = -1;
@@ -354,12 +352,9 @@ namespace LibVT
         private int GetBaseSpeed(int blockIndex)
         {
             int result;
-            // Init
-            //TChildWin.PlayingWindow[0] = Child;
             AY.ChipCount = 1;
 
             // Detect speed
-            //Child.RerollToLineNum(0, SrcBlocks[blockIndex].StartLine, true);
             AppEvents.SendEvent(EventType.RerollToLineNum, 0, SrcBlocks[blockIndex].StartLine, true);
             result = VTModule.PlayArgs[VTModule.ChipIndex].Delay;
 

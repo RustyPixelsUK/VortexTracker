@@ -14,11 +14,10 @@ namespace VortexTracker
 {
     public static class PluginManager
     {
-        public const int MaxPlugins = 32;
+        public const int MaxPlugins = 16;
 
         public static List<PluginWrapper> PluginWrappers { get; } = new();
-        public static IEnumerable<IPlugin> Plugins =>
-            PluginWrappers.Where(w => w.Instance != null).Select(w => w.Instance);
+        public static IEnumerable<IPlugin> Plugins => PluginWrappers.Where(w => w.Instance != null).Select(w => w.Instance);
 
         static PluginManager()
         {
@@ -30,30 +29,30 @@ namespace VortexTracker
 
         public static void DiscoverPlugins(string pluginsDir, string[] sharedLibraries)
         {
-            PluginWrappers.Clear();                    // fresh scan each time
-            IniFile ini = new IniFile(MainForm.ConfigFilePath);
+            PluginWrappers.Clear();
 
-            foreach (string dll in Directory.EnumerateFiles(pluginsDir, "*.dll",
-                                                            SearchOption.AllDirectories))
+            IniFile iniFile = new IniFile(MainForm.ConfigFilePath);
+
+            foreach (string dll in Directory.EnumerateFiles(pluginsDir, "*.dll", SearchOption.AllDirectories))
             {
-                if (!IsPluginAssembly(dll))            // skip non-plugins early
+                if (!IsPluginAssembly(dll))
                     continue;
 
                 string name = Path.GetFileNameWithoutExtension(dll);
-                bool enabled = ReadEnabledFromIni(ini, name);
+                bool enabled = ReadEnabledFromIni(iniFile, name);
 
                 PluginWrappers.Add(new PluginWrapper
                 {
                     Name = name,
                     Path = dll,
                     IsEnabled = enabled,
-                    Instance = null,                   // not loaded yet
+                    Instance = null,
                     Context = null,
                     SharedLibs = sharedLibraries
                 });
 
                 if (PluginWrappers.Count >= MaxPlugins)
-                    break;                             // honour hard limit
+                    break;
             }
         }
 
@@ -65,19 +64,16 @@ namespace VortexTracker
             {
                 var resolverPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                // 1) every assembly already loaded into the default ALC
                 foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     if (!asm.IsDynamic && !string.IsNullOrEmpty(asm.Location))
                         resolverPaths.Add(asm.Location);
                 }
 
-                // 2) everything in the candidate’s own folder (private deps)
                 string pluginDir = Path.GetDirectoryName(dllPath)!;
                 foreach (string dep in Directory.EnumerateFiles(pluginDir, "*.dll"))
                     resolverPaths.Add(dep);
 
-                // 3) the candidate itself
                 resolverPaths.Add(dllPath);
 
                 using var mlc = new MetadataLoadContext(
@@ -85,28 +81,24 @@ namespace VortexTracker
 
                 var assembly = mlc.LoadFromAssemblyPath(dllPath);
 
-                return assembly.GetTypes().Any(t =>
-                    t.GetInterfaces().Any(i => i.FullName == IPluginFullName));
+                return assembly.GetTypes().Any(t => t.GetInterfaces().Any(i => i.FullName == IPluginFullName));
             }
             catch
             {
-                // bad/mixed-mode/native DLLs will land here – treat them as "not a plugin"
                 return false;
             }
         }
 
-        private static bool ReadEnabledFromIni(IniFile ini, string pluginName)
+        private static bool ReadEnabledFromIni(IniFile iniFile, string pluginName)
         {
-            // INI layout:  [Plugin1] Name=Foo  Enabled=true ...
             for (int i = 0; i < MaxPlugins; i++)
             {
                 string section = $"Plugin{i + 1}";
-                if (ini.GetValue(section, "Name")?.Equals(pluginName,
-                             StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    return ini.GetValue(section, "Enabled", false);
-                }
+
+                if (iniFile.GetValue(section, "Name")?.Equals(pluginName, StringComparison.OrdinalIgnoreCase) == true)
+                    return iniFile.GetValue(section, "Enabled", false);
             }
+
             return false;
         }
 
@@ -126,8 +118,8 @@ namespace VortexTracker
                 var pluginLoadContext = new PluginLoadContext(wrapper.Path, wrapper.SharedLibs);
                 Assembly assembly = pluginLoadContext.LoadFromAssemblyPath(wrapper.Path);
 
-                // by convention VTPlugin.Plugin
                 var type = assembly.GetType("VTPlugin.Plugin");
+
                 if (type == null || !typeof(IPlugin).IsAssignableFrom(type))
                     return false;
 
@@ -146,11 +138,9 @@ namespace VortexTracker
             }
         }
 
-        public static bool UnloadPlugin(string pluginName)
-            => TryGetWrapper(pluginName, out var w) && Unload(w);
+        public static bool UnloadPlugin(string pluginName) => TryGetWrapper(pluginName, out var w) && Unload(w);
 
-        public static bool UnloadPlugin(IPlugin plugin)
-            => TryGetWrapper(plugin, out var w) && Unload(w);
+        public static bool UnloadPlugin(IPlugin plugin) => TryGetWrapper(plugin, out var w) && Unload(w);
 
         private static bool Unload(PluginWrapper w)
         {
@@ -165,11 +155,9 @@ namespace VortexTracker
             catch { return false; }
         }
 
-        public static bool ReloadPlugin(string pluginName, IHost host)
-            => TryGetWrapper(pluginName, out var w) && Reload(w, host);
+        public static bool ReloadPlugin(string pluginName, IHost host) => TryGetWrapper(pluginName, out var w) && Reload(w, host);
 
-        public static bool ReloadPlugin(IPlugin plugin, IHost host)
-            => TryGetWrapper(plugin, out var w) && Reload(w, host);
+        public static bool ReloadPlugin(IPlugin plugin, IHost host) => TryGetWrapper(plugin, out var w) && Reload(w, host);
 
         private static bool Reload(PluginWrapper w, IHost host)
         {
@@ -179,8 +167,7 @@ namespace VortexTracker
 
         private static bool TryGetWrapper(string name, out PluginWrapper wrapper)
         {
-            wrapper = PluginWrappers.FirstOrDefault(
-                          w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            wrapper = PluginWrappers.FirstOrDefault(w => w.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             return wrapper != null;
         }
 
@@ -190,16 +177,11 @@ namespace VortexTracker
             return wrapper != null;
         }
 
-        public static void RaiseAppEvent(object sender, AppEventArgs e)
-            => foreachPlugin(p => p.OnAppEvent(sender, e));
-        public static void RaiseUIEvent(object sender, UIEventArgs e)
-            => foreachPlugin(p => p.OnUIEvent(sender, e));
-        public static void RaiseRegisterEvent(object sender, RegisterEventArgs e)
-            => foreachPlugin(p => p.OnRegisterEvent(sender, e));
-        public static void RaisePlaybackEvent(object sender, PlaybackEventArgs e)
-            => foreachPlugin(p => p.OnPlaybackEvent(sender, e));
-        public static void RaiseMidiMessageEvent(object sender, MidiMessageEventArgs e)
-            => foreachPlugin(p => p.OnMidiMessageEvent(sender, e));
+        public static void RaiseAppEvent(object sender, AppEventArgs e) => foreachPlugin(p => p.OnAppEvent(sender, e));
+        public static void RaiseUIEvent(object sender, UIEventArgs e) => foreachPlugin(p => p.OnUIEvent(sender, e));
+        public static void RaiseRegisterEvent(object sender, RegisterEventArgs e) => foreachPlugin(p => p.OnRegisterEvent(sender, e));
+        public static void RaisePlaybackEvent(object sender, PlaybackEventArgs e) => foreachPlugin(p => p.OnPlaybackEvent(sender, e));
+        public static void RaiseMidiMessageEvent(object sender, MidiMessageEventArgs e) => foreachPlugin(p => p.OnMidiMessageEvent(sender, e));
 
         private static void foreachPlugin(Action<IPlugin> action)
         {
@@ -232,8 +214,8 @@ namespace VortexTracker
         public string[] SharedLibs { get; set; }
         public string LastError { get; set; }
 
-        public IPlugin? Instance { get; set; }   // null until activated
-        public PluginLoadContext? Context { get; set; }  // idem
+        public IPlugin? Instance { get; set; }
+        public PluginLoadContext? Context { get; set; }
     }
 
     public class PluginLoadContext : AssemblyLoadContext
@@ -251,7 +233,7 @@ namespace VortexTracker
         protected override Assembly Load(AssemblyName name)
         {
             if (_shared.Contains(name.Name))
-                return null;                        // use Default ALC
+                return null;
 
             string path = _resolver.ResolveAssemblyToPath(name);
             return path != null ? LoadFromAssemblyPath(path) : null;

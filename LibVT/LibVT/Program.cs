@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Timers;
 
@@ -12,7 +13,8 @@ namespace LibVT
     {
         static void Main(string[] args)
         {
-            string applicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string applicationPath = Path.GetDirectoryName(assembly.Location);
             string demoSongsPath = Path.Combine(applicationPath, "DemoSongs");
             string testModulesPath = Path.Combine(applicationPath, "TestModules");
 

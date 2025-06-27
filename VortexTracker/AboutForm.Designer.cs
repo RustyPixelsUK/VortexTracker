@@ -28,6 +28,7 @@ namespace VortexTracker
             components = new System.ComponentModel.Container();
             toolTip1 = new ToolTip(components);
             Panel1 = new Panel();
+            BuildDateLabel = new Label();
             label8 = new Label();
             label7 = new Label();
             ProgramIcon = new PictureBox();
@@ -44,7 +45,6 @@ namespace VortexTracker
             line1 = new Panel();
             line2 = new Panel();
             OkButton = new Button();
-            BuildDateLabel = new Label();
             Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ProgramIcon).BeginInit();
             SuspendLayout();
@@ -73,6 +73,14 @@ namespace VortexTracker
             Panel1.Size = new Size(281, 450);
             Panel1.TabIndex = 0;
             // 
+            // BuildDateLabel
+            // 
+            BuildDateLabel.Location = new Point(9, 431);
+            BuildDateLabel.Name = "BuildDateLabel";
+            BuildDateLabel.Size = new Size(252, 19);
+            BuildDateLabel.TabIndex = 13;
+            BuildDateLabel.Text = "Date of build: \r\n";
+            // 
             // label8
             // 
             label8.Location = new Point(8, 353);
@@ -100,11 +108,11 @@ namespace VortexTracker
             // 
             // MyProductName
             // 
-            MyProductName.Location = new Point(101, 64);
+            MyProductName.Location = new Point(9, 64);
             MyProductName.Name = "MyProductName";
-            MyProductName.Size = new Size(79, 13);
+            MyProductName.Size = new Size(264, 13);
             MyProductName.TabIndex = 1;
-            MyProductName.Text = "Vortex Tracker III";
+            MyProductName.TextAlign = ContentAlignment.TopCenter;
             // 
             // Version
             // 
@@ -204,14 +212,6 @@ namespace VortexTracker
             OkButton.TabIndex = 1;
             OkButton.Text = "OK";
             OkButton.Click += OkButton_Click;
-            // 
-            // BuildDateLabel
-            // 
-            BuildDateLabel.Location = new Point(9, 431);
-            BuildDateLabel.Name = "BuildDateLabel";
-            BuildDateLabel.Size = new Size(252, 19);
-            BuildDateLabel.TabIndex = 13;
-            BuildDateLabel.Text = "Date of build: \r\n";
             // 
             // AboutForm
             // 

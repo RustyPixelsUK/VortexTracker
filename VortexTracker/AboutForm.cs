@@ -23,8 +23,6 @@ namespace VortexTracker
 {
     public partial class AboutForm : Form
     {
-        private string _buildDate = "";
-
         public AboutForm()
         {
             InitializeComponent();
@@ -35,11 +33,10 @@ namespace VortexTracker
             using (Stream resourceStream = assembly.GetManifestResourceStream("VortexTracker.Resources.Images.Vortex3.png"))
             {
                 if (resourceStream != null)
-                {
                     this.ProgramIcon.Image = new Bitmap(resourceStream);
-                }
             }
 
+            MyProductName.Text = Application.ProductName;
             Version.Text = MainForm.HalfVersString;
             BuildDateLabel.Text = $"Date of build: {MainForm.BuildDateTime.ToString()}";
         }

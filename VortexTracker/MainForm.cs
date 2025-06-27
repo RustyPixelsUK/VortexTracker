@@ -44,7 +44,7 @@ namespace VortexTracker
         public static int OrnCharCount = 9;
         public static bool DisableUpdateChilds = false;
         public static string SyncMessageFile = String.Empty;
-        public static bool SyncVTInstanses = false;
+        public static bool SyncVTInstances = false;
         public static string SyncSampleBufferFile = String.Empty;
         public static string SyncOrnamentBufferFile = String.Empty;
         public static string SyncSamplePartFile = String.Empty;
@@ -116,7 +116,6 @@ namespace VortexTracker
         public static uint AddFontMemResource = 0;
         public const int StdAutoEnvMax = 7;
         public static int[,] StdAutoEnv = { { 1, 1 }, { 3, 4 }, { 1, 2 }, { 1, 4 }, { 3, 1 }, { 5, 2 }, { 2, 1 }, { 3, 2 } };
-        public const string AppName = "Vortex Tracker";
         public static string VersionString = null;
         public static DateTime BuildDateTime;
         public static string FullVersString = null;
@@ -1180,7 +1179,7 @@ namespace VortexTracker
             Array.Resize(ref ChildsTable, ChildsTable.Length - (j - i));
         }
 
-        public void AutoMetrixForChilds(FormWindowState mainWindowState)
+        public void AutoMetricsForChilds(FormWindowState mainWindowState)
         {
             int childCount = this.MdiChildren.Length;
 
@@ -1622,7 +1621,7 @@ namespace VortexTracker
             }
 
             // Accept to show new child
-            AutoMetrixForChilds(this.WindowState);
+            AutoMetricsForChilds(this.WindowState);
             SetChildsPosition(this.WindowState);
             newSize = GetSizeForChilds(this.WindowState, false);
             AutoToolBarPosition(newSize);
@@ -1733,14 +1732,16 @@ namespace VortexTracker
             return DateTime.TryParse(line, null, DateTimeStyles.AdjustToUniversal, out BuildDateTime);
         }
 
-        public static bool TryGetVersionInfo()
+        public static bool TryGetAppInfo()
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var assembly = Assembly.GetExecutingAssembly();
+            var appName = assembly.GetName().Name;
+            var version = assembly.GetName().Version;
 
             VersionString = version.ToString(3);
-            FullVersString = $"{AppName} {VersionString}";
+            FullVersString = $"{Application.ProductName} {VersionString}";
             HalfVersString = $"Version {VersionString}";
-            VortexDirName = $"{AppName} {version.ToString(1)}";
+            VortexDirName = $"{Application.ProductName} {version.ToString(1)}";
 
             return true;
         }
@@ -1822,7 +1823,7 @@ namespace VortexTracker
                 ini.SetValue("Resources", iniKey, buildIso);
             }
 
-            ini.SaveToFile();
+            ini.Save();
         }
 
         public void UnpackInstruments()
@@ -1918,12 +1919,13 @@ namespace VortexTracker
 #endif
 
             TryGetBuildDateTime();
-            TryGetVersionInfo();
+            TryGetAppInfo();
 
             MaximizeChilds = true;
             RedrawEnabled = true;
             PrevTop = 0;
-            this.Text = AppName + ' ' + VersionString;
+
+            this.Text = FullVersString;
 
             // Save system colors for window decoration
             ColorThemes.SaveSystemColors();
@@ -1964,9 +1966,6 @@ namespace VortexTracker
             SyncOrnamentBufferFile = Path.Combine(VortexDir, "Ornament");
             // Init FamiTracker clipboard format
             // Unpack instruments & demosongs
-            //UnpackSamples();
-            //UnpackOrnaments();
-
             UnpackInstruments();
             UnpackDemoSongs();
             UnpackFonts();
@@ -2061,7 +2060,7 @@ namespace VortexTracker
             DrawOffAfterClose = false;
             VScrollbarSize = SystemInformation.VerticalScrollBarWidth;
             HScrollbarSize = SystemInformation.VerticalScrollBarArrowHeight;
-            LoadOptions();
+            ReadConfig();
             SetFileAssociations();
             ColorThemes.InitColorThemes();
             Main.InitBuffSample();
@@ -2149,9 +2148,9 @@ namespace VortexTracker
                 if (childForm.IsClosed)
                     continue;
 
-                childForm.InitStringGridMetrix();
+                childForm.InitStringGridMetrics();
                 childForm.Tracks.RedrawDisabled = true;
-                childForm.Tracks.InitMetrix();
+                childForm.Tracks.InitMetrics();
                 if (EditorFontChanged)
                 {
                     childForm.LastWidth--;
@@ -2690,7 +2689,7 @@ namespace VortexTracker
         {
             VTExit = true;
             WaveOutAPI.StopPlaying();
-            SaveOptions();
+            WriteConfig();
             BeginInvoke(() => ColorThemes.RestoreSystemColors());
 
             try
@@ -3367,24 +3366,24 @@ namespace VortexTracker
             }
         }
 
-        public void ResetOptions()
+        public void ResetConfig()
         {
             SetPriority(0);
             IniFile iniFile = GetConfigIniFile();
 
-            iniFile.SetValue("VT", "SampleRate", 44100);
-            iniFile.SetValue("VT", "SampleBit", 16);
-            iniFile.SetValue("VT", "BufLen_ms", 100);
-            iniFile.SetValue("VT", "NumberOfBuffers", 3);
-            iniFile.SetValue("VT", "WODevice", 0);
-            iniFile.SetValue("VT", "Optimization", 1);
-            iniFile.SetValue("VT", "Filtering", 1);
-            iniFile.SetValue("VT", "FilterQ", 64);
-            iniFile.SetValue("VT", "Priority", 32);
-            iniFile.SetValue("VT", "AY_Freq", 1750000);
-            iniFile.SetValue("VT", "Interrupt_Freq", 48828);
-            iniFile.SetValue("VT", "NumberOfChannels", 2);
-            iniFile.SaveToFile();
+            iniFile.SetValue("General", "SampleRate", 44100);
+            iniFile.SetValue("General", "SampleBit", 16);
+            iniFile.SetValue("General", "BufLen_ms", 100);
+            iniFile.SetValue("General", "NumberOfBuffers", 3);
+            iniFile.SetValue("General", "WODevice", 0);
+            iniFile.SetValue("General", "Optimization", 1);
+            iniFile.SetValue("General", "Filtering", 1);
+            iniFile.SetValue("General", "FilterQ", 64);
+            iniFile.SetValue("General", "Priority", 32);
+            iniFile.SetValue("General", "AY_Freq", 1750000);
+            iniFile.SetValue("General", "Interrupt_Freq", 48828);
+            iniFile.SetValue("General", "NumberOfChannels", 2);
+            iniFile.Save();
         }
 
         public void GetFileAssocFromText(string fileAssocText)
@@ -3406,83 +3405,86 @@ namespace VortexTracker
             return result;
         }
 
-        public void SaveOptions()
+        public void WriteConfig()
         {
             int i;
             SetPriority(ProcessPriorityClass.Normal);
             IniFile iniFile = GetConfigIniFile();
-            iniFile.SetValue("VT", "ConfigInitialized", true);
-            iniFile.SetValue("VT", "Version", VersionString);
-            iniFile.SetValue("VT", "StartupAction", StartupAction);
-            iniFile.SetValue("VT", "TemplateSongPath", TemplateSongPath);
-            iniFile.SetValue("VT", "SamplesDir", SamplesDir);
-            iniFile.SetValue("VT", "OrnamentsDir", OrnamentsDir);
-            iniFile.SetValue("VT", "SamplesQuickDir", SamplesQuickDir);
-            iniFile.SetValue("VT", "OrnamentsQuickDir", OrnamentsQuickDir);
-            iniFile.SetValue("VT", "AutoBackups", AutoBackupsOn);
-            iniFile.SetValue("VT", "AutoBackupsMins", AutoBackupsMins);
-            iniFile.SetValue("VT", "Priority", Priority);
-            iniFile.SetValue("VT", "ChanAllocIndex", MainForm.ChanAllocIndex);
-            iniFile.SetValue("VT", "PanoramA", Panoram[0]);
-            iniFile.SetValue("VT", "PanoramB", Panoram[1]);
-            iniFile.SetValue("VT", "PanoramC", Panoram[2]);
-            iniFile.SetValue("VT", "DefaultChipFreq", Main.DefaultChipFreq);
-            iniFile.SetValue("VT", "ManualChipFreq", Main.ManualChipFreq);
-            iniFile.SetValue("VT", "DefaultIntFreq", Main.DefaultIntFreq);
-            iniFile.SetValue("VT", "SampleRate", WaveOutAPI.SampleRate);
-            iniFile.SetValue("VT", "SampleBit", WaveOutAPI.SampleBit);
-            iniFile.SetValue("VT", "NumberOfChannels", WaveOutAPI.NumberOfChannels);
-            iniFile.SetValue("VT", "BufLen_ms", WaveOutAPI.BufferLengthMs);
-            iniFile.SetValue("VT", "NumberOfBuffers", WaveOutAPI.BufferCount);
-            iniFile.SetValue("VT", "WODevice", WaveOutAPI.WODevice);
-            iniFile.SetValue("VT", "ChipType", (int)(AY.EmulatingChip));
-            iniFile.SetValue("VT", "RenderEngine", AY.RenderEngine);
-            iniFile.SetValue("VT", "FeaturesLevel", VTModule.FeaturesLevel);
-            iniFile.SetValue("VT", "DetectFeaturesLevel", VTModule.DetectFeaturesLevel);
-            iniFile.SetValue("VT", "VortexModuleHeader", VTModule.VortexModuleHeader);
-            iniFile.SetValue("VT", "DetectModuleHeader", VTModule.DetectModuleHeader);
-            iniFile.SetValue("VT", "ExportSampleRate", ExportSampleRate);
-            iniFile.SetValue("VT", "ExportBitRate", ExportBitRate);
-            iniFile.SetValue("VT", "ExportChannels", ExportChannels);
-            iniFile.SetValue("VT", "ExportChip", ExportChip);
-            iniFile.SetValue("VT", "ExportRepeats", ExportRepeats);
-            iniFile.SetValue("VT", "ExportPath", ExportPath);
+            iniFile.SetValue("General", "ConfigInitialized", true);
+            iniFile.SetValue("General", "Version", VersionString);
+            iniFile.SetValue("General", "StartupAction", StartupAction);
+            iniFile.SetValue("General", "TemplateSongPath", TemplateSongPath);
+            iniFile.SetValue("General", "SamplesDir", SamplesDir);
+            iniFile.SetValue("General", "OrnamentsDir", OrnamentsDir);
+            iniFile.SetValue("General", "SamplesQuickDir", SamplesQuickDir);
+            iniFile.SetValue("General", "OrnamentsQuickDir", OrnamentsQuickDir);
+            iniFile.SetValue("General", "AutoBackups", AutoBackupsOn);
+            iniFile.SetValue("General", "AutoBackupsMins", AutoBackupsMins);
+            iniFile.SetValue("General", "Priority", Priority);
+            iniFile.SetValue("General", "ChanAllocIndex", MainForm.ChanAllocIndex);
+            iniFile.SetValue("General", "PanoramA", Panoram[0]);
+            iniFile.SetValue("General", "PanoramB", Panoram[1]);
+            iniFile.SetValue("General", "PanoramC", Panoram[2]);
+            iniFile.SetValue("General", "DefaultChipFreq", Main.DefaultChipFreq);
+            iniFile.SetValue("General", "ManualChipFreq", Main.ManualChipFreq);
+            iniFile.SetValue("General", "DefaultIntFreq", Main.DefaultIntFreq);
+            iniFile.SetValue("General", "SampleRate", WaveOutAPI.SampleRate);
+            iniFile.SetValue("General", "SampleBit", WaveOutAPI.SampleBit);
+            iniFile.SetValue("General", "NumberOfChannels", WaveOutAPI.NumberOfChannels);
+            iniFile.SetValue("General", "BufLen_ms", WaveOutAPI.BufferLengthMs);
+            iniFile.SetValue("General", "NumberOfBuffers", WaveOutAPI.BufferCount);
+            iniFile.SetValue("General", "WODevice", WaveOutAPI.WODevice);
+            iniFile.SetValue("General", "ChipType", (int)(AY.EmulatingChip));
+            iniFile.SetValue("General", "RenderEngine", AY.RenderEngine);
+            iniFile.SetValue("General", "FeaturesLevel", VTModule.FeaturesLevel);
+            iniFile.SetValue("General", "DetectFeaturesLevel", VTModule.DetectFeaturesLevel);
+            iniFile.SetValue("General", "VortexModuleHeader", VTModule.VortexModuleHeader);
+            iniFile.SetValue("General", "DetectModuleHeader", VTModule.DetectModuleHeader);
+            iniFile.SetValue("General", "ExportSampleRate", ExportSampleRate);
+            iniFile.SetValue("General", "ExportBitRate", ExportBitRate);
+            iniFile.SetValue("General", "ExportChannels", ExportChannels);
+            iniFile.SetValue("General", "ExportChip", ExportChip);
+            iniFile.SetValue("General", "ExportRepeats", ExportRepeats);
+            iniFile.SetValue("General", "ExportPath", ExportPath);
             for (i = 0; i < 6; i++)
-                iniFile.SetValue("VT", "Recent" + i.ToString(), RecentFiles[i]);
+                iniFile.SetValue("General", "Recent" + i.ToString(), RecentFiles[i]);
             i = AY.LoopAllowed ? 1 : Main.LoopAllAllowed ? 2 : 0;
-            iniFile.SetValue("VT", "LoopMode", i);
-            iniFile.SetValue("VT", "GlobalVolume", Main.GlobalVolume);
-            iniFile.SetValue("VT", "TrackFontName", EditorFont.Name);
-            iniFile.SetValue("VT", "FileAssoc", FileAssocToText());
-            iniFile.SetValue("VT", "ShortCuts", HotKeys.AllHotKeysToText());
-            iniFile.SetValue("VT", "TrackFontSize", EditorFont.Size);
-            iniFile.SetValue("VT", "PositionSize", PositionSize);
-            iniFile.SetValue("VT", "TrackFontBold", (EditorFont.Style & FontStyle.Bold) != 0);
-            iniFile.SetValue("VT", "WindowMaximized", this.WindowState == FormWindowState.Maximized);
-            iniFile.SetValue("VT", "DefaultTable", DefaultTable);
+            iniFile.SetValue("General", "LoopMode", i);
+            iniFile.SetValue("General", "GlobalVolume", Main.GlobalVolume);
+            iniFile.SetValue("General", "TrackFontName", EditorFont.Name);
+            iniFile.SetValue("General", "FileAssoc", FileAssocToText());
+            //iniFile.SetValue("General", "Shortcuts", HotKeys.AllHotKeysToText());
+
+            HotKeys.WriteConfig(iniFile);
+            
+            iniFile.SetValue("General", "TrackFontSize", EditorFont.Size);
+            iniFile.SetValue("General", "PositionSize", PositionSize);
+            iniFile.SetValue("General", "TrackFontBold", (EditorFont.Style & FontStyle.Bold) != 0);
+            iniFile.SetValue("General", "WindowMaximized", this.WindowState == FormWindowState.Maximized);
+            iniFile.SetValue("General", "DefaultTable", DefaultTable);
             if (this.WindowState != FormWindowState.Maximized)
             {
-                iniFile.SetValue("VT", "WindowX", this.Left);
-                iniFile.SetValue("VT", "WindowY", this.Top);
-                iniFile.SetValue("VT", "WindowWidth", LastChildWidth + DoubleBorderSize());
-                iniFile.SetValue("VT", "WindowHeight", this.Height);
+                iniFile.SetValue("General", "WindowX", this.Left);
+                iniFile.SetValue("General", "WindowY", this.Top);
+                iniFile.SetValue("General", "WindowWidth", LastChildWidth + DoubleBorderSize());
+                iniFile.SetValue("General", "WindowHeight", this.Height);
             }
-            iniFile.SetValue("VT", "Filtering", AY.FilterEnabled);
-            iniFile.SetValue("VT", "FilterQ", AY.FilterLength);
-            iniFile.SetValue("VT", "DCType", AY.DCType);
-            iniFile.SetValue("VT", "DCCutOff", AY.DCCutOff);
-            iniFile.SetValue("VT", "ColorThemeName", ColorThemeName);
-            iniFile.SetValue("VT", "EnvelopeAsNote", EnvelopeAsNote);
-            iniFile.SetValue("VT", "SamToneShiftAsNote", SamToneShiftAsNote);
-            iniFile.SetValue("VT", "OrnToneShiftAsNote", OrnToneShiftAsNote);
-            iniFile.SetValue("VT", "DecBaseLines", MainForm.DecBaseLinesOn);
-            iniFile.SetValue("VT", "DecBaseNoise", DecBaseNoiseOn);
-            iniFile.SetValue("VT", "HighlightSpeed", HighlightSpeedOn);
-            iniFile.SetValue("VT", "DupNoteParams", DupNoteParams);
-            iniFile.SetValue("VT", "MoveBetweenPatrns", MoveBetweenPatrns);
-            iniFile.SetValue("VT", "DisableSeparators", DisableSeparators);
+            iniFile.SetValue("General", "Filtering", AY.FilterEnabled);
+            iniFile.SetValue("General", "FilterQ", AY.FilterLength);
+            iniFile.SetValue("General", "DCType", AY.DCType);
+            iniFile.SetValue("General", "DCCutOff", AY.DCCutOff);
+            iniFile.SetValue("General", "ColorThemeName", ColorThemeName);
+            iniFile.SetValue("General", "EnvelopeAsNote", EnvelopeAsNote);
+            iniFile.SetValue("General", "SamToneShiftAsNote", SamToneShiftAsNote);
+            iniFile.SetValue("General", "OrnToneShiftAsNote", OrnToneShiftAsNote);
+            iniFile.SetValue("General", "DecBaseLines", MainForm.DecBaseLinesOn);
+            iniFile.SetValue("General", "DecBaseNoise", DecBaseNoiseOn);
+            iniFile.SetValue("General", "HighlightSpeed", HighlightSpeedOn);
+            iniFile.SetValue("General", "DupNoteParams", DupNoteParams);
+            iniFile.SetValue("General", "MoveBetweenPatrns", MoveBetweenPatrns);
+            iniFile.SetValue("General", "DisableSeparators", DisableSeparators);
             int numThemes = ColorThemes.VTColorThemes?.Length ?? 0;
-            iniFile.SetValue("VT", "NumThemes", 0);
+            iniFile.SetValue("General", "NumThemes", 0);
             for (i = 0; i < numThemes; i++)
             {
                 string section = $"Theme{i + 1}";
@@ -3491,15 +3493,15 @@ namespace VortexTracker
                 iniFile.SetValue(section, "Name", colorTheme.Name);
                 iniFile.SetValue(section, "Colors", colors);
             }
-            iniFile.SetValue("VT", "WinThemeIndex", WinThemeIndex);
+            iniFile.SetValue("General", "WinThemeIndex", WinThemeIndex);
             for (i = 0; i < 3; i++)
-                iniFile.SetValue("VT", "ToolBar" + i.ToString(), ((ToolStripMenuItem)PopupMenu3.Items[i]).Checked);
-            iniFile.SetValue("VT", "DisableHints", DisableHints);
-            iniFile.SetValue("VT", "DisableCtrlClick", DisableCtrlClick);
-            iniFile.SetValue("VT", "DisableInfoWin", DisableInfoWin);
-            iniFile.SetValue("VT", "SampleBrowserVisible", SampleBrowserVisible);
-            iniFile.SetValue("VT", "OrnamentsBrowserVisible", OrnamentsBrowserVisible);
-            iniFile.SaveToFile();
+                iniFile.SetValue("General", "ToolBar" + i.ToString(), ((ToolStripMenuItem)PopupMenu3.Items[i]).Checked);
+            iniFile.SetValue("General", "DisableHints", DisableHints);
+            iniFile.SetValue("General", "DisableCtrlClick", DisableCtrlClick);
+            iniFile.SetValue("General", "DisableInfoWin", DisableInfoWin);
+            iniFile.SetValue("General", "SampleBrowserVisible", SampleBrowserVisible);
+            iniFile.SetValue("General", "OrnamentsBrowserVisible", OrnamentsBrowserVisible);
+            iniFile.Save();
             if (!VTExit)
                 SendSyncMessage();
         }
@@ -3531,21 +3533,21 @@ namespace VortexTracker
             return result;
         }
 
-        public string iniFile.GetValue("VT", string ParamName, string DefaultValue)
+        public string iniFile.GetValue("General", string ParamName, string DefaultValue)
         {
             string result;
-            result = ini.Read("VT", ParamName, DefaultValue);
+            result = ini.Read("General", ParamName, DefaultValue);
             return result;
         }
 
-        public int iniFile.GetValue<int>("VT", string ParamName, int DefaultValue)
+        public int iniFile.GetValue<int>("General", string ParamName, int DefaultValue)
         {
             int result;
-            result = ini.ReadInteger("VT", ParamName, DefaultValue);
+            result = ini.ReadInteger("General", ParamName, DefaultValue);
             return result;
         }
 
-        public bool iniFile.GetValue<bool>("VT", string ParamName, bool DefaultValue)
+        public bool iniFile.GetValue<bool>("General", string ParamName, bool DefaultValue)
         {
             bool result;
             int def;
@@ -3557,11 +3559,11 @@ namespace VortexTracker
             {
                 def = 0;
             }
-            result = ini.ReadInteger("VT", ParamName, def) == 1;
+            result = ini.ReadInteger("General", ParamName, def) == 1;
             return result;
         } */
 
-        public void LoadOptions()
+        public void ReadConfig()
         {
             string s;
             int i;
@@ -3571,36 +3573,38 @@ namespace VortexTracker
             // Remove config if version changed
             IniFile iniFile = GetConfigIniFile();
 
-            //if (iniFile.GetValue("VT", "Version", "") != VersionString)
+            //if (iniFile.GetValue("General", "Version", "") != VersionString)
             //    System.IO.File.Delete(ConfigFilePath);
 
             // Vortex started first time with clean config
-            if (!iniFile.GetValue<bool>("VT", "ConfigInitialized", false))
+            if (!iniFile.GetValue<bool>("General", "ConfigInitialized", false))
                 VortexFirstStart = true;
 
-            StartupAction = iniFile.GetValue<byte>("VT", "StartupAction", 1);
-            TemplateSongPath = iniFile.GetValue("VT", "TemplateSongPath", "");
-            AutoBackupsOn = iniFile.GetValue<bool>("VT", "AutoBackups", true);
-            AutoBackupsMins = iniFile.GetValue<byte>("VT", "AutoBackupsMins", 1);
+            StartupAction = iniFile.GetValue<byte>("General", "StartupAction", 1);
+            TemplateSongPath = iniFile.GetValue("General", "TemplateSongPath", "");
+            AutoBackupsOn = iniFile.GetValue<bool>("General", "AutoBackups", true);
+            AutoBackupsMins = iniFile.GetValue<byte>("General", "AutoBackupsMins", 1);
 
             if (VortexFirstStart)
                 CheckFileAssociations();
             else
             {
-                s = iniFile.GetValue("VT", "FileAssoc", "");
+                s = iniFile.GetValue("General", "FileAssoc", "");
                 if (s != "")
                     GetFileAssocFromText(s);
             }
-            s = iniFile.GetValue("VT", "ShortCuts", "");
+            /* s = iniFile.GetValue("General", "Shortcuts", "");
             if (s != "")
                 HotKeys.LoadHotKeysFromText(s);
             else
-                HotKeys.SetDefaultHotKeys();
+                HotKeys.SetDefaultHotKeys(); */
+            
+            HotKeys.ReadConfig(iniFile);
 
-            ProcessPriorityClass priority = iniFile.GetValue("VT", "Priority", ProcessPriorityClass.Normal);
+            ProcessPriorityClass priority = iniFile.GetValue("General", "Priority", ProcessPriorityClass.Normal);
             SetPriority(priority);
-            SamplesDir = iniFile.GetValue("VT", "SamplesDir", Path.Combine(VortexDocumentsDir, SamplesDefaultDir));
-            OrnamentsDir = iniFile.GetValue("VT", "OrnamentsDir", Path.Combine(VortexDocumentsDir, OrnamentsDefaultDir));
+            SamplesDir = iniFile.GetValue("General", "SamplesDir", Path.Combine(VortexDocumentsDir, SamplesDefaultDir));
+            OrnamentsDir = iniFile.GetValue("General", "OrnamentsDir", Path.Combine(VortexDocumentsDir, OrnamentsDefaultDir));
 
             if (!Directory.Exists(SamplesDir))
                 SamplesDir = "C:\\";
@@ -3608,8 +3612,8 @@ namespace VortexTracker
             if (!Directory.Exists(OrnamentsDir))
                 OrnamentsDir = "C:\\";
 
-            SamplesQuickDir = iniFile.GetValue("VT", "SamplesQuickDir", "");
-            OrnamentsQuickDir = iniFile.GetValue("VT", "OrnamentsQuickDir", "");
+            SamplesQuickDir = iniFile.GetValue("General", "SamplesQuickDir", "");
+            OrnamentsQuickDir = iniFile.GetValue("General", "OrnamentsQuickDir", "");
 
             if (!Directory.Exists(SamplesQuickDir))
                 SamplesQuickDir = "";
@@ -3617,20 +3621,20 @@ namespace VortexTracker
             if (!Directory.Exists(OrnamentsQuickDir))
                 OrnamentsQuickDir = "";
 
-            if (!SyncVTInstanses)
+            if (!SyncVTInstances)
             {
-                EnvelopeAsNote = iniFile.GetValue<bool>("VT", "EnvelopeAsNote", false);
-                SamToneShiftAsNote = iniFile.GetValue<bool>("VT", "SamToneShiftAsNote", false);
-                OrnToneShiftAsNote = iniFile.GetValue<bool>("VT", "OrnToneShiftAsNote", false);
-                MoveBetweenPatrns = iniFile.GetValue<bool>("VT", "MoveBetweenPatrns", true);
-                DupNoteParams = iniFile.GetValue<bool>("VT", "DupNoteParams", false);
-                VolumeTrackBar.Value = iniFile.GetValue<int>("VT", "GlobalVolume", 56);
-                MainForm.ChanAllocIndex = iniFile.GetValue<int>("VT", "ChanAllocIndex", 1);
+                EnvelopeAsNote = iniFile.GetValue<bool>("General", "EnvelopeAsNote", false);
+                SamToneShiftAsNote = iniFile.GetValue<bool>("General", "SamToneShiftAsNote", false);
+                OrnToneShiftAsNote = iniFile.GetValue<bool>("General", "OrnToneShiftAsNote", false);
+                MoveBetweenPatrns = iniFile.GetValue<bool>("General", "MoveBetweenPatrns", true);
+                DupNoteParams = iniFile.GetValue<bool>("General", "DupNoteParams", false);
+                VolumeTrackBar.Value = iniFile.GetValue<int>("General", "GlobalVolume", 56);
+                MainForm.ChanAllocIndex = iniFile.GetValue<int>("General", "ChanAllocIndex", 1);
                 SetChannelsAllocation(MainForm.ChanAllocIndex);
-                Panoram[0] = iniFile.GetValue<byte>("VT", "PanoramA", 64);
-                Panoram[1] = iniFile.GetValue<byte>("VT", "PanoramB", 128);
-                Panoram[2] = iniFile.GetValue<byte>("VT", "PanoramC", 192);
-                int loopMode = iniFile.GetValue<int>("VT", "LoopMode", 1);
+                Panoram[0] = iniFile.GetValue<byte>("General", "PanoramA", 64);
+                Panoram[1] = iniFile.GetValue<byte>("General", "PanoramB", 128);
+                Panoram[2] = iniFile.GetValue<byte>("General", "PanoramC", 192);
+                int loopMode = iniFile.GetValue<int>("General", "LoopMode", 1);
 
                 switch (loopMode)
                 {
@@ -3644,48 +3648,48 @@ namespace VortexTracker
             }
             if (!WaveOutAPI.IsPlaying)
             {
-                WaveOutAPI.SampleRate = iniFile.GetValue<int>("VT", "SampleRate", 44100);
+                WaveOutAPI.SampleRate = iniFile.GetValue<int>("General", "SampleRate", 44100);
                 AY.SetSampleRate(WaveOutAPI.SampleRate);
-                WaveOutAPI.SampleBit = iniFile.GetValue<int>("VT", "SampleBit", 16);
+                WaveOutAPI.SampleBit = iniFile.GetValue<int>("General", "SampleBit", 16);
                 AY.SetBitRate(WaveOutAPI.SampleBit);
-                WaveOutAPI.NumberOfChannels = iniFile.GetValue<int>("VT", "NumberOfChannels", 2);
+                WaveOutAPI.NumberOfChannels = iniFile.GetValue<int>("General", "NumberOfChannels", 2);
                 AY.SetNChans(WaveOutAPI.NumberOfChannels);
-                WaveOutAPI.BufferCount = iniFile.GetValue<int>("VT", "NumberOfBuffers", 3);
-                WaveOutAPI.BufferLengthMs = iniFile.GetValue<int>("VT", "BufLen_ms", 100);
+                WaveOutAPI.BufferCount = iniFile.GetValue<int>("General", "NumberOfBuffers", 3);
+                WaveOutAPI.BufferLengthMs = iniFile.GetValue<int>("General", "BufLen_ms", 100);
                 AY.SetBuffers(WaveOutAPI.BufferLengthMs, WaveOutAPI.BufferCount);
-                WaveOutAPI.WODevice = iniFile.GetValue("VT", "WODevice", null);
+                WaveOutAPI.WODevice = iniFile.GetValue("General", "WODevice", null);
             }
             if (!WaveOutAPI.IsPlaying || (AY.PlayMode == PlayModes.PlayLine))
             {
-                AY.DCType = iniFile.GetValue<int>("VT", "DCType", 1);
-                AY.DCCutOff = iniFile.GetValue<int>("VT", "DCCutOff", 3);
-                int chipType = iniFile.GetValue<int>("VT", "ChipType", 2); // YM by default
+                AY.DCType = iniFile.GetValue<int>("General", "DCType", 1);
+                AY.DCCutOff = iniFile.GetValue<int>("General", "DCCutOff", 3);
+                int chipType = iniFile.GetValue<int>("General", "ChipType", 2); // YM by default
                 SetEmulatingChip((ChipType)(chipType == 1 || chipType == 2 ? chipType : 2));
-                int renderEngine = iniFile.GetValue<int>("VT", "RenderEngine", 2); // Ayumi render by default
+                int renderEngine = iniFile.GetValue<int>("General", "RenderEngine", 2); // Ayumi render by default
                 AY.Set_Engine(renderEngine);
             }
 
-            ExportSampleRate = iniFile.GetValue<int>("VT", "ExportSampleRate", 1);
-            ExportBitRate = iniFile.GetValue<int>("VT", "ExportBitRate", 0);
-            ExportChannels = iniFile.GetValue<int>("VT", "ExportChannels", 2);
-            ExportChip = iniFile.GetValue<int>("VT", "ExportChip", 1);
-            ExportRepeats = iniFile.GetValue<int>("VT", "ExportRepeats", 0);
-            ExportPath = iniFile.GetValue("VT", "ExportPath", "");
-            VTModule.FeaturesLevel = iniFile.GetValue<FeaturesLevel>("VT", "FeaturesLevel", FeaturesLevel.AutoDetect);
-            VTModule.DetectFeaturesLevel = iniFile.GetValue<bool>("VT", "DetectFeaturesLevel", true);
-            VTModule.VortexModuleHeader = iniFile.GetValue<bool>("VT", "VortexModuleHeader", true);
-            VTModule.DetectModuleHeader = iniFile.GetValue<bool>("VT", "DetectModuleHeader", true);
-            Main.DefaultChipFreq = iniFile.GetValue<int>("VT", "DefaultChipFreq", 1750000);
-            Main.ManualChipFreq = iniFile.GetValue<int>("VT", "ManualChipFreq", 0);
-            Main.DefaultIntFreq = iniFile.GetValue<int>("VT", "DefaultIntFreq", 48828);
-            bool filtering = iniFile.GetValue<bool>("VT", "Filtering", true);
+            ExportSampleRate = iniFile.GetValue<int>("General", "ExportSampleRate", 1);
+            ExportBitRate = iniFile.GetValue<int>("General", "ExportBitRate", 0);
+            ExportChannels = iniFile.GetValue<int>("General", "ExportChannels", 2);
+            ExportChip = iniFile.GetValue<int>("General", "ExportChip", 1);
+            ExportRepeats = iniFile.GetValue<int>("General", "ExportRepeats", 0);
+            ExportPath = iniFile.GetValue("General", "ExportPath", "");
+            VTModule.FeaturesLevel = iniFile.GetValue<FeaturesLevel>("General", "FeaturesLevel", FeaturesLevel.AutoDetect);
+            VTModule.DetectFeaturesLevel = iniFile.GetValue<bool>("General", "DetectFeaturesLevel", true);
+            VTModule.VortexModuleHeader = iniFile.GetValue<bool>("General", "VortexModuleHeader", true);
+            VTModule.DetectModuleHeader = iniFile.GetValue<bool>("General", "DetectModuleHeader", true);
+            Main.DefaultChipFreq = iniFile.GetValue<int>("General", "DefaultChipFreq", 1750000);
+            Main.ManualChipFreq = iniFile.GetValue<int>("General", "ManualChipFreq", 0);
+            Main.DefaultIntFreq = iniFile.GetValue<int>("General", "DefaultIntFreq", 48828);
+            bool filtering = iniFile.GetValue<bool>("General", "Filtering", true);
             AY.SetFilter(filtering, AY.FilterLength);
-            int filterQ = iniFile.GetValue<int>("VT", "FilterQ", 64);
+            int filterQ = iniFile.GetValue<int>("General", "FilterQ", 64);
             AY.SetFilter(AY.FilterEnabled, filterQ);
-            DefaultTable = (short)iniFile.GetValue<int>("VT", "DefaultTable", 2);
+            DefaultTable = (short)iniFile.GetValue<int>("General", "DefaultTable", 2);
             for (i = 5; i >= 0; i--)
             {
-                s = iniFile.GetValue("VT", ("Recent" + i.ToString() as string), "");
+                s = iniFile.GetValue("General", ("Recent" + i.ToString() as string), "");
                 if (s != "" && System.IO.File.Exists(s))
                 {
                     AddFileName(s);
@@ -3730,13 +3734,13 @@ namespace VortexTracker
                     defFont = 20;
                 }
             }
-            PositionSize = iniFile.GetValue<int>("VT", "PositionSize", 2);
-            if (!SyncVTInstanses)
+            PositionSize = iniFile.GetValue<int>("General", "PositionSize", 2);
+            if (!SyncVTInstances)
             {
-                this.Width = iniFile.GetValue<int>("VT", "WindowWidth", (defFont - 4) * 52);
-                this.Height = iniFile.GetValue<int>("VT", "WindowHeight", MonitorWorkAreaHeight() - 60);
-                this.Left = iniFile.GetValue<int>("VT", "WindowX", (MonitorWorkAreaWidth() / 2) - (this.Width / 2) - 200);
-                this.Top = iniFile.GetValue<int>("VT", "WindowY", (MonitorWorkAreaHeight() / 2) - (this.Height / 2));
+                this.Width = iniFile.GetValue<int>("General", "WindowWidth", (defFont - 4) * 52);
+                this.Height = iniFile.GetValue<int>("General", "WindowHeight", MonitorWorkAreaHeight() - 60);
+                this.Left = iniFile.GetValue<int>("General", "WindowX", (MonitorWorkAreaWidth() / 2) - (this.Width / 2) - 200);
+                this.Top = iniFile.GetValue<int>("General", "WindowY", (MonitorWorkAreaHeight() / 2) - (this.Height / 2));
                 // Window on a second monitor, but monitor turned off.
                 Rectangle workingArea = Screen.FromControl(this).WorkingArea;
 
@@ -3748,7 +3752,7 @@ namespace VortexTracker
                 {
                     this.Top = (MonitorWorkAreaHeight() / 2) - (this.Height / 2);
                 }
-                if (iniFile.GetValue<bool>("VT", "WindowMaximized", false))
+                if (iniFile.GetValue<bool>("General", "WindowMaximized", false))
                 {
                     this.WindowState = FormWindowState.Maximized;
                 }
@@ -3757,7 +3761,7 @@ namespace VortexTracker
                     this.WindowState = FormWindowState.Normal;
                 }
             }
-            string editorFontName = iniFile.GetValue("VT", "TrackFontName", "Consolas");
+            string editorFontName = iniFile.GetValue("General", "TrackFontName", "Consolas");
             float editorFontSize;
             FontStyle editorFontStyle = FontStyle.Regular;
             if (IsFontExists(editorFontName))
@@ -3786,12 +3790,12 @@ namespace VortexTracker
                     }
                 }
             }
-            editorFontSize = iniFile.GetValue<int>("VT", "TrackFontSize", defFont);
+            editorFontSize = iniFile.GetValue<int>("General", "TrackFontSize", defFont);
             if (editorFontSize < 12)
             {
                 editorFontSize = 12;
             }
-            if (iniFile.GetValue<bool>("VT", "TrackFontBold", false))
+            if (iniFile.GetValue<bool>("General", "TrackFontBold", false))
             {
                 editorFontStyle |= FontStyle.Bold;
             }
@@ -3817,25 +3821,28 @@ namespace VortexTracker
                 themes.Add(colorTheme);
             }
             ColorThemes.VTColorThemes = themes.ToArray();
-            ColorThemeName = iniFile.GetValue("VT", "ColorThemeName", "Default");
+            ColorThemeName = iniFile.GetValue("General", "ColorThemeName", "Default");
             ColorThemes.InitColorThemes();
-            WinThemeIndex = iniFile.GetValue<int>("VT", "WinThemeIndex", 0);
+            WinThemeIndex = iniFile.GetValue<int>("General", "WinThemeIndex", 0);
             ColorThemes.SetWindowColors(WinThemeIndex);
-            MainForm.DecBaseLinesOn = iniFile.GetValue<bool>("VT", "DecBaseLines", false);
-            DecBaseNoiseOn = iniFile.GetValue<bool>("VT", "DecBaseNoise", false);
-            DisableSeparators = iniFile.GetValue<bool>("VT", "DisableSeparators", false);
-            HighlightSpeedOn = iniFile.GetValue<bool>("VT", "HighlightSpeed", false);
+            MainForm.DecBaseLinesOn = iniFile.GetValue<bool>("General", "DecBaseLines", false);
+            DecBaseNoiseOn = iniFile.GetValue<bool>("General", "DecBaseNoise", false);
+            DisableSeparators = iniFile.GetValue<bool>("General", "DisableSeparators", false);
+            HighlightSpeedOn = iniFile.GetValue<bool>("General", "HighlightSpeed", false);
             TracksCursorXLeft = MainForm.DecBaseLinesOn ? 4 : 3;
             for (i = 0; i < 3; i++)
             {
-                b = iniFile.GetValue<bool>("VT", "ToolBar" + i.ToString(), true);
+                b = iniFile.GetValue<bool>("General", "ToolBar" + i.ToString(), true);
                 SetBar(i, b);
             }
-            DisableHints = iniFile.GetValue<bool>("VT", "DisableHints", false);
-            DisableCtrlClick = iniFile.GetValue<bool>("VT", "DisableCtrlClick", false);
-            DisableInfoWin = iniFile.GetValue<bool>("VT", "DisableInfoWin", false);
-            SampleBrowserVisible = iniFile.GetValue<bool>("VT", "SampleBrowserVisible", true);
-            OrnamentsBrowserVisible = iniFile.GetValue<bool>("VT", "OrnamentsBrowserVisible", true);
+            DisableHints = iniFile.GetValue<bool>("General", "DisableHints", false);
+            DisableCtrlClick = iniFile.GetValue<bool>("General", "DisableCtrlClick", false);
+            DisableInfoWin = iniFile.GetValue<bool>("General", "DisableInfoWin", false);
+            SampleBrowserVisible = iniFile.GetValue<bool>("General", "SampleBrowserVisible", true);
+            OrnamentsBrowserVisible = iniFile.GetValue<bool>("General", "OrnamentsBrowserVisible", true);
+
+            if (VortexFirstStart)
+                WriteConfig();
         }
 
         public static bool IsFileAssociationExists(string fileExt)
@@ -5315,7 +5322,7 @@ namespace VortexTracker
 
             RedrawOff();
             SetChildsPosition(FormWindowState.Maximized);
-            AutoMetrixForChilds(FormWindowState.Maximized);
+            AutoMetricsForChilds(FormWindowState.Maximized);
             AutoCutChilds(newSize);
             RedrawChilds();
             AutoToolBarPosition(newSize);
@@ -5683,14 +5690,14 @@ namespace VortexTracker
             if (res == this.Handle.ToString())
                 return;
 
-            SyncVTInstanses = true;
+            SyncVTInstances = true;
             EditorFontChanged = true;
             NumberOfLinesChanged = true;
-            LoadOptions();
+            ReadConfig();
             RedrawOff();
             ChildsEventsBlocked = true;
             RedrawChilds();
-            AutoMetrixForChilds(this.WindowState);
+            AutoMetricsForChilds(this.WindowState);
             SetChildsPosition(this.WindowState);
             Rectangle newSize = GetSizeForChilds(this.WindowState, false);
             AutoCutChilds(newSize);
@@ -5698,7 +5705,7 @@ namespace VortexTracker
             SetWindowSize(newSize);
             ChildsEventsBlocked = false;
             RedrawOn();
-            SyncVTInstanses = false;
+            SyncVTInstances = false;
             EditorFontChanged = false;
             NumberOfLinesChanged = false;
             SyncFinishTimer.Enabled = true;
@@ -6382,7 +6389,7 @@ namespace VortexTracker
                 Snaped = false;
                 ResetConstraints(false);
                 SetChildsPosition(FormWindowState.Maximized);
-                AutoMetrixForChilds(FormWindowState.Maximized);
+                AutoMetricsForChilds(FormWindowState.Maximized);
                 AutoCutChilds(newSize);
                 RedrawChilds();
                 AutoToolBarPosition(newSize);
@@ -6397,7 +6404,7 @@ namespace VortexTracker
                 Snaped = false;
 
                 SetChildsPosition(FormWindowState.Normal);
-                AutoMetrixForChilds(FormWindowState.Normal);
+                AutoMetricsForChilds(FormWindowState.Normal);
                 newSize = GetSizeForChilds(FormWindowState.Normal, false);
 
                 if (newSize.Width > MonitorWorkAreaWidth())
@@ -6431,7 +6438,7 @@ namespace VortexTracker
             else if (resize)
             {
                 AutoToolBarPosition(newSize);
-                AutoMetrixForChilds(this.WindowState);
+                AutoMetricsForChilds(this.WindowState);
                 AutoCutChilds(newSize);
                 RedrawChilds();
             }
@@ -6455,7 +6462,7 @@ namespace VortexTracker
                 SetWindowSize(newSize);
 
                 SetChildsPosition(FormWindowState.Normal);
-                AutoMetrixForChilds(FormWindowState.Normal);
+                AutoMetricsForChilds(FormWindowState.Normal);
                 AutoToolBarPosition(newSize);
                 AutoCutChilds(newSize);
                 RedrawChilds();
@@ -6468,7 +6475,7 @@ namespace VortexTracker
                 SnappedToRight = false;
 
                 SetChildsPosition(FormWindowState.Normal);
-                AutoMetrixForChilds(FormWindowState.Normal);
+                AutoMetricsForChilds(FormWindowState.Normal);
 
                 newSize.Width = ChildsWidth();
                 if (newSize.Width > MonitorWorkAreaWidth())
@@ -6605,7 +6612,7 @@ namespace VortexTracker
                 if (this.MdiChildren.Length >= 2)
                 {
                     SetChildsPosition(this.WindowState);
-                    AutoMetrixForChilds(this.WindowState);
+                    AutoMetricsForChilds(this.WindowState);
                     RedrawChilds();
                     var newSize = GetSizeForChilds(this.WindowState, false);
                     AutoToolBarPosition(newSize);
@@ -7662,7 +7669,7 @@ namespace VortexTracker
 
             ChildsEventsBlocked = true;
 
-            AutoMetrixForChilds(this.WindowState);
+            AutoMetricsForChilds(this.WindowState);
             SetChildsPosition(this.WindowState);
             newSize = GetSizeForChilds(this.WindowState, false);
             AutoCutChilds(newSize);

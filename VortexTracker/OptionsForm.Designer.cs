@@ -149,6 +149,7 @@ namespace VortexTracker
             DecPositionsSize = new System.Windows.Forms.Button();
             IncPositionsSize = new System.Windows.Forms.Button();
             AYEmu = new TabPage();
+            ChipFreqTextBox = new System.Windows.Forms.TextBox();
             AyumiDCFiltBox = new GroupBox();
             DCCutOffLab = new Label();
             DCCutOffTrackBar = new System.Windows.Forms.TrackBar();
@@ -167,7 +168,6 @@ namespace VortexTracker
             HiLabel = new Label();
             FilterCheckBox = new CheckBox();
             FilterNKTrackBar = new System.Windows.Forms.TrackBar();
-            ChipFreqTextBox = new System.Windows.Forms.TextBox();
             PanningBox = new GroupBox();
             APanLabel = new Label();
             BPanLabel = new Label();
@@ -939,7 +939,7 @@ namespace VortexTracker
             ColorThemesTab.ImageIndex = 5;
             ColorThemesTab.Location = new Point(4, 22);
             ColorThemesTab.Name = "ColorThemesTab";
-            ColorThemesTab.Size = new Size(538, 503);
+            ColorThemesTab.Size = new Size(192, 74);
             ColorThemesTab.TabIndex = 1;
             ColorThemesTab.Text = "Appearance";
             // 
@@ -960,6 +960,7 @@ namespace VortexTracker
             // 
             // ColorThemesList
             // 
+            ColorThemesList.ItemHeight = 13;
             ColorThemesList.Location = new Point(8, 24);
             ColorThemesList.Name = "ColorThemesList";
             ColorThemesList.Size = new Size(172, 108);
@@ -1487,6 +1488,7 @@ namespace VortexTracker
             // 
             // FontsList
             // 
+            FontsList.ItemHeight = 13;
             FontsList.Location = new Point(8, 24);
             FontsList.Name = "FontsList";
             FontsList.Size = new Size(177, 108);
@@ -1540,9 +1542,17 @@ namespace VortexTracker
             AYEmu.ImageIndex = 1;
             AYEmu.Location = new Point(4, 22);
             AYEmu.Name = "AYEmu";
-            AYEmu.Size = new Size(538, 503);
+            AYEmu.Size = new Size(192, 74);
             AYEmu.TabIndex = 2;
             AYEmu.Text = "Chip Emulation";
+            // 
+            // ChipFreqTextBox
+            // 
+            ChipFreqTextBox.Location = new Point(378, 445);
+            ChipFreqTextBox.MaxLength = 7;
+            ChipFreqTextBox.Name = "ChipFreqTextBox";
+            ChipFreqTextBox.Size = new Size(52, 20);
+            ChipFreqTextBox.TabIndex = 8;
             // 
             // AyumiDCFiltBox
             // 
@@ -1750,14 +1760,6 @@ namespace VortexTracker
             FilterNKTrackBar.Value = 5;
             FilterNKTrackBar.ValueChanged += FiltNK_ValueChanged;
             // 
-            // ChipFreqTextBox
-            // 
-            ChipFreqTextBox.Location = new Point(378, 445);
-            ChipFreqTextBox.MaxLength = 7;
-            ChipFreqTextBox.Name = "ChipFreqTextBox";
-            ChipFreqTextBox.Size = new Size(52, 20);
-            ChipFreqTextBox.TabIndex = 8;
-            // 
             // PanningBox
             // 
             PanningBox.Controls.Add(APanLabel);
@@ -1892,7 +1894,7 @@ namespace VortexTracker
             WOAPITAB.ImageIndex = 4;
             WOAPITAB.Location = new Point(4, 22);
             WOAPITAB.Name = "WOAPITAB";
-            WOAPITAB.Size = new Size(538, 503);
+            WOAPITAB.Size = new Size(192, 74);
             WOAPITAB.TabIndex = 3;
             WOAPITAB.Text = "Audio";
             // 
@@ -2167,12 +2169,12 @@ namespace VortexTracker
             // HotKeyHeader1
             // 
             HotKeyHeader1.Text = "Name";
-            HotKeyHeader1.Width = 359;
+            HotKeyHeader1.Width = 240;
             // 
             // HotKeyHeader2
             // 
             HotKeyHeader2.Text = "HotKey";
-            HotKeyHeader2.Width = 125;
+            HotKeyHeader2.Width = 240;
             // 
             // OpMod
             // 
@@ -2182,7 +2184,7 @@ namespace VortexTracker
             OpMod.ImageIndex = 3;
             OpMod.Location = new Point(4, 22);
             OpMod.Name = "OpMod";
-            OpMod.Size = new Size(538, 503);
+            OpMod.Size = new Size(192, 74);
             OpMod.TabIndex = 5;
             OpMod.Text = "Compatibility";
             // 

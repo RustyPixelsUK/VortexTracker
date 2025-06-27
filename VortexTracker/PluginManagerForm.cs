@@ -152,14 +152,14 @@ namespace VortexTracker
 
         private static void WriteIni()
         {
-            var ini = new IniFile(MainForm.ConfigFilePath);
+            var iniFile = new IniFile(MainForm.ConfigFilePath);
 
             // wipe existing plug-in sections
             for (int i = 0; i < PluginManager.MaxPlugins; i++)
             {
                 string section = $"Plugin{i + 1}";
-                ini.SetValue(section, "Name", null);
-                ini.SetValue(section, "Enabled", null);
+                iniFile.SetValue(section, "Name", null);
+                iniFile.SetValue(section, "Enabled", null);
             }
 
             // write current state in the UI order
@@ -167,11 +167,11 @@ namespace VortexTracker
             {
                 var w = PluginManager.PluginWrappers[i];
                 string section = $"Plugin{i + 1}";
-                ini.SetValue(section, "Name", w.Name);
-                ini.SetValue(section, "Enabled", w.IsEnabled);
+                iniFile.SetValue(section, "Name", w.Name);
+                iniFile.SetValue(section, "Enabled", w.IsEnabled);
             }
 
-            ini.SaveToFile();
+            iniFile.Save();
         }
 
         private void PluginManagerForm_Resize(object sender, System.EventArgs e)
