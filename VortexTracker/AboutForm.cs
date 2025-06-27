@@ -41,7 +41,7 @@ namespace VortexTracker
             }
 
             Version.Text = MainForm.HalfVersString;
-            BuildDateLabel.Text = $"Date of build: {Globals.MainForm.BuildDateTime.ToString()}";
+            BuildDateLabel.Text = $"Date of build: {MainForm.BuildDateTime.ToString()}";
         }
 
         private void AboutForm_FormClosing(object sender, FormClosingEventArgs e)

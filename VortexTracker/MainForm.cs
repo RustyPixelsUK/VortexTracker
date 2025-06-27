@@ -22,6 +22,7 @@ using RtMidi.Net;
 using RtMidi.Net.Clients;
 using RtMidi.Net.Enums;
 using RtMidi.Net.Events;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Globalization;
@@ -116,14 +117,11 @@ namespace VortexTracker
         public const int StdAutoEnvMax = 7;
         public static int[,] StdAutoEnv = { { 1, 1 }, { 3, 4 }, { 1, 2 }, { 1, 4 }, { 3, 1 }, { 5, 2 }, { 2, 1 }, { 3, 2 } };
         public const string AppName = "Vortex Tracker";
-        public const string VersionString = "3.0";
-        public const string IsBeta = " dev";
-        public const string BetaNumber = " 01";
-        public DateTime BuildDateTime;
-        public const string VersionFullString = $"{VersionString}{IsBeta}{BetaNumber}";
-        public const string FullVersString = $"{AppName} {VersionFullString}";
-        public const string HalfVersString = $"Version {VersionFullString}";
-        public const string VortexDirName = $"{AppName} {VersionString}{IsBeta}";
+        public static string VersionString = null;
+        public static DateTime BuildDateTime;
+        public static string FullVersString = null;
+        public static string HalfVersString = null;
+        public static string VortexDirName = null;
         public const string InstrumentsDefaultDir = "Instruments";
         public const string SamplesDefaultDir = @"Instruments\Samples";
         public const string OrnamentsDefaultDir = @"Instruments\Ornaments";
@@ -1717,7 +1715,7 @@ namespace VortexTracker
             this.Close();
         }
 
-        private bool TryGetBuildDateTime()
+        private static bool TryGetBuildDateTime()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -1733,6 +1731,18 @@ namespace VortexTracker
                 return false;
 
             return DateTime.TryParse(line, null, DateTimeStyles.AdjustToUniversal, out BuildDateTime);
+        }
+
+        public static bool TryGetVersionInfo()
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            VersionString = version.ToString(3);
+            FullVersString = $"{AppName} {VersionString}";
+            HalfVersString = $"Version {VersionString}";
+            VortexDirName = $"{AppName} {version.ToString(1)}";
+
+            return true;
         }
 
         private static bool TryGetEmbeddedResourceTimestamp(string manifestName, out DateTime timeStamp)
@@ -1906,6 +1916,10 @@ namespace VortexTracker
 #if LOGGER
             Logger = new Logger("out.txt");
 #endif
+
+            TryGetBuildDateTime();
+            TryGetVersionInfo();
+
             MaximizeChilds = true;
             RedrawEnabled = true;
             PrevTop = 0;
@@ -1952,7 +1966,7 @@ namespace VortexTracker
             // Unpack instruments & demosongs
             //UnpackSamples();
             //UnpackOrnaments();
-            TryGetBuildDateTime();
+
             UnpackInstruments();
             UnpackDemoSongs();
             UnpackFonts();
@@ -3397,8 +3411,8 @@ namespace VortexTracker
             int i;
             SetPriority(ProcessPriorityClass.Normal);
             IniFile iniFile = GetConfigIniFile();
-            iniFile.SetValue("VT", "ConfigInited", true);
-            iniFile.SetValue("VT", "Version", VersionFullString);
+            iniFile.SetValue("VT", "ConfigInitialized", true);
+            iniFile.SetValue("VT", "Version", VersionString);
             iniFile.SetValue("VT", "StartupAction", StartupAction);
             iniFile.SetValue("VT", "TemplateSongPath", TemplateSongPath);
             iniFile.SetValue("VT", "SamplesDir", SamplesDir);
@@ -3556,11 +3570,12 @@ namespace VortexTracker
 
             // Remove config if version changed
             IniFile iniFile = GetConfigIniFile();
-            if (iniFile.GetValue("VT", "Version", "") != VersionFullString)
-                System.IO.File.Delete(ConfigFilePath);
+
+            //if (iniFile.GetValue("VT", "Version", "") != VersionString)
+            //    System.IO.File.Delete(ConfigFilePath);
 
             // Vortex started first time with clean config
-            if (!iniFile.GetValue<bool>("VT", "ConfigInited", false))
+            if (!iniFile.GetValue<bool>("VT", "ConfigInitialized", false))
                 VortexFirstStart = true;
 
             StartupAction = iniFile.GetValue<byte>("VT", "StartupAction", 1);

@@ -8,8 +8,22 @@
 		<ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ProductName>Vortex Tracker</ProductName>
+		<Copyright>Ben Baker (Rusty Pixels)</Copyright>
 		<ApplicationIcon>Resources\Icons\VortexTracker.ico</ApplicationIcon>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="../README.md" Pack="true" PackagePath="\" />
+		<None Include="../LICENSE" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<Version>3.0.0</Version>
+		<AssemblyVersion>3.0.0.0</AssemblyVersion>
+		<FileVersion>3.0.0.0</FileVersion>
+		<PackageVersion>3.0.0</PackageVersion>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
