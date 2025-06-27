@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTPlugin", "VTPlugin\VTPlugin.csproj", "{D4143FC7-2585-459B-B3C5-21C1D593A535}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibVT", "..\..\LibVT\LibVT\LibVT.csproj", "{288EB464-6118-10C2-3E75-1D0864AA144F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4143FC7-2585-459B-B3C5-21C1D593A535}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4143FC7-2585-459B-B3C5-21C1D593A535}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4143FC7-2585-459B-B3C5-21C1D593A535}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4143FC7-2585-459B-B3C5-21C1D593A535}.Release|Any CPU.Build.0 = Release|Any CPU
+		{288EB464-6118-10C2-3E75-1D0864AA144F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{288EB464-6118-10C2-3E75-1D0864AA144F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{288EB464-6118-10C2-3E75-1D0864AA144F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{288EB464-6118-10C2-3E75-1D0864AA144F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {045FF46C-E912-437D-93FA-CFC9CFF7CC14}
+	EndGlobalSection
+EndGlobal

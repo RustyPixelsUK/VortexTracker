@@ -1,0 +1,36 @@
+<Project>
+
+  <PropertyGroup>
+    <HostResourcesDir>$(SolutionDir)\..\..\VortexTracker\Resources\Plugins</HostResourcesDir>
+    <ZipStagingRoot>$(BaseIntermediateOutputPath)ZipStaging</ZipStagingRoot>
+    <ZipStagingDir>$(ZipStagingRoot)\$(AssemblyName)</ZipStagingDir>
+    <PluginZipPath>$(HostResourcesDir)\$(AssemblyName).zip</PluginZipPath>
+  </PropertyGroup>
+
+  <Target Name="PackPlugin"
+          AfterTargets="Build"
+          Condition="'$(AssemblyName)' != 'VortexTracker'">
+
+    <RemoveDir Directories="$(ZipStagingRoot)" ContinueOnError="true" />
+
+    <MakeDir Directories="$(ZipStagingDir)" />
+
+    <ItemGroup>
+      <PluginFiles Include="$(TargetDir)**\*.*" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(PluginFiles)"
+      DestinationFiles="@(PluginFiles->'$(ZipStagingDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+
+    <MakeDir Directories="$(HostResourcesDir)" />
+
+    <ZipDirectory
+      SourceDirectory ="$(ZipStagingRoot)"
+      DestinationFile ="$(PluginZipPath)"
+      Overwrite       ="true" />
+
+    <RemoveDir Directories="$(ZipStagingRoot)" />
+  </Target>
+
+</Project>

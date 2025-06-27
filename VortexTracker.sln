@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VortexTracker", "VortexTracker\VortexTracker.csproj", "{3B90A112-93BD-42BA-ACCB-573C729B4A03}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7435DF01-9533-3F62-D6F2-99E9E090E613} = {7435DF01-9533-3F62-D6F2-99E9E090E613}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibVT", "LibVT\LibVT\LibVT.csproj", "{7435DF01-9533-3F62-D6F2-99E9E090E613}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B90A112-93BD-42BA-ACCB-573C729B4A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B90A112-93BD-42BA-ACCB-573C729B4A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B90A112-93BD-42BA-ACCB-573C729B4A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B90A112-93BD-42BA-ACCB-573C729B4A03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7435DF01-9533-3F62-D6F2-99E9E090E613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7435DF01-9533-3F62-D6F2-99E9E090E613}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7435DF01-9533-3F62-D6F2-99E9E090E613}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7435DF01-9533-3F62-D6F2-99E9E090E613}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD7BD3AE-73A8-49E4-84D9-310E59155136}
+	EndGlobalSection
+EndGlobal

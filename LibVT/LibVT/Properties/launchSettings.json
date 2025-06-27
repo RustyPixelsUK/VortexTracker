@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LibVT": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

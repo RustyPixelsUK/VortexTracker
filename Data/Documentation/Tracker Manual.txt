@@ -1,0 +1,420 @@
+Last edition at 04/08/2024
+
+Terminology.
+------------
+
+Module is totality of patterns; position list determines its playing order.
+Into a module all used samples and ornaments, note table number, song author
+and title strings, file header and initial speed are included.
+
+Position list is a list of patterns in playing order. Loop position is included
+into this term also. Maximum length of position list is 256 positions.
+
+Pattern is totality of lines with notes, commands and parameters. Line
+structure is described further. At the other point of view, pattern is totality
+of tracks (columns).
+
+Pattern length is a number of lines in pattern.
+
+Sample is base structure of Pro Tracker 3. It is totality of parameters,
+which fully determines note sounding (amplitude, noise, envelope and frequency)
+in the time.
+
+Ornament is simple sample, which determines only note frequency in the time.
+Differ from sample, ornament adjust frequency in halftones. In most cases,
+ornaments are used to simulate accords.
+
+Note table (tone table) is a list of values, which are loading into tone
+registers of AY-3-8910/12 (or YM2149F, further AY) for each note. The table
+determines frequency of each note of Pro Tracker 3. Number of notes is 96 (from
+C-1 to B-8). There are four note tables in Pro Tracker 3 (numbers from 0 to 3).
+
+File header is string are identifying the module. For the moment two header
+types are known: 'ProTracker 3.x compilation of ', where x is subversion number,
+and 'Vortex Tracker II 1.0 module: '. Vortex Tracker II uses the header during
+loading module to detect 3xxx command style.
+
+Loop position is a position list item, from which playing is restarted after
+replaying of all positions in the list.
+
+Speed (tempo) is number of interrupts per one line of pattern. On ZX Spectrum
+interrupt frequency is about 50 Hz.
+
+Pattern.
+--------
+
+At the picture you can see schematic structure of pattern's line.
+
+
+          00|....|..|--- .... ....|--- .... ....|--- .... ....
+
+          11 2222 33 444 5555 6666 444 5555 6666 444 5555 6666
+                       Channel A     Channel B     Channel C
+
+Point means the zero digit (0). Vertical lines separate track columns.
+
+'11' track is used for lines numeration, so the track is not editable. The
+track width is 3 characters in decimal display mode, and 2 in hexadecimal one.
+
+'2222' track determines envelope frequency. Hexadecimal value is for writing
+into R11R12 AY registers (only if corresponding command is present in position
+'5555'). When used with a cyclic envelope type (8, A, C and E), it can be
+displayed as a note for periods from 0001 to 00FF (Envelope as note mode, the
+display range is from C-0 to B-8).
+
+'33' track determines noise offset (hexadecimal number from 0 to 1F or decimal
+from 0 to 31 depending of editor options). The number is addition to
+corresponding value of playing sample, result is stored in R6 AY register.
+
+Other three tracks are identical between each other. Each of them manages sound
+in corresponding AY channel (A, B or C).
+
+'444' cell is for storing note. Note has next structure:
+
+  C-1 or C#2
+  123    123
+
+1 - Latin note name (in this case it is DO).
+2 - can hold diesis (#), in other case there is minus (-).
+3 - octave number. There are eight octaves from 1 to 8. Octave 1 is
+contraoctave.
+
+Three minuses (---) means note absence in the cell, in this case '444' cell not
+affects to the sounding in channel.
+
+'444' cell can hold sound off command in the channel (R--).
+
+'5555' cells has next structure:
+
+  QF1E
+
+'Q' is a sample number. Value is used only if note or sound off command is
+placed in the '444' cell. There are 31 samples, numeration begin from 1. There
+is used numeration system with 32 digits (0-9,A-V). Zero value (.) means sample
+absence, in this case would be used previously defined sample number. PT3 format
+allows to use 'zero sample'. It can be used in future versions as sample number
+W.
+
+'F' is a place for envelope commands. If there is number from 1 to E, then it
+is value of R13 AY register, simultaneously into R11R12 registers are storing
+value of track '2222'. F value is used for disabling envelopes. 0 value means
+command absence. For command working presence of note in '444' cell is not
+required.
+
+'1' is ornament number (from 0 to F). Ornament #0 works only if previous cell
+(envelope) has a non-zero value (i.e. envelope type or envelope off). Ornaments
+from #1 to #F can be set independently from previouse cell (new standard in
+PT 3.69). For command working presence of note in '444' cell is not required.
+So, you can use envelope and ornament simultaneously, but remember that ornament
+works only with tone generators. For command working presence of note in '444'
+cell is not required.
+
+'E' is channel volume. Values from 1 to F determine volume, and 0 for using
+previously determined volume. For command working presence of note in '444'
+cell is not required.
+
+'6666' cells are for storing special commands.
+
+   11.1
+   NDPp
+
+'N' is command number, in this case 1. 0 (.) means command absence.
+
+'D' for some commands determines 'Delay' parameter (period of command working).
+
+'Pp' is command parameter  (for some commands it is two parameters are 'P' and
+'p').
+
+Special commands.
+-----------------
+
+Pro Tracker 3 allows to use only one additional command per line of channel
+track. But PT3 format allows use any number of commands, and it can be used
+in future versions of Vortex Tracker II.
+
+Command number 1.
+
+Sound frequency decreasing in the channel. 'Delay' parameter determines period
+(in interrupts) of frequency updates, and 'Pp' parameter determines value of
+each update (in AY tone register's units).
+
+Command number 2.
+
+Sound frequency increasing in the channel. Works like command 1.
+
+Other names of 1 and 2 commands are 'tone gliss' and 'tone slide' and so on
+(glissando, glissade).
+
+PT 3.7 standard allows 1 and 2 special commands with Delay=0. In this case
+only single tone frequency changing by 'Pp'-value down or up is occured instead
+of glissando.
+
+Command number 3.
+
+Other name of 3 command is 'tone portamento'. It is sliding from previous note
+frequency to frequency of note, which is set in current line. You can do easy
+transition from one note to another. This is main meaning of command, all other
+its features are not documented. Standard ZX Spectrum compiled modules player
+(of PT3.5x and older) has error, which can be found, if you are trying to do
+sliding between notes in different patterns. Anyway, any Pro Tracker 3 editor,
+Vortex Tracker II, new VT II ZX Spectrum player and Ay_Emul handle this
+situation rightly. Also, PT3.6x players has errors in portamento playing too,
+so, use only VT II ZX PT3-player. Command parameters are identical to commands
+1 and 2.
+
+Vortex Tracker II and Pro Tracker 3.6 and higher allow to use another 3xxx
+command interpretation for situations like
+
+          D-5 1F.F ....
+          --- .... 11.1
+          D-5 .... 31.1
+
+Additionally, Vortex Tracker II and all its players allows to do things like
+
+          D-5 1F.F ....
+          --- .... 11.1
+          --- .... 31.1
+
+Try to hear differences in editor to understand idea. New 3xxx interpretation
+is not compatible with PT 3.5 and older, they will play it as usually. Pro
+Tracker 3.6x of Alone Coder partially supports new 3xxx style.
+
+All three tone sliding commands can be stopped by command like '1...'; also
+sliding can be stopped by setting note or sound off command (R--). All tone
+sliding commands stop the command 6 work (if it was before).
+
+Command number 4.
+
+Starts sample playing from position 'Pp'. During note setting, sample starts
+playing from zero position (i.e. from its begin). Command 4 allows to start
+sample playing from any place.
+
+Command number 5.
+
+Works like command 4, but for ornament.
+
+Command number 6.
+
+Periodical sound off/on in channel. 'P' parameter defines number of interrupts,
+during which sound is on (from 1 to F), and 'p' parameter defines number of
+interrupts, during which sound is off (from 1 to F). Command 6 stops any tone
+sliding (if it was before). If 'P' parameter is zero, than command 6 has no any
+effect, though can be used as tone sliding terminator (commands 1-3). And if 'p'
+parameter is zero, then command simply turn off sound after 'P' interrupts.
+
+Command number 9.
+
+Envelope frequency decreasing (slide). Parameters are identical to command 1.
+
+Command number A.
+
+Envelope frequency increasing (slide). Parameters are identical to command 2.
+
+'Pp' parameter of 9 and A commands is defined in envelope period units of AY.
+To stop envelope sliding use command like '9...' or set new envelope command in
+any channel.
+
+Command number B.
+
+Set playing speed ('Pp' parameter). Of course, you can set any speed, but if
+you want to play your module on ZX Spectrum by standard PT 3.5 player, then use
+only 3-FF range (standard PT player of version 3.5 and lower can't play faster
+than speed 3). New players (3.6 and higher) from Alone Coder allow speed 2. In
+any editors, in VT II ZX and Atari ST players and in Ay_Emul you can use any
+tempo at range 1-FF.
+
+Sample.
+-------
+
+Sample defines note sounding in time. Like patterns, sample is totality of
+lines with parameters. Lines are played on interrupt frequency (about 50 Hz).
+Maximal length of sample is 64 lines. Sample is always looped in PT3. In the
+Vortex Tracker II line numeration is made in hexadecimal notation for using
+without conversion as parameter of special command 4 (sample offset). Lets see
+one line of sample:
+
+             Sample line structure
+
+            1F|tne +000_ +00(00)_ F_ ***************
+
+            11 234 56667 899 AA B CD EEEEEEEEEEEEEEE
+
+Column '11' is used for lines numeration. Use this number as parameter of
+special command 4 (if you need).
+
+Column '2' contains tone mask. 'T' means, that tone sound is allowed, and 't'
+means, that tone sound is not allowed in this line.
+
+Column '3' contains noise mask. 'N' means, that noise sound is allowed, and 'n'
+means, that noise sound is not allowed in this line.
+
+Column '4' contains envelope mask. 'E' means, that envelope sound is allowed,
+and 'e' means, that envelope sound is not allowed in this line.
+
+Column '5' contains sign of tone deviation from its base value.
+
+Column '666' contains value of tone deviation in hexadecimal form. So, range
+of tone deviation from its base value is -FFF..+FFF. It's enough, because tone
+registers are 12-bit size in AY.
+
+Column '7' contains marker of accumulation of tone deviation. '^' means, that
+accumulation is on, and '_' means, that accumulation is off.
+
+Fields '56667' are structure for managing tone deviation. There base tone value
+is defined by note setting in pattern in one of channel (corresponding value
+from note table). If accumulation is off, sample not changes base, though value
+of "base tone value + deviation from sample (field '5666')" is written to AY
+tone registers. If accumulation is on ('^' in column '7'), base value is changed
+by '5666' units. Base changing is equal to accumulation of deviations. For
+example, let's see, how values of '56667' fields are used in tone period
+calculation for C-4 note (in note table #2 it is 1A2):
+
+56667 Base Tone     Comment
+           register
+           value
++000_ 1A2  1A2      
++001_ 1A2  1A3      Base is not changed, but frequency is another
++000_ 1A2  1A2      Back to C-4 note frequency
++002^ 1A4  1A4      Frequency and base both are changed
++002^ 1A6  1A6
+-004_ 1A6  1A2      Frequency back to C-4, but base is still offset
+-004^ 1A2  1A2      Back base and frequency to initial C-4 note
+
+As you can see, with tone accumulation you can do sliding of tone, with using
+right looping. For example, if you'll loop next line:
+
+00|Tne +100^ +00(00)_ F- ***************
+
+than you can hear something like drum (only one sample line!).
+
+In the the displaying tone shift as a note mode, the field '5666' displays the
+resulting note calculated relative to the base one (set in the sample test
+line). If the result of adding the base note tone period and the tone shift in
+the sample line, taking into account all previous accumulations, exactly matches
+any note, then the symbol '=' is displayed in front of it. If the frequency is
+lower or higher (no more than a quarter tone), then the signs '<' or '>' are
+displayed. This display mode may be convenient if you want to write some short
+melody directly in the sample, but keep in mind that the frequencies of such
+notes will inevitably float when changing the base note or the note table.
+
+Column '8' contains noise/envelope deviation sign.
+
+Column '99' contains hexadecimal noise/envelope frequency deviation from base
+value.
+
+Column 'AA' contains absolute (without sign) view of '99' column value.
+
+Column 'B' contains mark of noise/envelope accumulation of deviation (like
+tone).
+
+Fields '899 AA B' are structure for managing deviation of noise/envelope
+frequency from base value. It manage noise if noise mask is on ('N'), and
+envelope in all other cases (even if envelope mask is off). It works like tone
+managing. Range of deviation is -10..+0F. For noise it's enough, but not for
+envelope. If you need more deviation for envelope, you can use simultaneously
+several samples in different channels (all deviations of envelope are summed).
+Sometime for managing noise you need absolute value of noise register. In this
+case in 'AA' field you can see and edit absolute representation of '99' field
+(5-bit value 00..1F).
+
+Unfortunately, envelope frequency accumulation in Pro Tracker 3 realized in byte
+value, so maximal envelope deviation cannot exceed -128..+127 bounds. It means,
+that you can't do complete analog of 9 and A special commands in sample.
+
+Field 'C' contains absolute amplitude value for this sample line.
+
+Field 'D' can contain signs of increasing sample volume by one ('+'),
+decreasing sample volume by one ('-'), or sign '_', which means "leave sample
+volume without changes".
+
+Field 'E' contains graphical representation of 'C' field (number of '*' is equal
+to value of 'C' field).
+
+Value of 'C' field is goes to AY amplitude register after addition with sample
+volume. Current sample volume is relative and equal to +0 after sample starts
+work. Commands in 'D' field can increase or decrease sample volume. So, -15
+sample volume totally deaden sound of tone, and +15 set amplitude to maximum
+for any 'C' field value. If you'll loop next line, sound will quiet after 14
+interrupts (like staccato):
+
+00|Tne +000_ +00(00)_ F- ***************
+
+moreover first amplitude on AY will be 14, and not 15, because sample volume
+decreasing starts at first line of sample (be attentively).
+
+If you'll loop next line, sound will be increased after 14 interrupts. At the
+same cause, increasing starts from 1, not from 0:
+
+00|Tne +000_ +00(00)_ 0+
+
+For smoother quieting, loop several lines instead of one. For example:
+
+00|Tne +000_ +00(00)_ F_ ***************
+01|Tne +000_ +00(00)_ F_ ***************
+02|Tne +000_ +00(00)_ F_ ***************
+03|Tne +000_ +00(00)_ F- ***************
+
+will be quieting four times slower than first example.
+
+Looped part of sample is marked with background color in Vortex Tracker II. All
+after looped part is not sample, so you must not use offset in special command 4
+(sample offset) after sample end.
+
+Ornament.
+---------
+
+Ornament is sequence of signed integer numbers; each number determines deviation
+of note frequency from base in semitones. As sample, ornament is played on
+interrupt frequency.
+
+In the displaying ornament ticks as notes mode, you can clearly see which notes
+will be obtained in each tick when applying this ornament to the base note (set
+in the ornament test line).
+
+New standard is defined in Pro Tracker 3.6x and supported in Vortex Tracker II
+now: if result note is less than C-1 after adding ornament negative value to
+track note, then it become to C-1. So, you can use big negative value in
+ornament to make C-1 note from any given one (for example, -96). You can use it
+in corresponding sample to do note-independent drum. To understand idea, see
+SNA+.pt3 module.
+
+Ornament is only one method to organize logarithmical tone sliding, but with
+very big step (semitone).
+
+Typically, ornaments are used for accords imitation, though its main meaning
+corresponds to its name (music term).
+
+As in sample, you must not use offset in special command 5 (ornament offset)
+after looped part of ornament.
+
+Note tables.
+------------
+
+Pro Tracker 3 formally has four tone tables (from 0 to 3), but taking into
+account changes from version to version, as many as 7 variants are typed. Almost
+all of them are made incorrectly (does not correspond to the ideal scale of
+1750000 and 1773400).
+
+More or less correctly made table #1 (SoundTracker), traditional for ZX
+Spectrum: it is suitable for importing almost all existing music editors on ZX.
+It is shifted almost exactly one tone down compared to the ideal scale for
+1773400 Hz. In addition, the 24th note is out of tune (in the editor it is
+designated as B-2, because of the shift in one tone it should sound like A-2).
+But this is the only table that fits 1773400 Hz (original ZX Spectrum 128),
+unfortunately.
+
+Table #2 is used for xUSSR AY frequency standard (is idealy closed to 1750000 Hz
+scale).
+
+It is not recommended to use tables #0 and #3.
+
+Tables of different Pro Tracker 3 subversions are not identical (the most
+different ones are tables #2). Table #1 is unique one, it is same in all Pro
+Tracker 3 subversions. You can see also file ToneTables.csv in Excel.
+
+This text author.
+-----------------
+
+All comments and wishes send to Sergey Bulba at address svbulba@gmail.com
+
+(c)2002-2024 S.V.Bulba

@@ -1,0 +1,61 @@
+  ZX Spectrum trackers hierarchy by Sergey Bulba (only known for me editors).
+                           (c)2003,2005 S.V.Bulba
+
+          +---------------------------------------------------------+
+          |1st generation (standalone players like Fuxoft's Amadeus)|
+          +---------------------------+-----------------------------+
+                                      |
+                   +------------------+------------------+
+                   |                                     |
+                   |             +-------------+  +------+------+  +-----------+
+1st level-->       |             |Flash Tracker|--|Sound Tracker|--|Super Sonic|
+                   |             +-------------+  +-+----+------+  +-----------+
+                   |          +---------------+     |    |
+1.5 level-->       | +------->|Pro Sound Maker|<----+ +--+-----+--------+
+                   | |        +---------------+       |        |        |
+                   | |   +--------------+  +----------+------+ | +------+------+
+2nd level-->       | |   |Global Tracker|--|Sound Tracker Pro| | |Pro Tracker 1|
+                   | |   +--------------+  +-----------------+ | +------+------+
+                   | |                                   +-----+        |
+                   | |                                   |              |
+                   | |                              +----+-----+ +------+------+
+3rd level-->       | |                              |SQ-Tracker| |Pro Tracker 2|
+                   | |                              +----------+ +------+------+
+                   | |                                                  |
+          +--------+-+-----+  +-----------------+                +------+------+
+4 level-->|ASC Sound Master|--|Pro Sound Creator|                |Pro Tracker 3|
+          +--------+-------+  +--------+--------+                +------+------+
+                   |                   |                                |
+                   +----------------+  |  +-----------------------------+
+                                    |  |  |
+                                +---+--+--+--+
+1+2+3+4 levels-->               |Fast Tracker|
+                                +------------+
+
+Vortex Tracker II is fully compatible with Pro Tracker 3.
+
+The most interesting for musicians is ASC Sound Master.
+
+The most comfortable editor is Pro Sound Maker (but not finished).
+
+The most featured is Fast Tracker.
+
+The most popular in past is Sound Tracker.
+
+The most popular now is Pro Tracker 3.
+
+The most new is Global Tracker.
+
+The most interesting for coders are Sound Tracker Pro and Pro Tracker 2.
+
+The most unusual is SQ-Tracker.
+
+The most unused is Fast Tracker (because initially not free).
+
+The most underground is Pro Sound Creator.
+
+The most failure project is Super Sonic.
+
+The most stealth is Flash Tracker.
+
+The most note tables based on Fuxoft's Amadeus note table.

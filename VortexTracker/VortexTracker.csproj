@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ProductName>Vortex Tracker</ProductName>
+		<ApplicationIcon>Resources\Icons\VortexTracker.ico</ApplicationIcon>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Projects\**" />
+		<EmbeddedResource Remove="Projects\**" />
+		<None Remove="Projects\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Resources\Icons\VortexTracker.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\Images\Bar1.png" />
+		<EmbeddedResource Include="Resources\Images\Bar2.png" />
+		<EmbeddedResource Include="Resources\Images\Bar3.png" />
+		<EmbeddedResource Include="Resources\Images\Vortex3.png" />
+		<EmbeddedResource Include="Resources\Players\SNDHPLAYER.bin" />
+		<EmbeddedResource Include="Resources\Players\ZXAYPLAYER.bin" />
+		<EmbeddedResource Include="Resources\Players\ZXTSPLAYER.bin" />
+		<EmbeddedResource Include="Resources\**\*.zip" />
+		<EmbeddedResource Include="Resources\**\*.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Baker76.Imaging" Version="1.0.27" />
+		<PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
+		<PackageReference Include="RtMidi.Net" Version="1.3.0" />
+		<PackageReference Include="System.IO.Ports" Version="9.0.6" />
+		<PackageReference Include="System.Reflection.MetadataLoadContext" Version="9.0.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\LibVT\LibVT\LibVT.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<Target Name="StampBuildDate" BeforeTargets="GenerateResources">
+		<PropertyGroup>
+			<_UtcNow>$([System.DateTime]::UtcNow.ToString("O"))</_UtcNow>
+		</PropertyGroup>
+
+		<WriteLinesToFile File="$(ProjectDir)Resources\BuildDate.txt" Lines="$(_UtcNow)" Overwrite="true" />
+	</Target>
+
+	<Target Name="StampAllZips" BeforeTargets="BeforeResGen">
+		<ItemGroup>
+			<ZipFile Include="Resources\DemoSongs\*.zip" />
+			<ZipFile Include="Resources\Fonts\*.zip" />
+			<ZipFile Include="Resources\Instruments\*.zip" />
+			<ZipFile Include="Resources\Plugins\*.zip" />
+		</ItemGroup>
+
+		<ItemGroup>
+			<StampPair Include="@(ZipFile)">
+				<StampFile>%(RelativeDir)%(Filename).txt</StampFile>
+			</StampPair>
+		</ItemGroup>
+
+		<WriteLinesToFile File="%(StampPair.StampFile)" Lines="%(StampPair.ModifiedTime)" Overwrite="true" />
+	</Target>
+
+</Project>

@@ -1,0 +1,70 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      APP_NAME: VortexTracker
+      ARTIFACT_ROOT: publish
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Get project version
+        id: get-version
+        uses: kzrnm/get-net-sdk-project-versions-action@v2
+        with:
+          proj-path: '${{ env.APP_NAME }}/${{ env.APP_NAME }}.csproj'
+
+      - name: Publish EXE + only your DLLs
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:ARTIFACT_ROOT\$env:APP_NAME" | Out-Null
+
+          dotnet publish "$env:APP_NAME\$env:APP_NAME.csproj" `
+            --configuration Release `
+            --output "$env:ARTIFACT_ROOT\$env:APP_NAME" `
+            /p:EnableWindowsTargeting=true `
+            /p:SelfContained=false
+
+      - name: Copy data files and docs
+        shell: pwsh
+        run: |
+          Copy-Item -Path Data\* -Destination "$env:ARTIFACT_ROOT\$env:APP_NAME" -Recurse -Force
+          Copy-Item -Path README.md, LICENSE -Destination "$env:ARTIFACT_ROOT\$env:APP_NAME" -Force
+
+      - name: Zip artifacts
+        id: zip
+        shell: pwsh
+        run: |
+          $ver = '${{ steps.get-version.outputs.version }}'.Trim()
+          $zip = "$env:APP_NAME.zip"
+
+          Push-Location $env:ARTIFACT_ROOT
+          Compress-Archive -Path $env:APP_NAME -DestinationPath "../$zip" -Force
+          Pop-Location
+
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "ZIP=$zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get-version.outputs.version }}
+          name: Release ${{ steps.get-version.outputs.version }}
+          files: ${{ steps.zip.outputs.ZIP }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

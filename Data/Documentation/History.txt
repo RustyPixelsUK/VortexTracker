@@ -1,0 +1,1395 @@
+Vortex Tracker II v1.0 beta 10
+
+12/19/2004:
+
+1. New Vortex Tracker II v1.0 PT3 player for ZX Spectrum Release 6 is supported.
+
+01/02/2005:
+
+2. Max length of pattern is 100 lines now. It is compatible with all players
+   (on ZX, PC and ST). Don't recompile such modules in original ZX Spectrum
+   PT3 editors (there are 64 lines max).
+
+01/03/2005:
+
+3. Undesired area selection during autostep was removed.
+4. Highligt step for tracks' lines can be adjusted now. If Auto is on, step is
+   autoselected from 3,4 and 5 depending of pattern length (specially for
+   Key-Jee).
+
+01/04/2005:
+
+5. Added checking of module size during saving (compiling) PT3 format. If size
+   is greater than 65536, error message will appear. If it is, save module in
+   text format and than try to solve the problem. Alone Coder proposes to split
+   it to several small modules and then play it one by other. So, you can load
+   module in several windows, remove some data and save them with different
+   names.
+6. Added checking of block size during export to ZX-formats.
+
+Vortex Tracker II v1.0 beta 11
+
+04/23/2005:
+
+1. Added Amadeus (Fuxoft AY Language) modules import. Both FXM and ZXAYAMAD are
+   supported. The most modules require manual editing, but sounds good and
+   without it.
+
+04/24/2005:
+
+2. Memory for patterns/samples/ornaments are static now, i.e. you can decrease
+   and increase its length without losting last lines previous values.
+3. Fixed error: fault when trying to play empty (default) pattern by F7/F8.
+4. Patterns/samples/ornaments length can be changed during playing now.
+
+04/26/2005:
+
+5. Maximal length of pattern is 256 lines now. To keep 2 columns line numeration
+   it is hexadecimal now.
+
+05/01/2005:
+
+6. Undo/Redo functions are added. Try to test and send me bugreports or wishes.
+
+05/04/2005:
+
+7. Due HalfElf's request, added ability to load modules into editor from command
+   line. Several files must be divided by spaces, and filenames with spaces must
+   be placed to doublequotes.
+
+Vortex Tracker II v1.0 beta 12
+
+05/29/2005:
+
+1. Fixed error in PT2 importer: memory before sample import was not clear.
+
+06/14/2005:
+
+2. Fixed horrible mistake: if you open save or some other dialogs during playing
+   in "Loop among all opened modules" and next window start playing before you
+   will finish, dialog will work with new active window. From this version
+   all dialogs work with window, which was active during calling dialog.
+   
+09/16/2005:
+
+3. Added import of PSC v1.00-1.03 modules.
+
+09/30/2005:
+
+4. Added import of compiled PSM (Pro Sound Maker by Denis Dratov) modules. They
+   must be compiled by original (author's) compiler.
+
+Vortex Tracker II v1.0 beta 13
+
+10/02/2005:
+
+1. Fixed error in PSM import: loop position always was zero.
+
+03/14/2006:
+
+2. In addition to 'Save As...' command added simple 'Save' (asks for file name
+   only for new modules).
+3. Added save requests before closing module windows or whole editor.
+
+03/16/2006:
+
+4. Added second sound chip emulation to play any two opened modules
+   simultaneously. 'Play' and 'Play from start' start playing module of current
+   window through the first chip and module selected in dropdown list of control
+   panel through the second chip. So, you can edit two standard PT3-modules, and
+   then play it simultaneously through some of known devices (Turbo-Sound or
+   Turbo-AY) on real ZX (see example in ZX-magazine InfoGuide #8).
+
+03/18/2006:
+
+5. MC68000 PT3-player is updated (SNDH-export). Note and volume tables are
+   packed now via Ivan Roshin methods (player size is 1 KB smaller now).
+6. SNDH-export is improved: new SNDH v2 TAGs are supported and new file name
+   extension (SNDH) is used now.
+
+03/19/2006:
+
+7. 'Options' dialog allows you to input any AY-frequency in range 1-3.5 MHz, and
+   any player frequency in range 1-2000 Hz.
+8. Added track colors selection in 'Options' dialog.
+
+03/25/2006:
+
+9. Fixed tracks editor's cursor moving errors (PageUp/PageDown reaction).
+
+Vortex Tracker II v1.0 beta 14
+
+10/01/2006:
+
+1. Window for 2nd chip is autoselected during changing module window. No need to
+   select it manually now (if you are editing only two modules in TS mode, of
+   course).
+2. During playing in TS mode tracks moving of both windows are sinchronized now.
+3. During editing in TS mode tracks and cursors of both windows are sinchronized
+   too.
+4. In TS mode cursor moving to the maximum right or left position of tracks
+   editor will activate window of 2nd chip in same position of tracks editor.
+5. "Play from position" function (F5) works from current cursor position now.
+
+10/03/2006:
+
+6. Fixed bug: envelope period changed in AutoEnv mode was not added to the undo
+   list (thanks to Karbofos for bug-report).
+
+Vortex Tracker II v1.0 beta 15
+
+03/04/2007:
+
+1. Module window is redesigned for more comfortable editing in TS mode (thanks
+   to Znahar for ideas and help).
+2. No need to close Tracks Manager window now, it stays on top and works with
+   current module, which name is duplicated in main window title (specially for
+   (Znahar).
+
+03/08/2007:
+
+3. Selected track area can be transposed by calling pop-up menu or from keyboard
+   (Num +, Num -, Ctrl+Num +, Ctrl+Num - (+-semiton/+-octave). New function
+   works with notes and envelope track.
+4. Fixed error: after using AutoStep current time was not updated.
+5. AutoStep works after pasting from clipboard now (specially for TAD).
+6. Fixed error: trying to start playing of just created (empty) module in TS
+   mode rised error message (thanks to Znahar for bug-report).
+7. AutoStep can be used with insert/delete/clear track/pattern line. Can be
+   useful for increasing/decreasing pattern size twice (thanks to TAD for idea).
+8. Fixed error: the most Undo/Redo operations not updated module duration info.
+9. Fixed error: after insert/delete/clear track/pattern line module duration and
+   current time info was not updated.
+
+03/10/2007:
+
+10. Some Znahar's ideas was added: Global Transposition window can be always
+    opened; the most buttons of tools panel can be removed via pop-up menu; size
+    and position of main window is saved during closing.
+11. Fixed error: if envelopes in channel is disabled in Editor Controls, you can
+    hear tone and noise if they enabled in sample now (thanks to TAD for bug-
+    report and test module).
+12. You can input -96 and +96 numbers in ornament editor (works like 95, but -96
+    is used in many PT3-modules from ZX Spectrum). Thanks to TAD for info.
+
+Vortex Tracker II v1.0 beta 16
+
+04/30/2007:
+
+1. New Release 7 of ZX player is used for exporting. New version allows right
+   work of 1.xx and 2.xx special commands for PT 3.7 modules.
+2. Added import of PT 3.7 modules are saved in TS-mode (module automatically
+   converted to two single PT3-modules).
+
+05/01/2007:
+
+3. Fixed bug: during playing module VT didn't alow to change position value in
+   other module windows.
+4. Fixed loading modules bug: not used lines of pattern was not cleared, and
+   after increasing pattern length random trash can be shown in last lines.
+5. Some PT 3.6 structure analizer was added to prompt user about loading PT 3.6
+   modules as Turbo Sound.
+6. Added PT 3.7 editor mode, which allows to use special commands 1.xx and 2.xx
+   to single change tone frequency by xx value down or up.
+7. 3xxx interpretation type option changed to Features level selection:
+   ProTracker 3.5, Vortex Tracker II (PT 3.6) and ProTracker 3.7. Each mode
+   marked in module by own header.
+8. Some redesign of pattern editor window (specially for ch41ns4w).
+9. Highlight step can be 0 now (same as 256 and same as 'no highlight' option,
+   specially for TAD).
+
+Vortex Tracker II v1.0 beta 17
+
+05/13/2007:
+
+1. TS-mode is turning on after loading TS-module. If only two windows are opened
+   they are tiling horizontally also.
+2. Added new TS-format loader (used in Ay_Emul 2.9 beta 2).
+3. Changed 2nd module pointing method for TS-mode. Now you can point one window
+   two another individually.
+4. Again redesign of pattern editor window (specially for Ch41ns4w).
+
+05/18/2007:
+
+5. During saving one of module in TS-mode, 2nd module is added to result file
+   too. In text format modules fallow one for another, so you can merge two
+   single modules without editor in command line:
+
+     copy Module1.txt+Module2.txt Module.txt.
+
+   During saving PT3 16 bytes identifer is added at the end of result file. More
+   simplier to save it from editor, but you still do same in command line:
+
+     copy/b Module1.pt3+Module2.pt3+ID Module.pt3
+
+   where ID is next structure file:
+    +0 Str4 'PT3!'
+    +4 Word Module1.pt3 file size
+    +6 Str4 'PT3!'
+    +A Word Module2.pt3 file size
+    +C Str4 '02TS'
+6. AutoStep range is expanded to +-256.
+7. Fixed error: in no loop mode more short module of TS-pair plays first tick of
+   loop position before stopping.
+8. Fixed error: color text on some buttons was set to black instead of system
+   window text color (thanks to Roman Kuraev for bug-report)..
+
+05/19/2007:
+
+9. Added new TS-player for ZX exporting of TS-modules. Don't forget to load in
+   DE register address of second module.
+10.Max size of ornament is upped to 255 (old 64 lines limitations was only in
+   ZX Spectrum editor, not in players). New size limit allows to import long 
+   ornaments from ASC and PSC modules.
+11.PSC-files import is improved (see guitar.psc by Mast).
+
+Vortex Tracker II v1.0 beta 18
+
+11/20/2008:
+
+1. Tracks redrawing moved from additional to main thread via windows messages
+   for more safe and stable work (but without measured moving warranty).
+2. Specially for TAD new tool "Toggle samples" (Ctrl+M) was made (seek at Play
+   menu or on tool panel). Tool allows to mute sound of any samples to hear/mute
+   standalone parties of composition (drum, main theme, echo, etc).
+3. Due many requests channel numbers in Track Manager are literal now (A, B and
+   C). In type field can be input numbers from 0 to 2 as usually.
+
+11/22/2008:
+
+4. Specially for TAD added Shift+Backspace shortcut to do step backward if
+   AutoStep is on.
+5. Serious bug was found: if new typed value is equal to existing one, change
+   is not added to Undo, but numbers of line and channel stored somewhere (if
+   first change than can be access violation, if not first - in previous action,
+   that's not good too). Fixed.
+
+11/24/2008:
+
+6. Especially for TAD after changing pattern number or activating module window
+   its number is copied to Tracks Manager and Global Transposition windows.
+7. In input pattern size field you can press PageUp and PageDown to increase/
+   decrease pattern size with highlight step value (for TAD).
+8. You can select position in OrderList of 2nd window during playing in Turbo
+   Sound mode to restart playing from.
+9. Pop-up menu or keys / and * on numpad allows to compress/expand pattern size
+   by 2 times (specially for TAD). Just set new speed to keep tempo after
+   operation if you need.
+
+11/25/2008:
+
+10.Due Roman Kuraev request added new function Merge (Ctrl+Alt+V or pop-up menu)
+   to Paste from clipboard without erasing existing pattern data with empty
+   values. Can be useful for making echo or inserting 2nd party between notes of
+   main party.
+11.Copy of Tracks Manager is added to Undo, but all previous Undo actions is
+   cleared. Fixed.
+12.Due TAD request, all operations of Tracks Manager can exceed patterns size up
+   to maximum pattern length (256) if work lines number allows. This feature
+   allows you to increase pattern size after operation.
+13.Fixed old error in ZX player export: bad player relocation for some address
+   (for example, B1DD for TS-player) due carry ignoring when low byte of address
+   is bigger than some value.
+
+11/26/2008:
+
+14.For TAD editing 1st module in TS-mode makes available Save button (and query
+   for saving before closing) after switching to 2nd module even if it is not
+   edited yet.
+
+Vortex Tracker II v1.0 beta 19
+
+02/08/2009:
+
+1. TAD has pointed, that initally unused or loaded samples can be muted (after
+   appearing version with Toggle Samples tool). Fixed.
+
+Vortex Tracker II v1.0 beta 20
+
+06/16/2022:
+
+1. Windows 9x is not supported now.
+2. Bug fix: right length in hobeta header for non-TS module without player (was
+   16 bytes bigger).
+3. Digital sound engine changed to Ay_Emul 2.9 beta 31's.
+4. More perfect AY emulation engine from Ay_Emul 2.9 beta 31.
+5. Options are stored in VT.cfg now (like Ay_Emul in home folder of current
+   user, or in VT executable folder, if you move it or create empty yourself).
+6. STC loader can extract author' strings from 'KSA SOFTWARE COMPILATION OF '
+   and 'SOUND TRACKER COMPILATION OF ', insterted in Ay_Emul methodic.
+7. Added import of uncompiled Sound Tracker 1.xx (ST1 file extension).
+8. Added import of compiled Sound Tracker 3 (ST3 file extension).
+9. Added import of uncompiled Sound Tracker Pro (STF file extension).
+10.Added import of compiled ASC Sound Master 0 (AS0 file extension).
+11.TS-module's windows are aligned after opening even if other modules was
+   loaded bedore.
+12.In windows loop play mode added checking if TS-pair to skip replaying twice.
+13.If TS-window playing starts, linked TS-window brings to foreground now.
+
+06/17/2022:
+
+14.Text module loader slightly extended to load Ivan Pirog's vt2, vtp, vts and vto.
+
+Vortex Tracker II v1.0 beta 21
+
+06/21/2022:
+
+1. Fixed old error in FTC import: sample length could exceed maximum for PT3,
+   but was no checking (see "Joe of DR\Binary Love 1.ftc" module).
+
+06/22/2022:
+
+2. Fixed old error in FTC import: musician could point noise in special command
+   out of 5-bit range (00..1F), import takes low 5 bits now.
+
+06/23/2022:
+
+3. Atari ST (export to SNDH) player can play PT 3.7 modules with special
+   commands 1.xx and 2.xx now.
+4. Added Fast Tracker 1.07 and 1.08 modules import (can be one of two note
+   tables (1 or 2) now, and also for 1.08+ Retrig special command is imported
+   as R11R12R13 doublicates in corresponding channel.
+5. FTC ornament set import is improved: all single ornaments are not prefixed
+   by Envelope Off command now, excepting zero (empty) one.
+
+06/24/2022:
+
+6. Reverse loading order is removed if opening several modules at once.
+7. Tn, Ns and En buttons in module window was renamed to T, N and E
+   correspondingly.
+
+07/02/2022:
+
+8. Added .AY type ZXAYST11 (ST1 analog) import.
+9. Delphi->Lazarus fix: in beta 20 tracks redrawer ignores highlight step
+   changing in "Auto" mode.
+
+Vortex Tracker II v1.0 beta 22
+
+08/29/2022:
+
+1. Delphi->Lazarus fix: starting from beta 20, when loading any module, the
+   variable storing the number of the current pattern was always initialized
+   with a zero value, and if the first position of the loaded module contained
+   a non-zero pattern, then this led to an incorrect reaction to user actions
+   before explicitly selecting a position with some non-zero pattern.
+
+12/07/2022:
+
+2. Fixed an error in the PSM pattern decoder for the F9 "GoSub" command (it was
+   not implemented in the native compiler, so it did not lead to a crash).
+
+03/29/2023:
+
+3. The number of visible lines in the ornament editor is no longer fixed and
+   varies depending on the height of the pattern editor defined in the options
+   (by analogy with the sample editor).
+4. The cursor in the sample or ornament editor can no longer be placed in a
+   gray (i.e. not editable) area.
+5. Improved cursor control in the sample and ornament editor (including the
+   mouse wheel).
+6. There is a pop-up menu has been added by right mouse button clicking in the
+   sample and ornament editor, so changing signs and accumulation fields has
+   been reassigned to the middle one. The amplitude drawing still by the right
+   button (the popup menu in the amplitude drawing area is not called).
+7. Using the cursor keys (when Shift is pressed) or the mouse, you can select
+   an area in the sample and ornament editor (by analogy with the pattern
+   editor).
+8. Modified the change (when entering from the keyboard) of the number, loop
+   point and length of the sample/ornament (added checks for out-of-range,
+   replacing the entered garbage with the previous value, completing editing
+   with the Enter key).
+
+04/01/2023:
+
+9. The AutoStep is now also turned on during editing or changing the auto step
+   value.
+
+04/02/2023:
+
+10.Delphi->Lazarus fix: there was no corresponding event when deleting a
+   position (drawing a new pattern and moving the selection when deleting the
+   last position).
+11.Delphi->Lazarus fix: the pattern/position number field in the Tracks Manager
+   and Global Transposition windows was not updated when changing it in the
+   pattern editor.
+12.Delphi->Lazarus fix: the channel number did not change in the Tracks Manager
+   window when entering its name or number in the text field.
+13.The channel number in Location 2 could not change correctly in the Tracks
+   Manager window when pressing Up or Down from the keyboard.
+14.Delphi->Lazarus fix: due to the difference in the processing and occurrence
+   of events during or after editing text and numeric controls, some changes
+   were not always adequately applied or visualized, the code was revised and
+   the corresponding event handlers of almost all TEdit, TUpDown, etc. elements
+   were adapted to the behavior of Lazarus.
+15.The selected area cleaning, copying and cutting it to the clipboard has been
+   added into the ornaments and samples editing fields.
+16.Undo/Redo has added the ability to practice the actions described in the
+   previous paragraph, and by the way the code has been revised to improve the
+   cursor displaying at the time of the corresponding change.
+
+04/03/2023:
+
+17.Added a frame around the selection for better visualization of the cursor
+   position (because the cursor may not flash when working through mstsc).
+18.Added the ability to insert a fragment of an ornament from the clipboard
+   (previously copied there) in the ornament editing field (using standard hot
+   keys or a command from the popup menu). The insertion is made starting from
+   the cursor and may exceed the length of the edited ornament; if necessary,
+   the length can be increased both before and after insertion, because the
+   data inserted beyond the ornament border is not erased. If an area is
+   selected in the ornament, then the inserted data is cut off along its
+   borders.
+
+04/04/2023:
+
+19.The insertion of samples from the clipboard is implemented by analogy with
+   ornaments. You can copy and paste various parts of the sample (i.e. those
+   that hit into the selected area). For example, you can copy a part of a
+   column with tone deviation signs, and paste it into any column where such
+   signs are allowed (even into a column with noise/envelope deviation signs).
+   The same liberties are allowed with masks (for example, a tone mask can be
+   copied into a noise mask), and with numbers (for example, you can copy a
+   column with zero tone deviations and paste it into a column with amplitudes
+   to reset them).
+20.Fixed the same type of transposition error when importing STP, STC, FTC and
+   SQT (see in previous beta versions of Vortex Tracker II the end of pattern 2
+   of channel A in Push\%nom-2a.stp and Push\%nom-2a.stc). Thanks to TAD for
+   detecting the glitch.
+
+04/06/2023:
+
+21.The ability to work with the clipboard (selection, copying, pasting, etc.)
+   has been added to the sample and ornament test lines. You can copy and paste
+   data both from the test lines and from the pattern. You can open a popup
+   menu by right mouse button clicking on the test line.
+
+04/07/2023:
+
+22.The volume control has been redesigned: it does not take away the keyboard
+   focus from other controls now; you can either simply left mouse button
+   click or move it with the already pressed one.
+
+04/08/2023:
+
+23.Fixed a bug: the title of the edited window was updated, but the main one
+   was not after working Save As...
+
+04/09/2023:
+
+24.Bug fixed: the list of digital audio output devices was supplemented with
+   the same lines every time the Options window was called.
+
+Vortex Tracker II v1.0 beta 23
+
+04/25/2023:
+
+1. Delphi->Lazarus fix: tasks have been created in the Lazarus bug tracker
+   regarding the incorrect operation of MDI windows, since have not yet been
+   fixed, the corresponding problems have been masked (see the comments in the
+   code).
+
+04/26/2023:
+
+2. Bug fixed: a zero uninitialized pattern is displayed in the newly created
+   module, and this was not taken into account in the procedure for manually
+   setting the highlight step, as a result, a failure occurred when trying to
+   manually change it.
+3. If only one TS pair is loaded and the "Loop all" mode is selected, the
+   melody was repeated not from the loop position, but from the beginning
+   (fixed).
+4. An "S" button (solo) has been added to the sound control of each of the
+   channels, which, when pushed on, silences all other channels, except for
+   those with a similar button also pushed on (the idea is borrowed from Ivan
+   Pirog's Vortex Tracker II v2.6 project).
+5. The pattern tabsheet was redesigned in order to transfer the sound control
+   buttons of each channel to the gap above the corresponding channel (as in VT
+   II v2.6).
+6. Only monospaced fonts are now displayed in the font selection dialog of the
+   Options window, so the frightening red inscription about the need to select
+   only monospaced fonts has been removed.
+
+04/28/2023:
+
+7. Added the ability to resize the editable modules windows by height, the
+   number of rows in the editable pattern varies depending on the height of the
+   window (as in VT II v2.6).
+8. Now the windows of TS pairs are automatically attached to each other if the
+   size of the workspace is wide enough for two windows. The window opened or
+   created first is displayed on the left.
+9. When changing the size or position of one of the windows in TS-pair, similar
+   changes are made with the second window.
+10.The sample string templates have been removed from the Samples tabsheet.
+11.Statistics and "Copy To" fields have been removed from the Samples and
+   Ornaments tabsheets.
+
+04/29/2023:
+
+12.The number of visible lines in the sample and ornament editors has now also
+   become dynamic (depends on the size of the editable module window).
+13.When closing the TS-pair window, the second one is now automatically closed
+   (with the exception of the modules that have just been hooked and have not
+   yet been saved as a TS-pair, i.e. with different file names).
+14.When saving a TS pair, the module with the smallest window number is now
+   saved first (that is, the one that was created or loaded earlier).
+
+05/01/2023:
+
+15.Now the font of tracks set in the Options window is applied not only to new
+   windows, but also to already created ones.
+
+05/02/2023:
+
+16.Added font customization separately for samples, ornaments and their testing
+   lines.
+17.Added customization of the colors of the sample and ornaments editors, as
+   well as their test lines.
+
+05/03/2023:
+
+18.The chip type was not saved on the exit starting from beta 20 (fixed).
+19.The Options window has been redesigned, including the separate control of
+   the visual and audio channel layout has been removed, they always switch
+   synchronously now.
+20.When entering an atypical chip or interrupts frequency, calling the Options
+   window again led to a failure (SetFocus error, because the ability of the
+   frequency input field to accept keyboard focus was incorrectly determined).
+
+05/05/2023:
+
+21.The reaction to the mouse wheel rotation in the position editor was removed
+   (visually nothing happened, but in playback mode, playback was restarted
+   from this position).
+22.An attempt was made to the Lazarus grid property circumvent (a position
+   editor was made from it): when the mouse moved with the pushed button, the
+   position was selected (including reselected, which caused a frequent restart
+   of its playback in playback mode). Perhaps in the future it will be better
+   to make own position editor (on the same principle as for tracks, samples,
+   etc.).
+
+Vortex Tracker II v1.0 beta 24
+
+05/10/2023:
+
+1. Fixed another bug of manually selecting the highlight step on a newly
+   created (i.e. empty and uninitialized) pattern: when trying to enter a zero
+   step, a failure occurred.
+2. The "Decimal numbering" and "Decimal noise" buttons have been added above
+   the corresponding tracks to switch to the decimal numbering of track lines
+   and display the noise period at any time (a similar idea is implemented in
+   Ivan Pirog's Vortex Tracker v2.6).
+3. Two parameters for new windows have been added to the options window for the
+   same purpose: "Decimal noise period" and "Decimal line numbering".
+4. Font styles are now ignored (except for bold).
+5. The cursor width could be displayed incorrectly in the tracks during Undo
+   (when alternating changes in notes and parameters). Fixed.
+
+05/11/2023:
+
+6. The "Envelope as note" button has been added above the envelope track. The
+   option has been asked to be implemented for a long time (TAD asked me about
+   it for the first time many years ago), but I put it on hold until I saw the
+   implementation in Ivan Pirog's Vortex Tracker II v2.6 and wanted to do it a
+   little differently: the envelope period is replaced by a note only if a
+   cyclic envelope type is specified in one of the channels; the octave of a
+   note depends not only on the envelope period, but also on its type; if the
+   envelope type is specified in several channels, the type from the largest by
+   channel number is taken (this is how all the players I know are arranged).
+
+05/12/2023:
+
+7. Octave 0 has been added to display the envelope periods up to FF and C-0,
+   everything below is displayed traditionally in HEX.
+8. Another parameter has been added to the Options window for new windows,
+   "Envelope as note", which allows you to make the corresponding displaying
+   the envelope period mode the default mode.
+9. Editing of the envelope period track in the pattern has been modified for
+   the "Envelope as note" mode: a wide cursor; input with note keys;
+   calculation and substitution of a note in the appropriate channel (if
+   AutoEnv is enabled); clearing the selection and cutting/copying it to the
+   clipboard have been rewritten so that all four digits of the envelope period
+   are captured, if in their place a note is displayed; switching the "Envelope
+   as note" mode corrects the cursor position and selection boundaries in the
+   area of the envelope period display. To enter notes from octave 0, turn on
+   octave 1 and use the standard keyboard shortcut to enter a note an octave
+   lower (Ctrl+Shift+NoteKey).
+
+05/13/2023:
+
+10.Now you can insert notes from any channel from the clipboard into the
+   envelope period track. If the envelope type is specified in one of the
+   channels when inserting the target pattern in the corresponding line, it
+   will be taken into account when recalculating from the note number to the
+   envelope period, otherwise the calculation is performed as for a type 8
+   envelope (the same result as type C).
+11.Bug fixed: when pasting from the clipboard into a newly created (i.e. empty
+   and uninitialized) pattern, a crash occurred.
+12.The envelope periods copied to the clipboard (in any display mode) can now
+   be inserted into the note tracks of any of the channels. The conversion of
+   the period to the note number is performed as for an envelope of type 8/C.
+   If these periods were used with the A/E type, you will need to manually
+   transpose the result an octave lower. If the periods are copied in the
+   traditional display mode (HEX), you need to capture all four digits before
+   copying, only in this case the insertion algorithm will group them as one
+   whole if the insertion is made in a track with notes.
+
+05/14/2023:
+
+13.A table number selection for new modules has been added to the Options
+   window.
+14.Another idea from Ivan Pirog's Vortex Tracker II v2.6 has been implemented:
+   when changing the note table in the module, the envelope periods can be
+   recalculated. You can disable this feature in the Options window. A window
+   appears with a request to confirm the operation before the recalculation,
+   because it cannot be rollbacked via Undo.
+15.Transposition in envelope period tracks is now done according to the
+   envelope periods to notes conversion table, and not to the formula (the idea
+   is taken from Vortex Tracker II v2.6). For this reason, those periods that
+   are not recognized as notes (outside of the note range or indicating a
+   non-cyclic envelope type) are no longer transposed.
+16.Added tooltips for the selected tone table number, indicating which clock
+   frequency of the music chip they are suitable for.
+17.The Close All to close all windows and Find Module to search for a window by
+   a fragment of the file name, title or author's name items have been added in
+   the Windows menu (thanks to Alexander Boolba for the icon and code).
+
+05/16/2023:
+
+18.The standard Cascade Windows method has been replaced with the code provided
+   by Alexander Boolba. When cascading, windows (including TS pairs) are
+   positioned better now.
+19.If one of the TS-pair windows becomes active, the second one is also brought
+   to the foreground (thanks to Alexander Boolba for the code).
+20.New windows positioning is now performed by Alexander Boolba's Cascade
+   Windows algorithm.
+
+05/17/2023:
+
+21.The standard Tile Vertically and Tile Horizontally methods have been
+   replaced with code provided by Alexander Boolba.
+
+Vortex Tracker II v1.0 beta 25
+
+07/28/2023:
+
+1. A test line with the same properties as on the Samples and Ornaments
+   tabsheets has been added to the Patterns tabsheet.
+2. Added auto filling the Patterns tabsheet test line with the main parameters
+   as the pattern is edited.
+3. Added the ability to auto set parameters when entering a note. Using the
+   corresponding buttons located above the test line, you can select which
+   parameters should be added at the same time (sample, envelope type,
+   ornament, volume and special command with parameters). The function is
+   enabled and disabled by the Auto Parameters button. Parameter values are set
+   in the Patterns tabsheet's test line.
+
+07/29/2023:
+
+4. Added the ability to group a number of sequential actions in Undo. At the
+   moment, grouping of two types of changes is implemented: Auto Envelope and
+   Auto Parameters. Thus, in one click Undo/Redo, you can return all the
+   actions that were performed by these input automation commands.
+
+08/01/2023:
+
+5. The Tables tabsheet has been added to the editing window, where the note
+   table number control has been moved, as well as its visualization (in the
+   table or list form) has been added, while you can configure the display as
+   both decimal or hexadecimal numbers.
+6. The same principle is now applied as with normal saving when exporting TS
+   pair to ZX Spectrum: the module with the smaller window number is written to
+   the format selected for export first of the pair.
+7. Bug fixed: when saving a TS-pair with a new file name via the active window
+   with the largest number, the title of the inactive window was not updated.
+8. Bug fixed: if changes were made to only one TS-pair window since the last
+   save, and if the second not changed one became active, the Save command did
+   not work. The tempoarary decision was the Save As command... or activating
+   the first window.
+
+08/05/2023:
+
+9. Delphi->Lazarus fix: the main window position and size saved at the exit to
+   the configuration file were ignored at the start of the application.
+
+08/07/2023:
+
+10.Bug fixed: the cursor coordinates at the change time were stored in the Undo
+   list, however, since it became possible to change the size of windows with
+   an editable module, this approach led to errors. Now the Undo list stores
+   indexes instead of cursor coordinates, which do not depend on the size of
+   the pattern, sample or ornament editing area, and the cursor position is
+   calculated at time of Undo or Redo running.
+
+Vortex Tracker II v1.0 beta 26
+
+08/19/2023:
+
+1. Added changes grouping in Undo when "drawing" the amplitude in the sample.
+
+08/24/2023:
+
+2. Keyboard shortcuts are no longer fixed in the program code, but are moved to
+   a separate array, which is filled with default values when the application
+   starts.
+
+08/25/2023:
+
+3. Added global keyboard shortcuts (Alt+digit) to set the octave number in all
+   editors at the same time (both in tracks and in test lines). The old octave
+   selection keys work the old way when the cursor is in the note position. The
+   idea is taken from Vortex Tracker II v2.6.
+4. Saving keyboard shortcuts to the configuration file at the output and
+   loading them when the application is launched has been added at the
+   long-standing request of Nik-O. Now you can override almost all hotkeys by
+   editing the VT.cfg file, or even set them for those actions for which they
+   were not defined by default.
+5. The array of key codes mapping to notes is now also saved/loaded from the
+   configuration file. Almost any key on the keyboard can be set to any note or
+   octave number selection, but do not forget that some keys or their
+   combinations with Shift or Ctrl+Shift can be used for other hotkeys.
+
+08/29/2023:
+
+6. The Keys tabsheet has been added to the Options window to configure hotkeys.
+   With its help, you can achieve the same result as when editing the
+   configuration file, but the bonus is automatic conflict checking immediately
+   after capturing a new keys combination, as well as the ability to restore
+   default values or press Cancel to return old ones at any time.
+
+08/30/2023:
+
+7. Bug fixed: when AutoEnv was enabled, automatic changes to the envelope
+   period when entering data in the test line were added in the Undo list.
+8. Editable sample, ornament, pattern, as well as test lines are no longer
+   forcibly redrawn with any change, but are marked as invalid so that
+   rendering is performed only as needed. This eliminates multiple redrawing
+   when undoing grouped operations.
+
+Vortex Tracker II v1.0 beta 27
+
+09/10/2023:
+
+1. Now the possibility of packing the result using the PACK-ICE method has been
+   added when exporting to SNDH, which is how the bulk of SNDH files on the
+   network are packed. The packing algorithm is restored from the source
+   'unice68_pack.c' by Benjamin Gerard, where the original PACKICE v2.35 source
+   code for the MC68000 assembler was converted to C by the method of this
+   Motorola processor operation pseudo-simulation (that is, without a deep
+   analysis of the algorithm itself). Now, after cleaning the code from
+   assembler commands, replacing register numbers with variables with
+   meaningful names, as well as detailed comments, it has become easier to
+   understand the idea that the packer implements (see the ice.pas file).
+
+09/11/2023:
+
+2. Fixed an error that occurs when using multiple monitors: if the coordinates
+   of the main window on the second monitor were saved at the exit, which was
+   subsequently disconnected, then when the application is launched later, its
+   window is not visible on the remaining monitor (a ready-made procedure from
+   the Ay_Emul project was applied to fix it).
+3. Now the coordinates and size of the main window are restored and saved
+   to/from the configuration file even if the window is maximized to full
+   screen (to use them when this mode will be turned off). If the window is
+   maximized, its coordinates and size before maximization are saved.
+4. Volume can be contoled by the mouse wheel (it works if the mouse cursor is
+   hovered over the menu or panels of the main window, or on a child window).
+
+09/12/2023:
+
+5. A few improvements that are useful when using multiple monitors: the forms
+   shown before export are centered in front of the main window, floating
+   windows with tools are displayed next to the corresponding toolbar button on
+   the first call.
+
+09/15/2023:
+
+6. Export to PSG is implemented. PSG files for ordinary modules are the same as
+   when converting to Ay_Emul, and 2 PSG files are saved for TS modules
+   (Ay_Emul can't doing this yet). The idea is taken from VT II v2.6. Search in
+   the menu File-> Exports->Convert to PSG... Unlike Ay_Emul, playback does not
+   stop when converting to PSG. The T/N/E mute buttons and the Toggle samples
+   checkboxes are also ignored.
+
+09/17/2023:
+
+7. Bug fixed: if the module is being played, then in other windows the position
+   selection did not lead to the display of the corresponding pattern.
+8. Bug fixed: if the module is being played, then clicking on the Mute/Solo
+   buttons in other windows led to a short pause in playback.
+9. Added keyboard shortcuts for volume control. They are configured in the
+   Options window. Not set by default.
+10.Correction: when pressing Up/Down (including with Shifts) in the positions
+   list, the playback of the current position was restarted.
+
+09/18/2023:
+
+11.Improvement: after stopping playback, the current parameters in the pattern
+   editor (sample/ornament numbers , volume, etc.) now correspond exactly to
+   the stop line (before that they can be from one of the following lines
+   corresponding to the end of the sound buffer). If the total buffer size was
+   small enough, then this discrepancy could not be encountered (or
+   encountered, but rarely). Now there will be no discrepancy even with a large
+   buffer.
+
+09/21/2023:
+
+12.Added export to WAV. The file is generated with the parameters set in the
+   Options window for emulation and digital audio. The conversion process can
+   be stopped by pressing Esc or the cancel button next to the progress bar
+   that appears. The current playback does not stop during the conversion, and
+   the functionality of the application is partially preserved (visualization,
+   hints, volume control with the mouse wheel, switching to the next window
+   playback, etc.).
+13.The AY emulation and playback code using was completely rewritten while
+   writing converters to PSG and WAV in order to eliminate playback and
+   conversion conflicts, as a result of which it became possible to run these
+   processes in parallel.
+
+09/22/2023:
+
+14.Bug fixed: when working with a TS pair and if some other module is being
+   played in the background, clicking on the positions list did not lead to
+   synchronous selection of a position in the associated TS window.
+15.Improvement: in the case of working with a TS pair and clicking on the first
+   empty cell of the positions list, information about the current time was
+   updated only in the active window of the TS pair.
+
+Vortex Tracker II v1.0 beta 28
+
+10/20/2023:
+
+1. MIDI keyboard control buttons have been added to the toolbar. You can going
+   over the connected keyboards with the MIDI button. The first one offered by
+   the system is connected automatically by default. You can disable both the
+   already connected keyboard and the connection standby mode at all (the idea
+   of using standby mode was seen in VT v2.6) with this button. Information
+   about which keyboard is connected, as well as whether standby mode is
+   enabled, is displayed in the status bar at the main window bottom when you
+   hover the cursor over this button. The V button is designed to control
+   inputting of volume from the MIDI keyboard: if it is pushed, the pressing
+   key velocity will be converted to values from 1 to F in the volume column of
+   the track or test line. The current MIDI configuration (including the device
+   name) is saved to the configuration file when the application is closed. The
+   Windows operating system provides the ability to work with MIDI devices by
+   standard means, so no third-party libraries were used to support MIDI
+   keyboards.
+
+10/21/2023:
+
+2. Added input from the MIDI keyboard. If tracks are active, then the notes and
+   volumes input occurs in them, if the samples' or ornaments' tab is active,
+   then the input occurs in the corresponding test lines, otherwise this data
+   is entered into the test line of the patterns' tab. Volume input is disabled
+   by default (only notes are entered). The cursor does not have to be in the
+   note input field, it is enough that it is located somewhere inside the
+   desired channel or the envelope period track. If the module window is
+   minimized, input from the MIDI keyboard continues, but only switched to one
+   of the test lines (to exclude accidental editing of the pattern).
+3. A shortcuts setting has been added to select the MIDI keyboard (Ctrl+Alt+M
+   by default) and to enable the note volume inputting from the MIDI keyboard
+   (not set by default) to the Options dialog.
+4. An option has been added to the Other tab of Options dialog for the ability
+   to work with a MIDI keyboard in the background (that is, when the
+   application is not active or minimized on the taskbar, in the latter case,
+   the input from the pattern editor switches to the test line). This option
+   will be useful when using virtual MIDI keyboards that take up focus.
+   However, at the same time, several Vortex Tracker II applications running
+   simultaneously will also simultaneously process the same MIDI keyboard
+   messages. This option is disabled by default.
+5. Delphi->Lazarus fix: after switching an edited module tab, the keyboard
+   focus could remain on some element of the just hidden tab.
+
+10/22/2023:
+
+6. At the request of Dmitry Bystrov, an Unroll button has been added to the
+   Samples tab to unroll the accumulations in the sample. A new sample will be
+   generated after pushing, the length of which may differ from the original
+   one, and if all the lines sound the same inside the last unrolled loop, then
+   it is reduced to one line (usually after the amplitude accumulations are
+   unrolled, silence is in it). The algorithm can finish work early if the new
+   sample has reached the maximum length allowed in PT3. The functionality is
+   similar to one of the Unloop modes implemented in VT v2.6, but there the
+   length of the new sample is not seeked automatically, but is defined by the
+   user in the dialog. Unfortunately, when unrolling the envelope slides, the
+   algorithm quickly runs into the limitations of the PT3 format (from -16 to
+   +15), while the tone and noise slides unroll completely.
+
+10/23/2023:
+
+7. Improved function on systems without a sound device (for example, working
+   with a remote desktop via RDP, in which the sound is turned off). Prior to
+   that, any editing caused an error dialog and the user had to press one of
+   its buttons each time to continue (while the adjacent button closed the
+   application). Now, while editing tracks and working with the test lines,
+   audio initialization errors are ignored automatically and unnoticed by the
+   user. If you explicitly try to start playback (for example, by pressing the
+   Play button), the information about the occurred error is appeared, but only
+   one OK button wiil be in the dialog.
+
+10/24/2023:
+
+8. The envelope periods recalculation when changing the note table number is
+   now adding in the Undo list, so the corresponding warning dialog has been
+   removed. All changes caused by changing the table number are grouped for the
+   ability to undo in one click.
+9. When Undo/Redo a group of changes, all calculations related to redrawing
+   (including calculating the cursor position and the need for focus) are now
+   performed only for the first change in the group. As a result, after Undo or
+   Redo, the user sees the cursor in the place where the first change occurred,
+   that is, where it is intuitively expected.
+
+Vortex Tracker II v1.0 beta 29
+
+02/05/2024:
+
+1. Items have been added to the the track editor pop-up menu for transposing
+   selected notes and envelope periods by 3 and 5 semitones up or down (as in
+   the VT v2.6 project). Hotkeys are configured in Options (not set by default).
+
+02/12/2024:
+
+2. The files specified on the command line are now opened in the forward order,
+   rather than in the reverse order.
+
+02/14/2024:
+
+3. Child MDI forms have been converted to frames (TFrame). This is done because
+   Lazarus LCL introduces new bugs in the MDI implementation with each version,
+   and the old ones are practically not fixed. I was masking the errors in LCL
+   and reported them to the bug tracker, but unfortunately in recent versions,
+   even with these "crutches", bugs already interfere with the main
+   functionality of the application and not everything was masked. The approach
+   with frames, on the one hand, slows down the rendering of the interface with
+   a large number of windows open at the same time, since they have to be drawn
+   and respond to user actions (resizing, switching, etc.) using non Windows OS
+   methods, but on the other hand, in the future it will facilitate porting the
+   project to other operating systems.
+4. The child windows minimization has been removed, as well as menu items for
+   working with minimized windows (Minimize All and Arrange All). These features
+   were a bonus to the MDI Windows system, and after abandoning MDI, this
+   functionality, which was not quite necessary for the tracker editor, would
+   have to be written independently.
+
+02/15/2024:
+
+5. Window switching commands with hotkeys (Ctrl+Tab/F6,Ctrl+Shift+Tab/F6) are
+   visualized in the Window menu. You can change these keyboard shortcuts in the
+   Options dialog.
+6. Improved auto-switching to the next window during playback: now, regardless
+   of which window is in the foreground, the transition to the window following
+   the one being played takes place.
+7. Now, after sorting the windows (Tile or Cascade) during playback, the window
+   with the module being played is brought to the foreground.
+
+02/16/2024:
+
+8. If a window with a module located outside the workspace becomes active, the
+   workspace is now automatically scrolled so that this window becomes visible.
+9. Now, when resizing the main window, the visibility of the active window with
+   the module is provided.
+10.Now, after closing all open modules, the new windows numbering starts from
+   the beginning.
+
+02/18/2024:
+
+11.Now, if, before starting playback, the active window is located outside the
+   visibility limits of the workspace, the workspace is shifted so that the
+   window being played becomes visible.
+
+02/20/2024:
+
+12.The Ornaments tabsheet now has a mode for displaying tone shifts in the notes
+   form relative to the base note, which is set in the ornament test line. The
+   idea is taken from VT v2.6. The modes are switched using the C# button.
+13.The ornament can also be edited in the Ornament as notes mode (using the
+   note/octaves input keys as well as MIDI keyboards).
+14.The toolbar buttons keyboard shortcuts that were set in their captions have
+   been removed: &New, Cu&t, etc. (not visible, because icons are displayed
+   instead). In this form, they got into the project from the example of an MDI
+   application for Delphi, that is, from the very beginning. They started to
+   work due to the fact that buttons with labels instead of icons have recently
+   appeared on the panel, and in order to display them, the corresponding option
+   had to be enabled in the panel properties.
+
+02/21/2024:
+
+15.The Samples tabsheet now has a mode for displaying tone shifts in the notes
+   form relative to the base note, which is set in the sample test line. The
+   idea is taken from VT v2.6. The modes are switched using the C# button.
+16.Fixed a bug: if you put the cursor approximately at the end of a long
+   ornament and maximize the height of the module window, garbage could print
+   beyond the maximum ornament length (255).
+17.Bug fixed: when resizing the module window, the cursor position inside the
+   ornament editor changed unexpectedly, which led to the selection of a random
+   area.
+18.The tone shifts column in the sample can now be edited in the Sample shifts
+   as notes mode (using the note/octaves input keys, as well as MIDI keyboards,
+   in the latter case, the cursor can be positioned not only in the tone shift
+   input field).
+
+02/22/2024:
+
+19.Bug fixed: if you put the cursor approximately at the end of a long sample
+   and maximize the module window height, garbage could print beyond the maximum
+   sample length (64).
+20.Improved the cursor position display in the sample editor after changing the
+   module window height (previously it could hide outside the editor field).
+21.Added octave number visualization on the samples and ornaments tabsheets,
+   because the octave number in the test line may differ from the note displayed
+   in it now. In addition, this is another way to set the octave number for
+   these tabsheets.
+22.Hints have been added to the sample editor to match the current cursor
+   position (similar to the track editor).
+23.Two options have been added to the Initial parameters of the Options dialog
+   to control the displaying "Tone shifts as a note" mode for samples and
+   ornaments. The options are used only for newly created windows and do not
+   affect those that are already open. Disabled by default.
+24.Two settings have been added to the Other tabsheet of the Options dialog to
+   control the display of tooltips for the track and sample editor. By default,
+   the hints do not pop up, because they are bulky, and the information in them
+   is duplicated in the status bar at the main window bottom. The idea of
+   optional enabling of hints is taken from VT v2.6.
+
+02/23/2024:
+
+25.The default keys were described in the tracks editor hints, replaced with the
+   current ones.
+26.The track data format in the clipboard has been changed, now a dump of the AY
+   registers for the selected section of tracks is added to the end. When
+   inserting into tracks, this appendix is ignored (it is only needed to insert
+   into the sample).
+27.Fixed an error that caused an uncertain situation when inserting tracks with
+   incorrect data (for example, after manually editing the clipboard). When
+   copying tracks to the clipboard normally, the data is always correct, so the
+   error did not appear.
+
+02/25/2024:
+
+28.Added the ability to paste pattern tracks copied to the clipboard into a
+   sample (similar to VT v2.6). To do this, a registers dump is added to the
+   clipboard. The channel number in the source is determined by the left border
+   of the selection. The sample is rendered relative to the frequency of the
+   base note specified in the sample test line, using a note table of the final
+   module. In order for the notes in the sample to visually match the source
+   exactly after insertion, the note tables of the source and final module must
+   match.
+
+02/27/2024:
+
+29.The ornaments data format in the clipboard has been changed, by analogy with
+   tracks, an AY registers dump for the selected section of the ornament is now
+   added to the end (used to insert into the sample).
+30.Now the ornament copied to the clipboard can be pasted into the sample, the
+   same rules are used as when pasting the copied pattern into the sample (the
+   idea is taken from VT v2.6).
+31.Now the fragment of the pattern copied to the clipboard can be pasted into
+   the ornament (the idea is taken from VT v2.6). Note shifts are calculated
+   relative to the base note specified in the ornament test line.
+32.By analogy with VT v2.6, the Alt+Up and Alt+Down keys have been added to the
+   track editor to move the cursor up or down by the absolute value of the
+   AutoStep. These keyboard shortcuts can be replaced with your own in the
+   Options dialog.
+33.By double-clicking on the sample/ornament fields in the track editor as well
+   as in the test lines, you can view/edit these instruments.
+
+02/28/2024:
+
+34.At Lee Bee's request, the cursor is wrapped now when reached the rightmost or
+   leftmost position (including for Ctrl+Right/Ctrl+Left) in the track and
+   samples editor and in test lines.
+35.At Lee Bee's request, it is now possible to enter numbers from the numpad in
+   the tracks, samples and ornaments editor and in test lines.
+36.The "Recalc sample tone shifts on changing base note" button has been added
+   to the Samples tabsheet. If it is pushed, then each time a note is changed in
+   the sample test line, the tone offsets will be recalculated so that the final
+   pitch of the sample relative to this new note does not change. In the "Shifts
+   as notes" mode, the result of the constant sample pitch can not only be
+   heard, but also seen. The idea is taken from VT v2.6.
+37.The octave numbers for the track editor and the pattern test line are now set
+   synchronously.
+
+02/29/2024:
+
+38.Keyboard shortcuts Ctrl+0..9 in the track editor, you can now use it to
+   quickly set the AutoStep value (as in VT v2.6). The AutoStep mode is also
+   enabled. You can change the keyboard shortcuts in Options dialog.
+
+Vortex Tracker II v1.0 beta 30
+
+03/04/2024:
+
+1. An error was made in the previous version: the contents of the test line were
+   incorrectly copied to the clipboard (fixed).
+
+03/05/2024:
+
+2. A list of editable modules appeared in the Window menu.
+3. At Lee Bee's request, the auto step setting for the track editor appeared in
+   the Options dialog in Initial parameters (default is 1).
+4. The main window toolbar's sound chip channel layout button has been modified
+   especially for Lee Bee: you can set a list for it in the Options dialog now.
+   For example, by checking Mono and ABC, we go through only these two layouts
+   when clicking on the specified button.
+
+03/06/2024:
+
+5. The Global Transposition and Tracks Manager dialogs were not closed by Esc if
+   audio output was started (for example, if track editing was started), since
+   the corresponding global hotkey was triggered to turn off the sound (fixed).
+6. Added Toggle Samples dialog closing when pressing Esc or Enter keys.
+7. The Compress pattern operation has been renamed to Shrink pattern (as in VT
+   v2.6).
+
+03/07/2024:
+
+8. A long-planned feature from TODO has been added, a good implementation of
+   which was seen in VT 2.6: Swap channels left/right commands have been added
+   to the tracks' pop-up menu The default shortcuts are Alt+Left and Alt+Right.
+   Before calling, it is enough to put the cursor in one of the channels (if the
+   cursor is in the envelope periods or noise tracks, it is assumed that the
+   leftmost channel is selected), or select a range of lines. In the first case,
+   the notes with the parameters of one line will be swapped, in the second one,
+   of the selected lines range.
+9. Now, when calling the Toggle Samples tool, you can see unused samples (the
+   checkboxes are not active). This information is updated during editing and
+   when switching windows. The idea was spied in VT 2.6.
+10.At Lee Bee's request, Quick jump keys were added to quickly jump to the
+   beginning, 1/4, 2/4 and 3/4 of pattern. The keys are duplicated in the
+   tracks' pop-up menu. The track editor does not have to be active, it is
+   enough that the Patterns tab is active. By default, the keys are F9, F10, F11
+   and F12.
+
+03/08/2024:
+
+11.Keys have been added to the ornament and sample editors to delete a line with
+   a slide and insert with a slide (similar to the pattern editor). By default,
+   Backspace or Ctrl+Y for deletion, and Insert or Ctrl+I for insertion.
+12.Added customization of several more colors that were previously hard-coded:
+   of the space beyond the pattern in the track editor, of the empty space that
+   may occur after the maximum length of the sample or ornament, as well as of
+   the background of the main window.
+13.Double-clicking on the main window background can now be used to call a file
+   opening dialog (the idea is taken from VT 2.6).
+
+03/09/2024:
+
+14.At the long-standing request of TAD, line highlighting has been added into
+   the ornament and sample editor with a step of playback speed. It is disabled
+   by default. The idea of optionally enabling this feature was seen in VT v2.6.
+15.Now the path to the folder when opening or saving the module is remembered in
+   the configuration file at the application closing. The first time you run it,
+   it becomes the 'Modules' or 'Modules for test' folder in the program
+   directory, or this directory itself, if they are not in it.
+16.The paths to patterns, samples and ornaments are now remembered. At the first
+   launch, it is either a folder with the program, or subfolders in it:
+   Patterns, Samples and Ornaments, respectively.
+17.An option has been added to disable warnings about the inability to undo an
+   operation. If it is enabled, then operations such as transposing the entire
+   module or Swap Channels in Tracks Manager will be performed without
+   additional confirmation from the user. In order not to make mistakes, keep an
+   eye out for the hints that are specially added for such cases (both in the
+   status bar and pop-up). By default, there is a confirmation request.
+18.If the Loop all mode failed to make the next window active (for example, a
+   modal window like About was opened), playback stops (previously the current
+   window started playing again).
+19.Now the workspace scrolls when activating a window hidden by more than half
+   its width or height, previously there was no scrolling if at least a piece of
+   the frame was visible.
+
+Vortex Tracker II v1.0 beta 31
+
+03/10/2024:
+
+1. Fixed a visual error (not affecting to functionality): starting with beta 29,
+   the TS buttons' captions changed places when opening the TS pair.
+
+03/11/2024:
+
+2. Catching glitches after abandoning MDI: added a check to exclude the
+   workspace auto-scrolling if the window is activated by clicking the left
+   mouse button (there were unexpected offsets when trying to move the window
+   partially hidden behind the boundaries of workspace with the mouse).
+3. Improvement: files were checked on the command line before the main window
+   was maximized, so when several windows were opened, they were placed in less
+   space than they could (in particular, TS-pair windows could unhook each other
+   if there was not enough space for two windows before maximization).
+
+03/12/2024:
+
+4. Cosmetic change: now empty patterns that are not in the positions list are
+   not saved to the text file. Such empty patterns occur at the positions list
+   editing time when entering any numbers (for example, if you entered '32',
+   then two empty patterns 3 and 32 are created in the background, although only
+   the second one remains in the list as a result).
+5. In case of a text module manual editing (for example, in NotePad), an
+   additional check is added when loading it: if the pattern data is not found,
+   but it itself is in the positions list, then an empty one is forcibly
+   created. This avoids a crash, since most of the functions in Vortex Tracker
+   II do not make additional checks for patterns present in the list.
+
+14.03.2024:
+
+6. Another feature from VT v2.6 (Split pattern) is implemented. It is called
+   from the track editor menu or by a hotkey (set in the Options dialog, no
+   default one). You need to put the cursor in the desired pattern line before
+   calling it. As a result, the current pattern size will decrease to this line
+   and a second one with the remaining lines will be created. If the split
+   pattern was not in the positions list, then the second one will simply be
+   displayed. Otherwise, all instances found in the positions list will be
+   replaced with new pairs of patterns.
+
+03/15/2024:
+
+7. The Pack pattern command has been added to the pattern editor pop-up menu
+   (the idea was seen in VT 2.6). The default hotkey is not set (if necessary,
+   set via Options). The command works either with the selection area lines, or
+   with the entire pattern, if there is no selection. The command deletes the
+   empty lines and places (or updates) the Tempo setting commands in the
+   remaining ones so that the sound of neither this pattern nor following it in
+   the positions list does not change. To calculate the initial Tempo of the
+   selected lines block, a reverse search is performed for the last previously
+   set Tempo change special command. If it is not in the current pattern, then
+   the previous patterns in the positions list are viewed. If this command does
+   not appear in them either, or if an arbitrary pattern is edited (that is, it
+   does not match the current one in position list), then the module initial
+   speed is taken as the initial speed.
+
+03/16/2024:
+
+8. Fixed a bug: if the cursor is in the envelope or noise periods tracks, when
+   changing the channels allocations, it does not shift to an unexpected
+   position now.
+
+Vortex Tracker II v1.0 beta 32
+
+03/24/2024:
+
+1. The application has been prepared to localize the interface. You can find
+   files for translating standard messages into 23 languages in the 'languages'
+   folder. The language is selected automatically, but it can be changed in the
+   Options dialog. Also in this folder you can find the VT.pot template, which
+   can be used to translate the interface into the language you need. It is
+   enough to rename it to 'VT.<id>.po', where <id> is the standard language
+   identifier (for example, 'de' or 'fr'), and edit it in a text editor or in
+   some PO file editor. If you want your translation to be included in the
+   Vortex Tracker II distribution, send it to me.
+2. Added the interface translation into Russian. The 'VT.ru.po' file in the
+   'languages' folder can be used as a translation example into your language.
+
+03/25/2024:
+
+3. An option has been added to the "Other" tabsheet in the Options dialog
+   allowing you to determine which mouse button to draw the amplitude in the
+   sample editor: left (LMB) or right (RMB).
+4. You can now enable the the ornament editor hint display in the Options
+   dialog.
+
+03/26/2024:
+
+5. The positions list standard scrollbar has been redesigned, it works only with
+   filled cells plus one empty one now, so that it is clearly visible how many
+   positions out of 256 possible are actually used.
+6. Added the Home/End hot keys to the position list editor to quickly navigate
+   to the beginning and end of the list.
+
+03/27/2024:
+
+7. Deleting and inserting position in the position list were disabled when
+   working with the module during playback of any other module (fixed).
+8. When working with the module during playback of some other module and
+   right-clicking on the positions list of the module being played, its window
+   was not activated, as a result, the pop-up menu commands were applied to the
+   module whose window remained active (fixed).
+
+03/28/2024:
+
+9. The option to select a range of non-empty cells has been added to the
+   position list editor. You can do this either with the mouse with the left
+   button pressed, or with the cursor keys while pressing Shift.
+10.The Insert Position command has been renamed to 'Add positions' in the
+   position list editor pop-up menu. The its work logic has also been changed,
+   it combines two commands at once now, which VT v2.6 users are familiar with.
+   Instead of duplicating the selected pattern, new ones are created in the
+   required amount. If one or more non-empty positions are selected, the same
+   number of patterns are inserted immediately after selection. If an empty cell
+   is selected, then it and the empty cells preceding it are filled with new
+   patterns. The new patterns length corresponds to the length of the pattern
+   before the place where new positions were added, or 64 if the list was empty.
+11.The Delete Position command has been renamed to "Delete positions" in the
+   position list editor pop-up menu. It can be used to delete not only the
+   current position now, but also all the selected ones.
+
+03/29/2024:
+
+12.Two more commands similar to VT v2.6 have been added to the position list
+   editor menu: "Duplicate positions" and "Clone positions" (work with selected
+   positions). The default keys are not set, define them in the Options dialog
+   if necessary. The first command works similarly to Insert Position from
+   previous versions: it creates an appropriate number of positions with the
+   same patterns immediately after the selected ones. The second command does
+   the same thing, but fills the positions with pre-created patterns with the
+   same content as the original ones.
+13.The 'Select all' command has been added to the position list menu, the
+   default keys are Ctrl+A and Ctrl+Num5.
+14.The "Select all" commands are visualized in various pop-up menus.
+15.Another command has been added to the position list editor menu, the idea of
+   which was seen in VT v2.6: 'Change patterns length...'. It is intended for
+   group resizing of patterns: the size entered in the query dialog will be
+   applied to all patterns in the selected positions.
+
+03/30/2024
+
+16.The Renumber patterns command has been added to the position list editor
+   menu, similar to the one implemented in VT 2.6. The command assigns new
+   numbers to patterns in the order of use in the positions list.
+
+03/31/2024
+
+17.Editing commands that are undesirable or cannot be performed during playback
+   a module/pattern are disabled in Vortex Tracker II. However, they could still
+   be executed when you click Undo or Redo. Playback is forcibly stopped now
+   before performing such commands during Undo/Redo.
+18.Clipboard commands have been added to the position list editor pop-up menu:
+   Copy, Cut, Paste and Merge. Hotkeys can be overridden. When cutting, the
+   'Delete positions' operation is performed. The copied or cut fragment can be
+   pasted (the positions will move apart at the insertion point), or merged
+   (pasted inside the selection if more than one cell is selected, or pasted
+   over selected cell and the next cells without moving apart). If the pasting
+   is applied outside the filled cells, then the list will be extended from the
+   end. If the last filled cells are selected, the merging may go beyond the
+   selection (the length of the list will increase).
+19.Fixed a bug: a crash when inserting an empty clipboard into a pattern/sample/
+   ornament/test lines.
+
+Vortex Tracker II v1.0
+
+07/03/2024:
+
+1. The Maximized mode has been added to the Window menu, when enabled, the
+   active windows of the module or TS-pairs are displayed open to the workspace
+   full height. The default keyboard shortcuts are not defined (you can define
+   them in the options). Window can also be maximized by clicking on the
+   corresponding header button or by double-clicking on the header itself. You
+   can return to normal mode by clicking on the corresponding button in the main
+   menu or on any inactive window.
+
+07/04/2024:
+
+2. The Vortex Tracker v2.6 dev 22 project's ornaments and samples collection has
+   been added to the distribution.
+3. The Help menu has added items for calling up various help materials.
+
+07/08/2024:
+
+4. A visual error has been fixed: if, during the opening of a group of files,
+   any one was automatically closed due to a format mismatch (with the output of
+   the corresponding message), information about the current (active) module
+   disappeared from the title bar of the main window.
+
+
+07/09/2024:
+
+5. An ASC module has been discovered in which numbers outside the acceptable
+   range for the PT3 format occur in the noise column (see the beginning of
+   pattern 1 in ASC\FORHOL.asc). An appropriate correction has been made to the
+   ASC import.
