@@ -243,6 +243,7 @@ namespace VortexTracker
                     continue;
 
                 var shortcut = TextToShortcut(hotKey.ShortcutText);
+
                 if ((Keys)shortcut == keyData)
                 {
                     hotKey.Action?.Invoke();
@@ -320,35 +321,11 @@ namespace VortexTracker
             if (keys.HasFlag(Keys.Alt)) parts.Add("Alt");
 
             Keys keyOnly = keys & ~Keys.Control & ~Keys.Shift & ~Keys.Alt;
+
             if (keyOnly != Keys.None)
                 parts.Add(keyOnly.ToString());
 
             return string.Join("+", parts);
-        }
-
-        public static List<string> Split(char delimiter, string str)
-        {
-            List<string> result = new List<string>();
-            int i = 1;
-            string row = "";
-            while (i <= str.Length)
-            {
-                if ((str[i] == delimiter))
-                {
-                    result.Add(row);
-                    row = "";
-                }
-                else
-                {
-                    row = row + str[i];
-                }
-                i = i + 1;
-            }
-            if ((row != ""))
-            {
-                result.Add(row);
-            }
-            return result;
         }
     }
 }
