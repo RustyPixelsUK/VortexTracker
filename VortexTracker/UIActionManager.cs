@@ -8,7 +8,7 @@
 // Version 1.5 - 2.6
 // (c)2017-2021 Ivan Pirog, ivan.pirog@gmail.com
 // 
-// Version 2.6 - 2.6.1
+// Version 2.6.1
 // (c)2022-2025 Dexus (Volutar), https://github.com/Volutar
 // 
 // Version 3.0+ (C# port)
