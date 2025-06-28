@@ -1,3 +1,19 @@
+// 
+// This is part of Vortex Tracker II project
+// 
+// (c)2000-2009 S.V.Bulba
+// Author: Sergey Bulba, vorobey@mail.khstu.ru
+// Support page: http://bulba.untergrund.net/
+// 
+// Version 1.5 - 2.6
+// (c)2017-2021 Ivan Pirog, ivan.pirog@gmail.com
+// 
+// Version 2.6 - 2.6.1
+// (c)2022-2025 Dexus (Volutar), https://github.com/Volutar
+// 
+// Version 3.0+ (C# port)
+// (c)2025 Ben Baker, https://github.com/benbaker76
+
 using System;
 using System.Windows.Forms;
 using System.IO;
@@ -16,23 +32,9 @@ namespace VortexTracker
             InitializeComponent();
         }
 
-        // Public declarations
         public void SetRTFText(string rtfText)
         {
             Info.Rtf = rtfText;
-            /* StringWriter ss;
-            string emptyStr = "";
-            ss = new StringWriter(emptyStr);
-            try {
-                ss.Write(RTFText);
-                ss.Position = 0;
-                Info.PlainText = false;
-                Info.Lines.BeginUpdate;
-                Info.Lines.LoadFromStream(ss);
-                 Info.Lines.EndUpdate;
-            } finally {
-                ss.Dispose();
-            } */
         }
 
         public void Init(VTM vtm)

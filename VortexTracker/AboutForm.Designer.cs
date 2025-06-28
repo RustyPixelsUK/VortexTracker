@@ -87,7 +87,7 @@ namespace VortexTracker
             label8.Name = "label8";
             label8.Size = new Size(252, 31);
             label8.TabIndex = 12;
-            label8.Text = "(c) Dexus (Volutar) 2022-2023\r\nVersion 2.6.1";
+            label8.Text = "(c) Dexus (Volutar) 2022-2025\nVersion 2.6.1";
             // 
             // label7
             // 
@@ -95,7 +95,7 @@ namespace VortexTracker
             label7.Name = "label7";
             label7.Size = new Size(252, 30);
             label7.TabIndex = 11;
-            label7.Text = "(c) Ben Baker (Rusty Pixels) 2025\r\nC# Port - Version 3.0+";
+            label7.Text = "(c) Ben Baker (Rusty Pixels) 2025\r\nVersion 3.0+";
             // 
             // ProgramIcon
             // 
