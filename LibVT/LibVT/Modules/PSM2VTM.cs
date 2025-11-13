@@ -589,10 +589,10 @@ namespace LibVT
                 }
                 else if (data[patAddr] == 0xF9)
                 {
-                    _retAddress[chNum] = (ushort)(patAddr + 3);
-                    _retCnt[chNum] = data[((ushort)patAddr + 2)];
+                    _retAddress[chNum] = (ushort)(patAddr + 4);
+                    _retCnt[chNum] = data[((ushort)patAddr + 3)];
                     // PatAddr := WordPtr(@PSM.Index[PatAddr])^ - 1;
-                    patAddr = (ushort)(BitConverter.ToUInt16(data, patAddr) - 1);
+                    patAddr = (ushort)(BitConverter.ToUInt16(data, patAddr + 1) - 1);
                 }
                 else if (data[patAddr] >= 0xFA && data[patAddr] <= 0xFB)
                 {
