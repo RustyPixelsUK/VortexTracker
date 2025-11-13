@@ -41,7 +41,7 @@ The best music tracker for 8bit AY/YM chips.
 	- Sound improvements by Artem Vasilev (wbcbz7)
 - (c) Ivan Pirog (Flexx/Enhancers) 2017-2021
 	- Version 1.5 - 2.6
-- (c) Dexus (Volutar) 2022-2023
+- (c) Dexus (Volutar) 2022-2025
 	- Version 2.6.1
 - (c) Ben Baker (Rusty Pixels) 2025
 	- C# Port - Version 3.0+
