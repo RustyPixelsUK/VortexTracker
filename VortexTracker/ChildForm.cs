@@ -1808,7 +1808,7 @@ namespace VortexTracker
                 case 26:
                 case 40:
                     VTM.Patterns[pattern].Lines[line].Channel[channel].Sample = (byte)n;
-                    if (Tracks.LastNoteParams[channel].Line != line)
+                    if (Tracks.LastNoteParams != null && Tracks.LastNoteParams[channel].Line != line)
                         Tracks.ResetLastNoteParams((byte)pattern, (byte)line, (byte)channel);
                     Tracks.LastNoteParams[channel].Sample = (byte)n;
                     break;
@@ -8699,7 +8699,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded || VTModule.PlayArgs[chipIndex].PositionIndex != position);
+                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != position);
 
                 WaveOutAPI.LineReady = true;
             }
@@ -8737,7 +8737,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded || VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
+                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
 
                 WaveOutAPI.LineReady = true;
                 zeroLine = false;
@@ -8754,7 +8754,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.LineEnded || VTModule.PlayArgs[chipIndex].LineIndex != lineIndex + 1);
+                while (result != PlayLineResult.LineEnded && VTModule.PlayArgs[chipIndex].LineIndex != lineIndex + 1);
 
                 WaveOutAPI.LineReady = true;
             }
@@ -8794,7 +8794,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded || VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
+                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
 
                 WaveOutAPI.LineReady = true;
             }
@@ -8805,7 +8805,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.LineEnded || VTModule.PlayArgs[chipIndex].LineIndex != Tracks.ShownFrom + 1);
+                while (result != PlayLineResult.LineEnded && VTModule.PlayArgs[chipIndex].LineIndex != Tracks.ShownFrom + 1);
 
                 WaveOutAPI.LineReady = true;
             }
@@ -8840,7 +8840,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded || VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
+                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
                 WaveOutAPI.LineReady = true;
             }
 
@@ -8855,7 +8855,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.LineEnded || VTModule.PlayArgs[chipIndex].LineIndex != Tracks.ShownFrom + 1);
+                while (result != PlayLineResult.LineEnded && VTModule.PlayArgs[chipIndex].LineIndex != Tracks.ShownFrom + 1);
                 WaveOutAPI.LineReady = true;
             }
 
@@ -8885,7 +8885,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Pattern_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.LineEnded || VTModule.PlayArgs[chipIndex].LineIndex != currentLine + 1);
+                while (result != PlayLineResult.LineEnded && VTModule.PlayArgs[chipIndex].LineIndex != currentLine + 1);
                 WaveOutAPI.LineReady = true;
             }
         }
