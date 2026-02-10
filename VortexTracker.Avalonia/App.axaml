@@ -1,0 +1,19 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:VortexTracker.Avalonia"
+             xmlns:conv="using:VortexTracker.Avalonia.Converters"
+             x:Class="VortexTracker.Avalonia.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Resources>
+        <conv:BoolToBackgroundConverter x:Key="BoolToBackgroundConverter"/>
+    </Application.Resources>
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+</Application>
