@@ -3,16 +3,18 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using LibVT;
+using VortexTracker.Avalonia.Audio;
 
 namespace VortexTracker.Avalonia.ViewModels;
 
-public class TrackerViewModel : ViewModelBase
+public class TrackerViewModel : ViewModelBase, IDisposable
 {
     private VTM? _module;
     private int _currentPosition;
     private int _currentPattern;
     private bool _isPlaying;
     private string _statusText = "Ready";
+    private AudioEngineStub? _audioEngine;
     
     public VTM? Module
     {
@@ -23,6 +25,12 @@ public class TrackerViewModel : ViewModelBase
             OnPropertyChanged();
             OnPropertyChanged(nameof(HasModule));
             RefreshAll();
+            
+            // Load module into audio engine
+            if (_audioEngine != null && _module != null)
+            {
+                _audioEngine.LoadModule(_module);
+            }
         }
     }
     
@@ -252,6 +260,71 @@ public class TrackerViewModel : ViewModelBase
         if (_currentPattern > 0)
             CurrentPattern--;
     }
+    
+    public TrackerViewModel()
+    {
+        InitializeAudio();
+    }
+    
+    private void InitializeAudio()
+    {
+        try
+        {
+            var backend = _audioEngine = new AudioEngineStub();
+            _audioEngine.Initialize();
+            _audioEngine.PositionChanged += OnAudioPositionChanged;
+            StatusText = "Audio engine initialized (OpenAL)";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Audio init failed: {ex.Message}";
+        }
+    }
+    
+    private void OnAudioPositionChanged(object? sender, PlaybackPositionEventArgs e)
+    {
+        // Update UI from audio thread
+        global::Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            if (e.Position != _currentPosition)
+            {
+                CurrentPosition = e.Position;
+            }
+        });
+    }
+    
+    public void Play()
+    {
+        if (_audioEngine == null || _module == null) return;
+        
+        _audioEngine.Play();
+        IsPlaying = true;
+        StatusText = "?? Playing...";
+    }
+    
+    public void Stop()
+    {
+        if (_audioEngine == null) return;
+        
+        _audioEngine.Stop();
+        IsPlaying = false;
+        StatusText = "?? Stopped";
+    }
+    
+    public void PlayFromPosition(int position)
+    {
+        if (_audioEngine == null || _module == null) return;
+        
+        _audioEngine.SetPosition(position);
+        _audioEngine.Play();
+        IsPlaying = true;
+        StatusText = $"?? Playing from position {position:X2}";
+    }
+    
+    public void Dispose()
+    {
+        _audioEngine?.Dispose();
+    }
 }
 
 public class PositionViewModel
@@ -302,6 +375,8 @@ public class OrnamentLineViewModel
     public string LineNumberHex => $"{LineNumber:X2}";
     public string NoteStr => VTModule.NoteToStr(Note);
 }
+
+
 
 
 

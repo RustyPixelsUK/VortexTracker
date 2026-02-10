@@ -54,14 +54,12 @@ public partial class MainWindow : Window
     // Playback Controls
     public void OnPlayClick(object sender, RoutedEventArgs e)
     {
-        ViewModel.Tracker.IsPlaying = true;
-        ViewModel.Tracker.StatusText = "?? Playing... (Playback not yet implemented)";
+        ViewModel.Tracker.Play();
     }
     
     public void OnStopClick(object sender, RoutedEventArgs e)
     {
-        ViewModel.Tracker.IsPlaying = false;
-        ViewModel.Tracker.StatusText = "?? Stopped";
+        ViewModel.Tracker.Stop();
     }
     
     // Position Navigation
