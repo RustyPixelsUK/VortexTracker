@@ -179,17 +179,47 @@ namespace LibVT
     public class PlaybackEventArgs : EventArgs
     {
         public int ChipIndex { get; }
-        public SoundChip SoundChip { get; set; }
-        public PlayArgs PlayArgs { get; set; }
+        
+        // Immutable snapshots (copied by value)
+        public AYRegisters AYRegisters { get; }
+        public byte[] ChannelNotes { get; }
+        public ushort[] ChannelTones { get; }
+        public bool[] ChannelSoundEnabled { get; }
+        
 
         public PlaybackEventArgs(int chipIndex, SoundChip soundChip, PlayArgs playArgs)
         {
             ChipIndex = chipIndex;
-            SoundChip = soundChip;
-            PlayArgs = playArgs;
+            
+            // Copy AY registers by value (struct copy)
+            AYRegisters = new AYRegisters
+            {
+                ToneA = soundChip.AYRegisters.ToneA,
+                ToneB = soundChip.AYRegisters.ToneB,
+                ToneC = soundChip.AYRegisters.ToneC,
+                Noise = soundChip.AYRegisters.Noise,
+                Mixer = soundChip.AYRegisters.Mixer,
+                AmplitudeA = soundChip.AYRegisters.AmplitudeA,
+                AmplitudeB = soundChip.AYRegisters.AmplitudeB,
+                AmplitudeC = soundChip.AYRegisters.AmplitudeC,
+                Envelope = soundChip.AYRegisters.Envelope,
+                EnvType = soundChip.AYRegisters.EnvType
+            };
+            
+            // Copy channel data (small arrays, fast copy)
+            ChannelNotes = new byte[3];
+            ChannelTones = new ushort[3];
+            ChannelSoundEnabled = new bool[3];
+            
+            for (int i = 0; i < 3; i++)
+            {
+                ChannelNotes[i] = playArgs.ChannelParams[i].Note;
+                ChannelTones[i] = playArgs.ChannelParams[i].Tone;
+                ChannelSoundEnabled[i] = playArgs.ChannelParams[i].SoundEnabled;
+            }
         }
 
-        public override string ToString() => $"ChipIndex={ChipIndex}, PositionIndex={PlayArgs.PositionIndex}, PatternIndex={PlayArgs.PatternIndex}, LineIndex={PlayArgs.LineIndex}";
+        public override string ToString() => $"ChipIndex={ChipIndex}";
     }
 
     public enum PlayLineResult : int
@@ -227,7 +257,7 @@ namespace LibVT
         PSMFile
     }
 
-    public class VTModule
+    public partial class VTModule
     {
         //public static int FamiClipboardType = 0;
         public static string FamiClipboardFormatName = "FamiTracker Pattern";
@@ -259,9 +289,8 @@ namespace LibVT
         public static bool VortexModuleHeader = true;
         public static bool DetectModuleHeader = true;
         public const int MaxSoundChipCount = 3;
-
-        public static string[] FamiNotes = { "C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-" };
-
+        
+                public static string[] FamiNotes = { "C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-" };
         public const string KsaId = "KSA SOFTWARE COMPILATION OF ";
         public static string[] Notes = { "C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-" };
         public static string[] NoteTableNames =
@@ -381,6 +410,9 @@ namespace LibVT
         {
             for (int i = 0; i < MaxSoundChipCount; i++)
                 PlayArgs[i] = new PlayArgs();
+
+            // Start dedicated MIDI event worker thread
+            StartEventWorker();
         }
 
         // Sets the pointer to the module structure
@@ -1834,31 +1866,24 @@ namespace LibVT
 
         private static void QueuePlaybackEvent(int chipIndex, SoundChip soundChip, PlayArgs playArgs)
         {
-            // TEMPORARILY DISABLED - causes thread pool exhaustion
-            // TODO: Implement proper lock-free queue or dedicated thread
-            return;
-            
-            /*
-            // Check if anyone is listening first
+            // Check if anyone is listening first (fast check)
             if (PlaybackEvent == null)
                 return;
 
-            // Create snapshot - this is called 50-60 times per second
+            // Create snapshot - fast, no blocking
             var args = new PlaybackEventArgs(chipIndex, soundChip, playArgs);
             
-            // Invoke async - don't block the audio thread!
-            Task.Run(() =>
+            // Try to add to queue with zero timeout (never blocks audio thread)
+            // If queue is full, this returns false and event is dropped
+            if (!_eventQueue.TryAdd(args, millisecondsTimeout: 0))
             {
-                try
-                {
-                    PlaybackEvent?.Invoke(null, args);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"PlaybackEvent handler error: {ex.Message}");
-                }
-            });
-            */
+                // Queue full - drop event (audio thread never blocks)
+                System.Diagnostics.Debug.WriteLine("MIDI event queue full - dropping event");
+            }
         }
+
     }
 }
+
+
+

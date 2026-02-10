@@ -1810,13 +1810,14 @@ namespace VortexTracker
                     VTM.Patterns[pattern].Lines[line].Channel[channel].Sample = (byte)n;
                     if (Tracks.LastNoteParams != null && Tracks.LastNoteParams[channel].Line != line)
                         Tracks.ResetLastNoteParams((byte)pattern, (byte)line, (byte)channel);
-                    Tracks.LastNoteParams[channel].Sample = (byte)n;
+                    if (Tracks.LastNoteParams != null)
+                        Tracks.LastNoteParams[channel].Sample = (byte)n;
                     break;
                 case 13:
                 case 27:
                 case 41:
                     VTM.Patterns[pattern].Lines[line].Channel[channel].Envelope = (byte)n;
-                    if (Tracks.LastNoteParams[channel].Line != line)
+                    if (Tracks.LastNoteParams != null && Tracks.LastNoteParams[channel].Line != line)
                         Tracks.ResetLastNoteParams((byte)pattern, (byte)line, (byte)channel);
                     Tracks.LastNoteParams[channel].Envelope = (byte)n;
                     break;
