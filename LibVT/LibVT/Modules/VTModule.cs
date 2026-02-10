@@ -803,7 +803,7 @@ namespace LibVT
             soundChip.AYRegisters.Noise = (byte)((playArgs.PT3Noise + playArgs.AddToNoise) & 31);
             soundChip.AYRegisters.Envelope = (ushort)(playArgs.AddToEnv + playArgs.CurEnvSlide + playArgs.EnvBase);
 
-            PlaybackEvent?.Invoke(null, new PlaybackEventArgs(ChipIndex, soundChip, playArgs));
+            QueuePlaybackEvent(ChipIndex, soundChip, playArgs);
 
             if (playArgs.CurEnvDelay > 0)
             {
@@ -1830,6 +1830,35 @@ namespace LibVT
 
             Main.DecBaseNoiseOn = decBaseNoiseOn;
             Main.EnvelopeAsNote = envelopeAsNode;
+        }
+
+        private static void QueuePlaybackEvent(int chipIndex, SoundChip soundChip, PlayArgs playArgs)
+        {
+            // TEMPORARILY DISABLED - causes thread pool exhaustion
+            // TODO: Implement proper lock-free queue or dedicated thread
+            return;
+            
+            /*
+            // Check if anyone is listening first
+            if (PlaybackEvent == null)
+                return;
+
+            // Create snapshot - this is called 50-60 times per second
+            var args = new PlaybackEventArgs(chipIndex, soundChip, playArgs);
+            
+            // Invoke async - don't block the audio thread!
+            Task.Run(() =>
+            {
+                try
+                {
+                    PlaybackEvent?.Invoke(null, args);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"PlaybackEvent handler error: {ex.Message}");
+                }
+            });
+            */
         }
     }
 }

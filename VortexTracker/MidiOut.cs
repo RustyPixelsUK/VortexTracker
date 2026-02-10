@@ -36,8 +36,20 @@ namespace VortexTracker
         private static readonly byte[] _lastCCValues = new byte[3 * VTModule.MaxSoundChipCount * 128]; // 3 channels, 128 controllers
         private static int[] _lastNotes = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }; // 16 channels
 
+        // Track MIDI note state per chip/channel (separate from audio thread state)
+        private static readonly int[,] _lastNoteSent = new int[3, 3];  // [chipIndex, channel]
+        private static readonly bool[,] _noteOnState = new bool[3, 3]; // [chipIndex, channel]
+
         static MidiOut()
         {
+            for (int chip = 0; chip < 3; chip++)
+            {
+                for (int ch = 0; ch < 3; ch++)
+                {
+                    _lastNoteSent[chip, ch] = -1;
+                    _noteOnState[chip, ch] = false;
+                }
+            }
         }
 
         public static void CreateClient(IWin32Window? owner, uint devicePort = 1)
@@ -63,78 +75,8 @@ namespace VortexTracker
 
         public static void PlaybackEvent(object? sender, PlaybackEventArgs e)
         {
-            if (!Enabled)
-                return;
-
-            int chipIndex = e.ChipIndex;
-            SoundChip soundChip = e.SoundChip;
-            AYRegisters registers = soundChip.AYRegisters;
-            PlayArgs playArgs = e.PlayArgs;
-
-            // MIDI Output for AY chip
-
-            // Register write
-            SendMidiRegister(chipIndex, 0, 0x00, registers.ToneA);      // A freq L
-            SendMidiRegister(chipIndex, 0, 0x01, registers.ToneA >> 8); // A freq H
-            SendMidiRegister(chipIndex, 1, 0x02, registers.ToneB);      // B freq L
-            SendMidiRegister(chipIndex, 1, 0x03, registers.ToneB >> 8); // B freq H
-            SendMidiRegister(chipIndex, 2, 0x04, registers.ToneC);      // C freq L
-            SendMidiRegister(chipIndex, 2, 0x05, registers.ToneC >> 8); // C freq H
-
-            SendMidiRegister(chipIndex, -1, 0x06, registers.Noise);
-            SendMidiRegister(chipIndex, -1, 0x07, registers.Mixer);
-
-            SendMidiRegister(chipIndex, 0, 0x08, registers.AmplitudeA);
-            SendMidiRegister(chipIndex, 1, 0x09, registers.AmplitudeB);
-            SendMidiRegister(chipIndex, 2, 0x0A, registers.AmplitudeC);
-
-            SendMidiRegister(chipIndex, -1, 0x0B, registers.Envelope & 0xFF);        // Env freq L
-            SendMidiRegister(chipIndex, -1, 0x0C, (registers.Envelope >> 8) & 0xFF); // Env freq H
-            SendMidiRegister(chipIndex, -1, 0x0D, registers.EnvType);
-
-            for (int ch = 0; ch < 3; ch++)
-            {
-                var channelParams = playArgs.ChannelParams[ch];
-                int midiChannel = e.ChipIndex * 3 + ch;
-
-                // Base note inferred from tone register
-                //int midiNote = chan.Note + 36; // or use GetNoteByEnvelope() for freq-based pitch
-                //int midiNote = GetNoteByEnvelope(chan.Ton >> 4); // AY values are 12-bit
-                //int midiNote = (int)Math.Round(GetMidiNoteFromAYFreq(chan.Ton));
-                int midiNote = channelParams.Note + 24;
-                int velocity = 127; // (chan.Amplitude & 0x0F) * 8;
-
-                bool shouldPlay = channelParams.SoundEnabled && velocity > 0;
-
-                if (shouldPlay)
-                {
-                    if (!playArgs.NoteOnState[ch] || playArgs.LastNoteSent[ch] != midiNote)
-                    {
-                        if (playArgs.NoteOnState[ch])
-                            SendMidiNoteOff(chipIndex, ch, playArgs.LastNoteSent[ch], 0);
-
-                        SendMidiNoteOn(chipIndex, ch, midiNote, velocity);
-                        playArgs.LastNoteSent[ch] = midiNote;
-                        playArgs.NoteOnState[ch] = true;
-                    }
-
-                    // --- Pitch Bend Calculation ---
-                    double actualFreq = 2000000.0 / (16.0 * channelParams.Tone); // AY tone frequency
-                    double baseFreq = MidiNoteToFreq(midiNote);
-
-                    int pitchBend = CalculatePitchBend(baseFreq, actualFreq); // -8192 to +8191
-
-                    SendMidiPitchBend(chipIndex, ch, pitchBend);
-                }
-                else
-                {
-                    if (playArgs.NoteOnState[ch])
-                    {
-                        SendMidiNoteOff(chipIndex, ch, playArgs.LastNoteSent[ch], 0);
-                        playArgs.NoteOnState[ch] = false;
-                    }
-                }
-            }
+            // TEMPORARILY DISABLED - VTModule.PlaybackEvent is disabled due to thread pool exhaustion
+            // TODO: Re-enable once proper threading solution is implemented in VTModule  
         }
 
         public static void SendMidiRegister(int chipIndex, int channel, int register, int value)
