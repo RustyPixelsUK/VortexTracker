@@ -16,6 +16,7 @@
 
 using OpenTK.Audio.OpenAL;
 using System.Buffers.Binary;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -89,6 +90,7 @@ namespace LibVT
         public static Thread WOThread = null;
         //public static Thread TSThread = null;
         public static bool AudioProblem = false;
+        public static Action? PlaybackEnded = null;
         public const int BufferCountDefault = 3;
         public const int BufferLengthMsDefault = 100;
         //public static AutoResetEvent TSEvent = null;
@@ -100,9 +102,181 @@ namespace LibVT
         private static int[] _alBuffers = new int[BufferCount];
         private static int _totalSamplesPlayed = 0;
 
+        private enum AudioCommandType
+        {
+            Start,
+            Stop,
+            Reset,
+            Unreset,
+            PlayModule,
+            PlayPattern,
+            PlayPatternLine,
+            PlayLine
+        }
+
+        private sealed class AudioCommand
+        {
+            public AudioCommandType Type { get; init; }
+            public VTM? Vtm { get; init; }
+            public VTM? Vtm2 { get; init; }
+            public VTM? Vtm3 { get; init; }
+            public int ChipCount { get; init; }
+            public bool LoopEnabled { get; init; }
+            public int PatternIndex { get; init; }
+            public int LineIndex { get; init; }
+        }
+
+        private static BlockingCollection<AudioCommand> _commandQueue;
+        private static Thread _commandThread;
+        private static int _commandThreadId;
+        private static readonly object _commandThreadLock = new();
+
         private static Stopwatch _playbackTimer = new Stopwatch();
 
         public static string WODevice = null;
+
+        private static void EnsureCommandThread()
+        {
+            if (_commandThread != null)
+                return;
+
+            lock (_commandThreadLock)
+            {
+                if (_commandThread != null)
+                    return;
+
+                _commandQueue = new BlockingCollection<AudioCommand>();
+                _commandThread = new Thread(ProcessAudioCommands)
+                {
+                    IsBackground = true,
+                    Name = "AudioCommandThread"
+                };
+                _commandThread.Start();
+            }
+        }
+
+        private static void ProcessAudioCommands()
+        {
+            _commandThreadId = Environment.CurrentManagedThreadId;
+
+            foreach (var command in _commandQueue.GetConsumingEnumerable())
+                ExecuteCommand(command);
+        }
+
+        private static void EnqueueCommand(AudioCommandType commandType)
+            => EnqueueCommand(new AudioCommand { Type = commandType });
+
+        private static void EnqueueCommand(AudioCommand command)
+        {
+            EnsureCommandThread();
+
+            if (Environment.CurrentManagedThreadId == _commandThreadId)
+            {
+                ExecuteCommand(command);
+                return;
+            }
+
+            _commandQueue.Add(command);
+        }
+
+        private static void ExecuteCommand(AudioCommand command)
+        {
+            switch (command.Type)
+            {
+                case AudioCommandType.Start:
+                    StartWOThreadInternal();
+                    break;
+                case AudioCommandType.Stop:
+                    StopPlayingInternal();
+                    break;
+                case AudioCommandType.Reset:
+                    ResetPlayingInternal();
+                    break;
+                case AudioCommandType.Unreset:
+                    UnResetPlayingInternal();
+                    break;
+                case AudioCommandType.PlayModule:
+                    ApplyPlayContext(command);
+                    InitForAllTypes(true);
+                    StartWOThreadInternal();
+                    break;
+                case AudioCommandType.PlayPattern:
+                    ApplyPlayContext(command);
+                    InitForAllTypes(false);
+                    StartWOThreadInternal();
+                    break;
+                case AudioCommandType.PlayPatternLine:
+                    ApplyPlayContext(command);
+                    InitForAllTypes(false);
+                    StartWOThreadInternal();
+                    break;
+                case AudioCommandType.PlayLine:
+                    ApplyPlayContext(command);
+                    InitForAllTypes(false);
+                    VTModule.Pattern_PlayCurrentLine();
+                    LineReady = true;
+                    StartWOThreadInternal();
+                    break;
+            }
+        }
+
+        private static void ApplyPlayContext(AudioCommand command)
+        {
+            AY.SetDefault(AY.SampleRateDefault, AY.NumberOfChannelsDefault, AY.SampleBitDefault);
+            AY.SetSampleRate(SampleRate);
+            AY.SetBitRate(SampleBit);
+            AY.SetNChans(NumberOfChannels);
+            AY.SetBuffers(BufferLengthMs, BufferCount);
+
+            AY.ChipCount = command.ChipCount;
+            AY.LoopAllowed = command.LoopEnabled;
+            AY.ActiveModule = command.Vtm!;
+            AY.PlayingModule[0] = command.Vtm!;
+            AY.PlayingModule[1] = command.Vtm2;
+            AY.PlayingModule[2] = command.Vtm3;
+
+            switch (command.Type)
+            {
+                case AudioCommandType.PlayModule:
+                    AY.PlayMode = PlayModes.PlayModule;
+                    for (int i = 0; i < AY.ChipCount; i++)
+                    {
+                        if (AY.PlayingModule[i] == null) continue;
+                        VTModule.Module_SetPointer(AY.PlayingModule[i], i);
+                        VTModule.Module_SetDelay((sbyte)AY.PlayingModule[i].InitialDelay);
+                        VTModule.Module_SetCurrentPosition(0);
+                    }
+                    break;
+                case AudioCommandType.PlayPattern:
+                    AY.PlayMode = PlayModes.PlayPattern;
+                    for (int i = 0; i < AY.ChipCount; i++)
+                    {
+                        if (AY.PlayingModule[i] == null) continue;
+                        VTModule.Module_SetPointer(AY.PlayingModule[i], i);
+                        VTModule.Module_SetDelay((sbyte)AY.PlayingModule[i].InitialDelay);
+                        VTModule.Module_SetCurrentPosition(0);
+                        VTModule.Module_SetCurrentPattern(command.PatternIndex);
+                    }
+                    break;
+                case AudioCommandType.PlayPatternLine:
+                    AY.PlayMode = PlayModes.PlayPattern;
+                    for (int i = 0; i < AY.ChipCount; i++)
+                    {
+                        if (AY.PlayingModule[i] == null) continue;
+                        VTModule.Module_SetPointer(AY.PlayingModule[i], i);
+                        VTModule.Module_SetDelay((sbyte)AY.PlayingModule[i].InitialDelay);
+                        VTModule.Module_SetCurrentPattern(command.PatternIndex);
+                        VTModule.Pattern_SetCurrentLine(command.LineIndex);
+                    }
+                    break;
+                case AudioCommandType.PlayLine:
+                    AY.PlayMode = PlayModes.PlayLine;
+                    VTModule.Module_SetPointer(AY.PlayingModule[0], 0);
+                    VTModule.Module_SetCurrentPattern(command.PatternIndex);
+                    VTModule.Pattern_SetCurrentLine(command.LineIndex);
+                    break;
+            }
+        }
         private static void ALCheck()
         {
             ALError alError = AL.GetError();
@@ -151,6 +325,11 @@ namespace LibVT
 
         public static void StopPlaying()
         {
+            EnqueueCommand(AudioCommandType.Stop);
+        }
+
+        private static void StopPlayingInternal()
+        {
             Debug.WriteLine("StopPlaying");
 
             if (!IsPlaying)
@@ -158,24 +337,12 @@ namespace LibVT
 
             IsPlaying = false;
 
-            //WOEvent.Set();
+            // Wait for the WO thread to finish all AL calls before destroying the context.
+            WOThread?.Join(3000);
+
             StopOpenAL();
-
-            UnResetPlaying();
-
+            UnResetPlayingInternal();
             AY.ClearRegisters();
-            // Interrupt any sleeping in WOThreadFunc
-
-
-            // Wait for the thread to exit
-            //WaitForWOThreadExit();
-
-            //AppEvents.ClearEvent(EventType.FinalizeWO);
-            //AppEvents.PostEvent(EventType.FinalizeWO);
-            //AppEvents.SendEvent(EventType.WaitForWOThreadExit);
-
-            // Then do WOThreadFinalization or similar:
-            //WOThreadFinalization();
         }
 
         public static bool AllBuffersDone()
@@ -257,7 +424,11 @@ namespace LibVT
             {
                 Debug.WriteLine("Exception in WOThreadFunc: " + ex.Message);
 
-                ResetMutex.ReleaseMutex();
+                if (resetMutex)
+                {
+                    resetMutex = false;
+                    ResetMutex.ReleaseMutex();
+                }
 
                 AppEvents.PostEvent(EventType.PlayingOff);
             }
@@ -266,13 +437,16 @@ namespace LibVT
                 Debug.WriteLine("WOThreadFunc finally reached");
 
                 if (resetMutex)
-                    ResetMutex.ReleaseMutex();
+                {
+                    try { ResetMutex.ReleaseMutex(); }
+                    catch (ApplicationException) { }
+                }
 
                 // If we exit the loop, finalize
                 AppEvents.PostEvent(EventType.FinalizeWO);
                 VTModule.UnlimitedDelay = false;
-
-                //WOEvent.Set();
+                IsPlaying = false;
+                PlaybackEnded?.Invoke();
             }
 
             Debug.WriteLine("WOThreadFunc End");
@@ -351,6 +525,46 @@ namespace LibVT
         }
 
         public static void StartWOThread()
+        {
+            EnqueueCommand(AudioCommandType.Start);
+        }
+
+        public static void EnqueuePlayModule(VTM vtm, VTM? vtm2, VTM? vtm3, int chipCount, bool loopEnabled)
+            => EnqueueCommand(new AudioCommand
+            {
+                Type = AudioCommandType.PlayModule,
+                Vtm = vtm, Vtm2 = vtm2, Vtm3 = vtm3,
+                ChipCount = chipCount, LoopEnabled = loopEnabled
+            });
+
+        public static void EnqueuePlayPattern(VTM vtm, VTM? vtm2, VTM? vtm3, int chipCount, bool loopEnabled, int patternIndex)
+            => EnqueueCommand(new AudioCommand
+            {
+                Type = AudioCommandType.PlayPattern,
+                Vtm = vtm, Vtm2 = vtm2, Vtm3 = vtm3,
+                ChipCount = chipCount, LoopEnabled = loopEnabled,
+                PatternIndex = patternIndex
+            });
+
+        public static void EnqueuePlayPatternLine(VTM vtm, VTM? vtm2, VTM? vtm3, int chipCount, bool loopEnabled, int patternIndex, int lineIndex)
+            => EnqueueCommand(new AudioCommand
+            {
+                Type = AudioCommandType.PlayPatternLine,
+                Vtm = vtm, Vtm2 = vtm2, Vtm3 = vtm3,
+                ChipCount = chipCount, LoopEnabled = loopEnabled,
+                PatternIndex = patternIndex, LineIndex = lineIndex
+            });
+
+        public static void EnqueuePlayLine(VTM vtm, int patternIndex, int lineIndex)
+            => EnqueueCommand(new AudioCommand
+            {
+                Type = AudioCommandType.PlayLine,
+                Vtm = vtm, Vtm2 = null, Vtm3 = null,
+                ChipCount = 1, LoopEnabled = false,
+                PatternIndex = patternIndex, LineIndex = lineIndex
+            });
+
+        private static void StartWOThreadInternal()
         {
             if (WOThreadActive())
                 return;
@@ -550,7 +764,9 @@ namespace LibVT
 
             for (int i = AY.ChipCount - 1; i >= 0; i--)
             {
-                //TVTM.Module_SetPointer(PlayingWindow[i].VTM, i);
+                if (AY.PlayingModule[i] == null)
+                    continue;
+
                 VTModule.Module_SetPointer(AY.PlayingModule[i], i);
                 VTModule.InitTrackerParameters(all);
             }
@@ -558,13 +774,15 @@ namespace LibVT
 
         public static bool WOThreadActive()
         {
-            if (WOThread == null)
-                return false;
-
-            return WOThread.ThreadState.HasFlag(ThreadState.Running);
+            return WOThread != null && WOThread.IsAlive;
         }
 
         public static void ResetPlaying()
+        {
+            EnqueueCommand(AudioCommandType.Reset);
+        }
+
+        private static void ResetPlayingInternal()
         {
             if (HasReset)
                 return;
@@ -592,6 +810,11 @@ namespace LibVT
         }
 
         public static void UnResetPlaying()
+        {
+            EnqueueCommand(AudioCommandType.Unreset);
+        }
+
+        private static void UnResetPlayingInternal()
         {
             if (!HasReset)
                 return;
@@ -748,7 +971,7 @@ namespace LibVT
                     break;
                 case ModuleType.PT3File:
                     PT32VTM pt32VTM = new PT32VTM();
-                    pt32VTM.Initialize(data, i, vtm, ref vtm2);
+                    pt32VTM.Initialize(data, data.Length, vtm, ref vtm2);
                     //SavedAsText = false;
                     break;
             }
@@ -875,6 +1098,7 @@ namespace LibVT
             if (iter == 0)
             {
                 fileType = ZXModule.LoadAndDetect(fileName, out length, out fileType1, out fileType2, out tsSize1, out tsSize2, out zxAddr, out tm, out andSix, out authorName, out songName, out data);
+                vtm ??= new VTM();
                 result = ConvertTrackerModule(fileName, data, fileType, zxAddr, tm, andSix, songName, authorName, vtm, ref vtm2, ref vtm3);
 
                 if (!result)
@@ -969,12 +1193,22 @@ namespace LibVT
         {
             //WOEvent = new ManualResetEventSlim(false);
             ResetMutex = new Mutex(false, "VTIII_Reset_" + Process.GetCurrentProcess().Id.ToString());
+            EnsureCommandThread();
         }
 
         public static void Shutdown()
         {
             //WOEvent.Dispose();
             ResetMutex.Dispose();
+            if (_commandQueue != null)
+            {
+                _commandQueue.CompleteAdding();
+                _commandThread?.Join(2000);
+                _commandQueue.Dispose();
+                _commandQueue = null;
+                _commandThread = null;
+                _commandThreadId = 0;
+            }
         }
     }
 }

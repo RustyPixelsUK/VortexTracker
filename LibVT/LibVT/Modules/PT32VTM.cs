@@ -67,7 +67,7 @@ namespace LibVT
 
             if (VTModule.DetectFeaturesLevel)
             {
-                if (Helpers.StrLComp(_pt3.Name.ToString(), "ProTracker 3.", 13) == 0)
+                if (Helpers.StrLComp(Encoding.ASCII.GetString(_pt3.Name), "ProTracker 3.", 13) == 0)
                 {
                     if (_pt3.Name[13] >= 0x30 && _pt3.Name[13] <= 0x35)
                         vtm1.FeaturesLevel = FeaturesLevel.PT35;
@@ -76,14 +76,14 @@ namespace LibVT
                     else
                         vtm1.FeaturesLevel = FeaturesLevel.VTII_PT36;
                 }
-                else if (Helpers.StrLComp(_pt3.Name.ToString(), "Vortex Tracker II", 17) == 0)
+                else if (Helpers.StrLComp(Encoding.ASCII.GetString(_pt3.Name), "Vortex Tracker II", 17) == 0)
                     vtm1.FeaturesLevel = FeaturesLevel.VTII_PT36;
                 else
                     vtm1.FeaturesLevel = FeaturesLevel.PT35;
             }
 
             if (VTModule.DetectModuleHeader)
-                vtm1.HasHeader = Helpers.StrLComp(_pt3.Name.ToString(), "ProTracker 3.", 13) != 0;
+                vtm1.HasHeader = Helpers.StrLComp(Encoding.ASCII.GetString(_pt3.Name), "ProTracker 3.", 13) != 0;
 
             // Move(PT3.PT3_Name[$1E], VTM1.Title[1], 32);
             // Move(PT3.PT3_Name[$42], VTM1.Author[1], 32);

@@ -401,6 +401,9 @@ namespace LibVT
 
             for (int i = 0; i < ChipCount; i++)
             {
+                if (AyumiChip[i] == null)
+                    continue;
+
                 AYRegisters regs = SoundChip[i].AYRegisters;
 
                 SetAyumiRegisters(AyumiChip[i], regs);
@@ -423,6 +426,9 @@ namespace LibVT
 
                     for (int i = 0; i < ChipCount; i++)
                     {
+                        if (AyumiChip[i] == null)
+                            continue;
+
                         AyumiChip[i].Process();
                         AyumiChip[i].RemoveDC();
 
@@ -1236,6 +1242,9 @@ namespace LibVT
 
                 for (int i = 0; i < ChipCount; i++)
                 {
+                    if (PlayingModule[i] == null)
+                        continue;
+
                     VTModule.Module_SetPointer(PlayingModule[i], i);
 
                     Get_Registers();

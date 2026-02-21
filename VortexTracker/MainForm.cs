@@ -2317,7 +2317,7 @@ namespace VortexTracker
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                 using (BinaryWriter writer = new BinaryWriter(fileStream))
                 {
-                    writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                    writer.Write(data, 0, moduleSize);
 
                     if (activeForm.TSWindow[0] != null && activeForm.TSWindow[1] != null)
                     {
@@ -2330,7 +2330,7 @@ namespace VortexTracker
                             return false;
                         }
 
-                        writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                        writer.Write(data, 0, moduleSize);
                         tsData3.Size1 = (ushort)moduleSize;
 
                         if (!vtm2PT3.Initialize(data, pt3, activeForm.TSWindow[1].VTM, out moduleSize))
@@ -2339,7 +2339,7 @@ namespace VortexTracker
                             return false;
                         }
 
-                        writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                        writer.Write(data, 0, moduleSize);
                         tsData3.Size2 = (ushort)moduleSize;
 
                         writer.Write(Helpers.CastToArray(tsData3), 0, Marshal.SizeOf(typeof(TSData3)));
@@ -2355,7 +2355,7 @@ namespace VortexTracker
                             return false;
                         }
 
-                        writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                        writer.Write(data, 0, moduleSize);
                         tsData2.Size2 = (ushort)moduleSize;
 
                         writer.Write(Helpers.CastToArray(tsData2), 0, Marshal.SizeOf(typeof(TSData2)));
@@ -2429,7 +2429,7 @@ namespace VortexTracker
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                 using (BinaryWriter writer = new BinaryWriter(fileStream))
                 {
-                    writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                    writer.Write(data, 0, moduleSize);
 
                     if (activeForm.TSWindow[0] != null && activeForm.TSWindow[1] != null)
                     {
@@ -2443,7 +2443,7 @@ namespace VortexTracker
                             return;
                         }
 
-                        writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                        writer.Write(data, 0, moduleSize);
                         tsData3.Size1 = (ushort)moduleSize;
 
                         if (!vtm2PT3.Initialize(data, pt3, activeForm.TSWindow[1].VTM, out moduleSize))
@@ -2452,7 +2452,7 @@ namespace VortexTracker
                             return;
                         }
 
-                        writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                        writer.Write(data, 0, moduleSize);
                         tsData3.Size2 = (ushort)moduleSize;
 
                         writer.Write(Helpers.CastToArray(tsData3), 0, Marshal.SizeOf(typeof(TSData3)));
@@ -2468,7 +2468,7 @@ namespace VortexTracker
                             return;
                         }
 
-                        writer.Write(Helpers.CastToArray(pt3), 0, moduleSize);
+                        writer.Write(data, 0, moduleSize);
                         tsData2.Size2 = (ushort)moduleSize;
 
                         writer.Write(Helpers.CastToArray(tsData2), 0, Marshal.SizeOf(typeof(TSData2)));
@@ -2594,6 +2594,7 @@ namespace VortexTracker
                 if (ChildForm.PlayingWindow[i] == null)
                     continue;
 
+                AY.PlayingModule[i] = ChildForm.PlayingWindow[i].VTM;
                 VTModule.Module_SetPointer(ChildForm.PlayingWindow[i].VTM, i);
                 VTModule.Module_SetDelay((sbyte)ChildForm.PlayingWindow[i].VTM.InitialDelay);
                 VTModule.Module_SetCurrentPosition(0);
@@ -2634,6 +2635,7 @@ namespace VortexTracker
                 if (ChildForm.PlayingWindow[i] == null)
                     continue;
 
+                AY.PlayingModule[i] = ChildForm.PlayingWindow[i].VTM;
                 VTModule.Module_SetPointer(ChildForm.PlayingWindow[i].VTM, i);
                 VTModule.Module_SetDelay((sbyte)ChildForm.PlayingWindow[i].VTM.InitialDelay);
                 VTModule.Module_SetCurrentPosition(ChildForm.PlayingWindow[i].PositionIndex);

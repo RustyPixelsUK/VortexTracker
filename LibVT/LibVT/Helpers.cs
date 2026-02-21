@@ -34,7 +34,7 @@ namespace LibVT
 
         public static void FillChar<T>(T[] array, int fillOffset, int fillCount, T fillValue)
         {
-            for (int i = fillOffset; i < fillCount && i < array.Length; i++)
+            for (int i = fillOffset; i < fillOffset + fillCount && i < array.Length; i++)
                 array[i] = fillValue;
         }
 

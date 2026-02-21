@@ -8566,6 +8566,7 @@ namespace VortexTracker
             AY.ChipCount = 1;
             Tracks.RemoveSelection();
 
+            AY.PlayingModule[0] = VTM;
             VTModule.PlayArgs[0].PositionIndex = PositionIndex;
             VTModule.Module_SetCurrentPattern(PatternIndex);
 
@@ -8626,6 +8627,12 @@ namespace VortexTracker
             }
             else
                 AY.ChipCount = 2;
+
+            for (int _i = 0; _i < AY.ChipCount; _i++)
+            {
+                if (PlayingWindow[_i] != null)
+                    AY.PlayingModule[_i] = PlayingWindow[_i].VTM;
+            }
 
             // Shift+Enter - infinite play current line
             if (playNote || (GetKeyState(Keys.Shift) & 128) != 0)
@@ -14966,7 +14973,8 @@ namespace VortexTracker
             if (TabControl.SelectedTab == PatternsTab)
             {
                 // Invalidate Tracks
-                RedrawWindow(Tracks.Handle, IntPtr.Zero, IntPtr.Zero, RDW_INVALIDATE | RDW_NOERASE | RDW_NOINTERNALPAINT | RDW_UPDATENOW);
+                if (!Tracks.IsDisposed)
+                    RedrawWindow(Tracks.Handle, IntPtr.Zero, IntPtr.Zero, RDW_INVALIDATE | RDW_NOERASE | RDW_NOINTERNALPAINT | RDW_UPDATENOW);
 
                 // Invalidate child bootom
                 rect.Top = PatternsTab.Top + InterfaceBox.Top;

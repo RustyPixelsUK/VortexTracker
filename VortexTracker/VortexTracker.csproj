@@ -59,6 +59,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\LibVT\LibVT\LibVT.csproj" />
+		<ProjectReference Include="..\VortexTracker.Core\VortexTracker.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

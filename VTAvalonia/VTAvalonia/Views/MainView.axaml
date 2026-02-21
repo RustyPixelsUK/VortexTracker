@@ -1,0 +1,343 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:VTAvalonia.ViewModels"
+             xmlns:vt="using:VortexTracker"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
+             x:Class="VTAvalonia.Views.MainView"
+             x:Name="Root"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+  <UserControl.KeyBindings>
+    <KeyBinding Gesture="Ctrl+N"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileNew}" />
+    <KeyBinding Gesture="Ctrl+O"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileOpen}" />
+    <KeyBinding Gesture="Ctrl+S"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileSave}" />
+    <KeyBinding Gesture="Ctrl+C"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditCopy}" />
+    <KeyBinding Gesture="Ctrl+X"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditCut}" />
+    <KeyBinding Gesture="Ctrl+V"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditPaste}" />
+    <KeyBinding Gesture="Ctrl+Z"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Undo}" />
+    <KeyBinding Gesture="Ctrl+Y"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Redo}" />
+    <KeyBinding Gesture="Space"      Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayStop}" />
+    <KeyBinding Gesture="Escape"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Stop}" />
+    <KeyBinding Gesture="Up"         Command="{Binding MoveLineCommand}"          CommandParameter="-1" />
+    <KeyBinding Gesture="Down"       Command="{Binding MoveLineCommand}"          CommandParameter="1" />
+    <KeyBinding Gesture="Enter"      Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayLine}" />
+    <KeyBinding Gesture="Shift+Enter" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayPatternFromStart}" />
+    <KeyBinding Gesture="Ctrl+Enter" Command="{Binding ApplyLineEditCommand}" />
+    <KeyBinding Gesture="Insert"     Command="{Binding InsertLineCommand}" />
+    <KeyBinding Gesture="Delete"     Command="{Binding DeleteLineCommand}" />
+    <KeyBinding Gesture="L"          Command="{Binding SetLoopPositionCommand}" />
+    <KeyBinding Gesture="Ctrl+A"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsLeft}" />
+    <KeyBinding Gesture="Ctrl+D"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsRight}" />
+  </UserControl.KeyBindings>
+
+  <DockPanel>
+    <!-- ═══════════════ MENU BAR ═══════════════ -->
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_File">
+        <MenuItem Header="_New"         InputGesture="Ctrl+N"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileNew}" />
+        <MenuItem Header="_Open..."     InputGesture="Ctrl+O"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileOpen}" />
+        <MenuItem Header="_Save"        InputGesture="Ctrl+S"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileSave}" />
+        <MenuItem Header="Save _As..."                          Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileSaveAs}" />
+        <Separator />
+        <MenuItem Header="_Options"                             Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Options}" />
+        <Separator />
+        <MenuItem Header="E_xit"                                Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileExit}" />
+      </MenuItem>
+
+      <MenuItem Header="_Play">
+        <MenuItem Header="_Play / Stop"              InputGesture="Space"       Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayStop}" />
+        <MenuItem Header="Play _From Start"                                        Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayFromStart}" />
+        <MenuItem Header="Play Pattern From _Line"                                 Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayPatternFromLine}" />
+        <MenuItem Header="Play _Pattern From Start"  InputGesture="Shift+Enter"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayPatternFromStart}" />
+        <MenuItem Header="Pre_view Current Line"     InputGesture="Enter"         Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayLine}" />
+        <MenuItem Header="_Stop"                     InputGesture="Escape"        Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Stop}" />
+        <Separator />
+        <MenuItem Header="Toggle _Looping"                              Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.ToggleLooping}" />
+      </MenuItem>
+
+      <MenuItem Header="_Edit">
+        <MenuItem Header="_Undo"   InputGesture="Ctrl+Z" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Undo}" />
+        <MenuItem Header="_Redo"   InputGesture="Ctrl+Y" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Redo}" />
+        <Separator />
+        <MenuItem Header="Cu_t"    InputGesture="Ctrl+X" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditCut}" />
+        <MenuItem Header="_Copy"   InputGesture="Ctrl+C" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditCopy}" />
+        <MenuItem Header="_Paste"  InputGesture="Ctrl+V" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditPaste}" />
+        <Separator />
+        <MenuItem Header="Transpose +1"  Command="{Binding TransposeCommand}" CommandParameter="1" />
+        <MenuItem Header="Transpose -1"  Command="{Binding TransposeCommand}" CommandParameter="-1" />
+        <MenuItem Header="Transpose +12" Command="{Binding TransposeCommand}" CommandParameter="12" />
+        <MenuItem Header="Transpose -12" Command="{Binding TransposeCommand}" CommandParameter="-12" />
+        <Separator />
+        <MenuItem Header="_Expand Pattern"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.ExpandPattern}" />
+        <MenuItem Header="_Compress Pattern" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.CompressPattern}" />
+        <MenuItem Header="Swap Channels ←"   InputGesture="Ctrl+A" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsLeft}" />
+        <MenuItem Header="Swap Channels →"   InputGesture="Ctrl+D" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsRight}" />
+        <Separator />
+        <MenuItem Header="Set _Loop Position" InputGesture="L"  Command="{Binding SetLoopPositionCommand}" />
+        <Separator />
+        <MenuItem Header="Insert Position" InputGesture="Insert" Command="{Binding InsertPositionCommand}" />
+        <MenuItem Header="Delete Position" InputGesture="Delete" Command="{Binding DeletePositionCommand}" />
+        <MenuItem Header="Duplicate Position"                   Command="{Binding DuplicatePositionCommand}" />
+        <MenuItem Header="Clone Position"                       Command="{Binding ClonePositionCommand}" />
+      </MenuItem>
+
+      <MenuItem Header="_Help">
+        <MenuItem Header="_About..." Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.HelpAbout}" />
+      </MenuItem>
+    </Menu>
+
+    <!-- ═══════════════ TOOLBAR ═══════════════ -->
+    <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+            BorderThickness="0,0,0,1" Padding="4,2">
+      <WrapPanel Orientation="Horizontal">
+        <!-- File group -->
+        <Button Content="New"     ToolTip.Tip="New (Ctrl+N)"  Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileNew}"  Margin="1" />
+        <Button Content="Open"    ToolTip.Tip="Open (Ctrl+O)" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileOpen}" Margin="1" />
+        <Button Content="Save"    ToolTip.Tip="Save (Ctrl+S)" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.FileSave}" Margin="1" />
+        <Separator Width="8" />
+        <!-- Edit group -->
+        <Button Content="Undo"    ToolTip.Tip="Undo (Ctrl+Z)" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Undo}"   Margin="1" />
+        <Button Content="Redo"    ToolTip.Tip="Redo (Ctrl+Y)" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Redo}"   Margin="1" />
+        <Separator Width="8" />
+        <!-- Playback group -->
+        <Button Content="{Binding PlayStopLabel}"
+                ToolTip.Tip="Play/Stop (Space)"
+                Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayStop}"             Margin="1" MinWidth="54" />
+        <Button Content="▶▶"     ToolTip.Tip="Play From Start"           Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayFromStart}"        Margin="1" />
+        <Button Content="▶|"     ToolTip.Tip="Play Pattern From Start"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.PlayPatternFromStart}" Margin="1" />
+        <Button Content="■"      ToolTip.Tip="Stop (Esc)"                Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.Stop}"                Margin="1" />
+        <ToggleButton IsChecked="{Binding IsLooping}"
+                      ToolTip.Tip="Toggle Looping"
+                      Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.ToggleLooping}"   Margin="1">↺</ToggleButton>
+        <Separator Width="8" />
+        <!-- Pattern tools -->
+        <Button Content="+1"     ToolTip.Tip="Transpose +1"    Command="{Binding TransposeCommand}" CommandParameter="1"   Margin="1" />
+        <Button Content="-1"     ToolTip.Tip="Transpose -1"    Command="{Binding TransposeCommand}" CommandParameter="-1"  Margin="1" />
+        <Button Content="+12"    ToolTip.Tip="Transpose +12"   Command="{Binding TransposeCommand}" CommandParameter="12"  Margin="1" />
+        <Button Content="-12"    ToolTip.Tip="Transpose -12"   Command="{Binding TransposeCommand}" CommandParameter="-12" Margin="1" />
+        <Separator Width="8" />
+        <Button Content="Expand"    ToolTip.Tip="Expand Pattern"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.ExpandPattern}"    Margin="1" />
+        <Button Content="Compress"  ToolTip.Tip="Compress Pattern"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.CompressPattern}"  Margin="1" />
+        <Button Content="Swap←"     ToolTip.Tip="Swap Channels Left" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsLeft}" Margin="1" />
+        <Button Content="Swap→"     ToolTip.Tip="Swap Channels Right" Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsRight}" Margin="1" />
+      </WrapPanel>
+    </Border>
+
+    <!-- ═══════════════ MODULE HEADER BAR ═══════════════ -->
+    <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+            BorderThickness="0,0,0,1" Padding="8,4">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <TextBlock Text="Title:"  VerticalAlignment="Center" />
+        <TextBox Width="160" Text="{Binding ModuleHeaderTitle,  Mode=TwoWay}" />
+        <TextBlock Text="Author:" VerticalAlignment="Center" />
+        <TextBox Width="160" Text="{Binding ModuleHeaderAuthor, Mode=TwoWay}" />
+        <TextBlock Text="Speed:"  VerticalAlignment="Center" />
+        <NumericUpDown Minimum="1" Maximum="255" Width="72"
+                       Value="{Binding ModuleHeaderSpeed, Mode=TwoWay}" />
+        <TextBlock Text="NoteTable:" VerticalAlignment="Center" />
+        <ComboBox Width="130" SelectedIndex="{Binding ModuleHeaderNoteTable, Mode=TwoWay}">
+          <ComboBoxItem Content="ProTracker 3.3" />
+          <ComboBoxItem Content="Sound Tracker" />
+          <ComboBoxItem Content="ASM / PSC" />
+          <ComboBoxItem Content="RealSound" />
+          <ComboBoxItem Content="Natural" />
+          <ComboBoxItem Content="Custom" />
+        </ComboBox>
+        <Button Content="Apply" Command="{Binding ApplyModuleHeaderCommand}" Margin="4,0,0,0" />
+        <TextBlock Text="{Binding WindowTitle}" VerticalAlignment="Center"
+                   Margin="16,0,0,0" FontWeight="SemiBold" />
+      </StackPanel>
+    </Border>
+
+    <!-- ═══════════════ STATUS BAR ═══════════════ -->
+    <Border DockPanel.Dock="Bottom" BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+            BorderThickness="0,1,0,0" Padding="8,3">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Grid.Column="0" Text="{Binding Status}" Foreground="{Binding StatusColor}" />
+        <TextBlock Grid.Column="1" Text="{Binding PatternCursorInfo}" Margin="16,0" />
+        <TextBlock Grid.Column="2" Text="{Binding ModuleInfo}" Margin="0,0,4,0" />
+      </Grid>
+    </Border>
+
+    <!-- ═══════════════ MAIN EDITOR AREA ═══════════════ -->
+    <Grid Margin="4" ColumnDefinitions="180,*">
+
+      <!-- ── LEFT: POSITIONS PANEL ── -->
+      <Border Grid.Column="0"
+              BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+              BorderThickness="1" Margin="0,0,4,0" Padding="6">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Text="Play Order" FontWeight="Bold" Margin="0,0,0,4" />
+
+          <!-- Positions list with context menu -->
+          <ListBox DockPanel.Dock="Top" Height="280"
+                   ItemsSource="{Binding Positions}"
+                   SelectedIndex="{Binding SelectedPositionIndex, Mode=TwoWay}">
+            <ListBox.Styles>
+              <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                <Setter Property="Background" Value="#2D6CDF" />
+              </Style>
+            </ListBox.Styles>
+            <ListBox.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Set Loop Here (L)"  Command="{Binding SetLoopPositionCommand}" />
+                <Separator />
+                <MenuItem Header="Insert Position"     Command="{Binding InsertPositionCommand}" />
+                <MenuItem Header="Delete Position"     Command="{Binding DeletePositionCommand}" />
+                <MenuItem Header="Duplicate Position"  Command="{Binding DuplicatePositionCommand}" />
+                <MenuItem Header="Clone Position"      Command="{Binding ClonePositionCommand}" />
+              </ContextMenu>
+            </ListBox.ContextMenu>
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock FontFamily="Consolas">
+                  <Run Text="{Binding LoopMarker}" Foreground="#FF4444" FontWeight="Bold" />
+                  <Run Text="{Binding Index,       StringFormat='{}{0:D2}'}" />
+                  <Run Text=": " />
+                  <Run Text="{Binding PatternIndex, StringFormat='{}{0:D2}'}" />
+                </TextBlock>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <!-- Position controls -->
+          <StackPanel DockPanel.Dock="Top" Margin="0,4,0,0">
+            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,2">
+              <Button Content="Ins"  ToolTip.Tip="Insert"    Command="{Binding InsertPositionCommand}"   Width="44" />
+              <Button Content="Del"  ToolTip.Tip="Delete"    Command="{Binding DeletePositionCommand}"   Width="44" />
+              <Button Content="Dup"  ToolTip.Tip="Duplicate" Command="{Binding DuplicatePositionCommand}" Width="44" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,2">
+              <Button Content="Clone" ToolTip.Tip="Clone (new pattern)" Command="{Binding ClonePositionCommand}"   Width="64" />
+              <Button Content="⟳Loop" ToolTip.Tip="Set loop here (L)"  Command="{Binding SetLoopPositionCommand}" Width="68" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,4,0,0">
+              <TextBlock Text="Loop:"    VerticalAlignment="Center" />
+              <NumericUpDown Minimum="0" Maximum="255" Width="72"
+                             Value="{Binding LoopPositionIndex, Mode=TwoWay}" />
+            </StackPanel>
+          </StackPanel>
+        </DockPanel>
+      </Border>
+
+      <!-- ── RIGHT: PATTERN EDITOR ── -->
+      <Border Grid.Column="1"
+              BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+              BorderThickness="1" Padding="6">
+        <DockPanel>
+          <!-- Pattern selector bar -->
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
+            <TextBlock Text="Pattern:" VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="255" Width="76"
+                           Value="{Binding SelectedPatternIndex, Mode=TwoWay}" />
+            <TextBlock Text="Length:"  VerticalAlignment="Center" />
+            <NumericUpDown Minimum="1" Maximum="256" Width="76"
+                           Value="{Binding PatternLength, Mode=TwoWay}" />
+            <TextBlock Text="Line:"    VerticalAlignment="Center" />
+            <TextBlock Text="{Binding SelectedPatternLineIndex}" VerticalAlignment="Center" Width="32" />
+            <TextBlock Text="of" VerticalAlignment="Center" />
+            <TextBlock Text="{Binding PatternLength}" VerticalAlignment="Center" Width="32" />
+          </StackPanel>
+
+          <!-- Pattern lines list -->
+          <ListBox DockPanel.Dock="Top" Height="260"
+                   ItemsSource="{Binding PatternLines}"
+                   SelectedIndex="{Binding SelectedPatternLineIndex, Mode=TwoWay}"
+                   AutoScrollToSelectedItem="True">
+            <ListBox.Styles>
+              <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                <Setter Property="Background" Value="#2D6CDF" />
+              </Style>
+            </ListBox.Styles>
+            <ListBox.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Insert Line (Ins)"  Command="{Binding InsertLineCommand}" />
+                <MenuItem Header="Delete Line (Del)"  Command="{Binding DeleteLineCommand}" />
+                <Separator />
+                <MenuItem Header="Copy (Ctrl+C)"      Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditCopy}" />
+                <MenuItem Header="Cut (Ctrl+X)"       Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditCut}" />
+                <MenuItem Header="Paste (Ctrl+V)"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.EditPaste}" />
+                <Separator />
+                <MenuItem Header="Transpose +1"       Command="{Binding TransposeCommand}" CommandParameter="1" />
+                <MenuItem Header="Transpose -1"       Command="{Binding TransposeCommand}" CommandParameter="-1" />
+                <MenuItem Header="Transpose +12"      Command="{Binding TransposeCommand}" CommandParameter="12" />
+                <MenuItem Header="Transpose -12"      Command="{Binding TransposeCommand}" CommandParameter="-12" />
+                <Separator />
+                <MenuItem Header="Expand Pattern"     Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.ExpandPattern}" />
+                <MenuItem Header="Compress Pattern"   Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.CompressPattern}" />
+                <MenuItem Header="Swap Channels ←"    Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsLeft}" />
+                <MenuItem Header="Swap Channels →"    Command="{Binding ExecuteActionTypeCommand}" CommandParameter="{x:Static vt:UIActionType.SwapChannelsRight}" />
+              </ContextMenu>
+            </ListBox.ContextMenu>
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="12" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <!-- Raw line editor -->
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto"
+                Margin="0,6,0,0" RowDefinitions="Auto">
+            <TextBox Grid.Column="0"
+                     Text="{Binding SelectedPatternLineText, Mode=TwoWay}"
+                     FontFamily="Consolas" FontSize="12" />
+            <Button Grid.Column="1" Content="Apply"   Command="{Binding ApplyLineEditCommand}"  Margin="4,0,0,0" />
+            <Button Grid.Column="2" Content="Ins"     Command="{Binding InsertLineCommand}"     Margin="4,0,0,0" />
+            <Button Grid.Column="3" Content="Del"     Command="{Binding DeleteLineCommand}"     Margin="4,0,0,0" />
+          </Grid>
+
+          <!-- Channel A editor row -->
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
+                      Spacing="6" Margin="0,6,0,0">
+            <TextBlock Text="Ch A:" VerticalAlignment="Center" FontWeight="Bold" />
+            <TextBlock Text="Note"  VerticalAlignment="Center" />
+            <TextBox Width="52" Text="{Binding ChannelANote,      Mode=TwoWay}" FontFamily="Consolas" />
+            <TextBlock Text="Smp"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelASample,   Mode=TwoWay}" />
+            <TextBlock Text="Orn"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelAOrnament, Mode=TwoWay}" />
+            <TextBlock Text="Vol"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelAVolume,   Mode=TwoWay}" />
+            <Button Content="Apply Ch A" Command="{Binding ApplyChannelACommand}" />
+          </StackPanel>
+
+          <!-- Channel B editor row -->
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
+                      Spacing="6" Margin="0,2,0,0">
+            <TextBlock Text="Ch B:" VerticalAlignment="Center" FontWeight="Bold" />
+            <TextBlock Text="Note"  VerticalAlignment="Center" />
+            <TextBox Width="52" Text="{Binding ChannelBNote,      Mode=TwoWay}" FontFamily="Consolas" />
+            <TextBlock Text="Smp"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelBSample,   Mode=TwoWay}" />
+            <TextBlock Text="Orn"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelBOrnament, Mode=TwoWay}" />
+            <TextBlock Text="Vol"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelBVolume,   Mode=TwoWay}" />
+            <Button Content="Apply Ch B" Command="{Binding ApplyChannelBCommand}" />
+          </StackPanel>
+
+          <!-- Channel C editor row -->
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
+                      Spacing="6" Margin="0,2,0,0">
+            <TextBlock Text="Ch C:" VerticalAlignment="Center" FontWeight="Bold" />
+            <TextBlock Text="Note"  VerticalAlignment="Center" />
+            <TextBox Width="52" Text="{Binding ChannelCNote,      Mode=TwoWay}" FontFamily="Consolas" />
+            <TextBlock Text="Smp"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelCSample,   Mode=TwoWay}" />
+            <TextBlock Text="Orn"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelCOrnament, Mode=TwoWay}" />
+            <TextBlock Text="Vol"   VerticalAlignment="Center" />
+            <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelCVolume,   Mode=TwoWay}" />
+            <Button Content="Apply Ch C" Command="{Binding ApplyChannelCCommand}" />
+          </StackPanel>
+        </DockPanel>
+      </Border>
+    </Grid>
+  </DockPanel>
+</UserControl>

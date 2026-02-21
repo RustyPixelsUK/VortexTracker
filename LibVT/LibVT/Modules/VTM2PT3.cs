@@ -83,7 +83,7 @@ namespace LibVT
 
             // Move(Pt3Id[_vtm.VortexModule_Header and (_vtm.FeaturesLevel = 1), 0], PT3.PT3_Name, 30);
             string selectedId = _pt3Id[_vtm.HasHeader && _vtm.FeaturesLevel == FeaturesLevel.VTII_PT36 ? 1 : 0];            
-            Array.Copy(data, 0, _pt3.Name, 0, Math.Min(30, selectedId.Length));
+            Helpers.CopyStringToByteArray(selectedId, _pt3.Name, 0, Math.Min(30, selectedId.Length));
             
             if (_vtm.FeaturesLevel != FeaturesLevel.VTII_PT36)
                 _pt3.Name[13] = (byte)(0x35 + _vtm.FeaturesLevel);
@@ -94,7 +94,7 @@ namespace LibVT
                 i = _vtm.Title.Length;
 
             // Move(_vtm.Title[1], PT3.PT3_Name[30], i);
-            Helpers.CopyStringToByteArray(_vtm.Author, _pt3.Name, 66, i);
+            Helpers.CopyStringToByteArray(_vtm.Title, _pt3.Name, 30, i);
 
             j = 32 - i;
 
@@ -119,7 +119,8 @@ namespace LibVT
             _pt3.LoopPosition = (byte)_vtm.Positions.Loop;
             _pt3.PatternsPointer = (ushort)(0xC9 + _pt3.NumberOfPositions + 1);
 
-            Helpers.FillChar<ushort>(_pt3.SamplePointers, 96, 0);
+            Helpers.FillChar<ushort>(_pt3.SamplePointers, 32, 0);
+            Helpers.FillChar<ushort>(_pt3.OrnamentPointers, 16, 0);
             
             data[0xC9 + _pt3.NumberOfPositions] = 255;
             
@@ -234,8 +235,8 @@ namespace LibVT
                                             _orn1 = false;
 
                                             _patStrs[_strNum] = _patStrs[_strNum] +
-                                                ((char)0xF0 + _vtm.Patterns[i].Lines[j].Channel[k].Ornament) +
-                                                ((char)_vtm.Patterns[i].Lines[j].Channel[k].Sample * 2);
+                                                (char)(0xF0 + _vtm.Patterns[i].Lines[j].Channel[k].Ornament) +
+                                                (char)(_vtm.Patterns[i].Lines[j].Channel[k].Sample * 2);
                                         }
                                     }
                                     else
@@ -244,29 +245,29 @@ namespace LibVT
                                         _orn1 = false;
 
                                         _patStrs[_strNum] = _patStrs[_strNum] +
-                                            ((char)0x10 + _vtm.Patterns[i].Lines[j].Channel[k].Envelope) +
-                                            (_vtm.Patterns[i].Lines[j].Envelope >> 8) +
+                                            (char)(0x10 + _vtm.Patterns[i].Lines[j].Channel[k].Envelope) +
+                                            (char)(_vtm.Patterns[i].Lines[j].Envelope >> 8) +
                                             (char)_vtm.Patterns[i].Lines[j].Envelope +
-                                            ((char)_vtm.Patterns[i].Lines[j].Channel[k].Sample * 2);
+                                            (char)(_vtm.Patterns[i].Lines[j].Channel[k].Sample * 2);
                                         _patStrs[_strNum] = _patStrs[_strNum] +
-                                            ((char)0x40 + _vtm.Patterns[i].Lines[j].Channel[k].Ornament);
+                                            (char)(0x40 + _vtm.Patterns[i].Lines[j].Channel[k].Ornament);
                                     }
                                 }
 
                                 if (_sam1)
                                     _patStrs[_strNum] = _patStrs[_strNum] +
-                                        ((char)0xD0 + _vtm.Patterns[i].Lines[j].Channel[k].Sample);
+                                        (char)(0xD0 + _vtm.Patterns[i].Lines[j].Channel[k].Sample);
  
                                 if (_orn1)
                                 {
                                     _patStrs[_strNum] = _patStrs[_strNum] +
-                                        ((char)0x40 + _vtm.Patterns[i].Lines[j].Channel[k].Ornament);
-                                    
+                                        (char)(0x40 + _vtm.Patterns[i].Lines[j].Channel[k].Ornament);
+
                                     if (_vtm.Patterns[i].Lines[j].Channel[k].Envelope >= 1 &&
                                         _vtm.Patterns[i].Lines[j].Channel[k].Envelope <= 14)
                                         _patStrs[_strNum] = _patStrs[_strNum] +
-                                            ((char)0xB1 + _vtm.Patterns[i].Lines[j].Channel[k].Envelope) +
-                                            (_vtm.Patterns[i].Lines[j].Envelope >> 8) +
+                                            (char)(0xB1 + _vtm.Patterns[i].Lines[j].Channel[k].Envelope) +
+                                            (char)(_vtm.Patterns[i].Lines[j].Envelope >> 8) +
                                             (char)_vtm.Patterns[i].Lines[j].Envelope;
                                     else if ((_vtm.Patterns[i].Lines[j].Channel[k].Envelope == 15) &&
                                         _alCo[k].Envelope != 0)
@@ -277,8 +278,8 @@ namespace LibVT
                                 {
                                     if (_vtm.Patterns[i].Lines[j].Channel[k].Envelope != 15)
                                         _patStrs[_strNum] = _patStrs[_strNum] +
-                                            ((char)0xB1 + _vtm.Patterns[i].Lines[j].Channel[k].Envelope) +
-                                            (_vtm.Patterns[i].Lines[j].Envelope >> 8) +
+                                            (char)(0xB1 + _vtm.Patterns[i].Lines[j].Channel[k].Envelope) +
+                                            (char)(_vtm.Patterns[i].Lines[j].Envelope >> 8) +
                                             (char)_vtm.Patterns[i].Lines[j].Envelope;
                                     else if (_alCo[k].Envelope != 0)
                                         _patStrs[_strNum] = _patStrs[_strNum] + '\xB0';
@@ -295,7 +296,7 @@ namespace LibVT
                                     if (_vtm.Patterns[i].Lines[j].Channel[k].Volume != _alCo[k].Volume)
                                     {
                                         _patStrs[_strNum] = _patStrs[_strNum] +
-                                            ((char)0xC0 + _vtm.Patterns[i].Lines[j].Channel[k].Volume);
+                                            (char)(0xC0 + _vtm.Patterns[i].Lines[j].Channel[k].Volume);
                                         _alCo[k].Volume = _vtm.Patterns[i].Lines[j].Channel[k].Volume;
                                     }
                                 }
@@ -304,7 +305,7 @@ namespace LibVT
                                 {
                                     _prevNoise = _vtm.Patterns[i].Lines[j].Noise;
                                     _patStrs[_strNum] = _patStrs[_strNum] +
-                                        ((char)0x20 + _vtm.Patterns[i].Lines[j].Noise);
+                                        (char)(0x20 + _vtm.Patterns[i].Lines[j].Noise);
                                 }
 
                                 switch (_vtm.Patterns[i].Lines[j].Channel[k].AdditionalCommand.Number)
@@ -345,7 +346,7 @@ namespace LibVT
                                     case 5:
                                     case 6:
                                         _patStrs[_strNum] = _patStrs[_strNum] +
-                                            ((char)_vtm.Patterns[i].Lines[j].Channel[k].AdditionalCommand.Number - 1);
+                                            (char)(_vtm.Patterns[i].Lines[j].Channel[k].AdditionalCommand.Number - 1);
                                         break;
                                     case 9:
                                     case 10:
@@ -448,12 +449,12 @@ namespace LibVT
                                         {
                                             if (_dl >= 0)
                                                 _patStrs[_strNum] = _patStrs[_strNum] +
-                                                    ((char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Delay) +
-                                                    (char)_dl + (_dl >> 8) + ((char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter) + '\x00';
+                                                    (char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Delay +
+                                                    (char)_dl + (char)(_dl >> 8) + (char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter + '\x00';
                                             else
                                                 _patStrs[_strNum] = _patStrs[_strNum] +
-                                                    ((char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Delay) +
-                                                    (char)-_dl + (-_dl >> 8) + ((char)-_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter) + '\xFF';
+                                                    (char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Delay +
+                                                    (char)-_dl + (char)(-_dl >> 8) + (char)-_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter + '\xFF';
                                         }
                                         break;
                                     case 4:
@@ -463,8 +464,8 @@ namespace LibVT
                                         break;
                                     case 6:
                                         _patStrs[_strNum] = _patStrs[_strNum] +
-                                            ((char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter >> 4) +
-                                            ((char)_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter & 15);
+                                            (char)(_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter >> 4) +
+                                            (char)(_vtm.Patterns[i].Lines[d].Channel[k].AdditionalCommand.Parameter & 15);
                                         break;
                                     case 9:
                                         _patStrs[_strNum] = _patStrs[_strNum] +
@@ -593,7 +594,7 @@ namespace LibVT
                             if (!_vtm.Samples[i].Ticks[j].Envelope_Enabled)
                                 d = 1;
 
-                            d += (_vtm.Samples[i].Ticks[j].Add_to_Envelope_or_Noise) & 31 << 1;
+                            d += (_vtm.Samples[i].Ticks[j].Add_to_Envelope_or_Noise & 31) << 1;
 
                             if (_vtm.Samples[i].Ticks[j].Amplitude_Sliding)
                             {
@@ -698,10 +699,14 @@ namespace LibVT
                 }
             }
 
+            // Write the PT3 header back into data[0..sizeof(PT3)-1]
+            byte[] headerBytes = Helpers.CastToArray(_pt3);
+            Array.Copy(headerBytes, 0, data, 0, headerBytes.Length);
+
             moduleSize = _patNum;
-            
+
             result = true;
-            
+
             return result;
         }
     }

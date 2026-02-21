@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:VTAvalonia.ViewModels"
+        mc:Ignorable="d"
+        x:Class="VTAvalonia.Views.OptionsWindow"
+        x:DataType="vm:OptionsViewModel"
+        Width="420" Height="240"
+        WindowStartupLocation="CenterOwner"
+        Title="Options">
+  <Design.DataContext>
+    <vm:OptionsViewModel />
+  </Design.DataContext>
+
+  <StackPanel Margin="16" Spacing="8">
+    <TextBlock Text="Options" FontSize="18" />
+    <TextBlock Text="Options dialog placeholder." />
+    <Button Content="Close" HorizontalAlignment="Right" Click="CloseButton_Click" />
+  </StackPanel>
+</Window>

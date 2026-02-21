@@ -87,6 +87,10 @@ namespace VortexTracker
             ChannelState[0] = new ChannelState();
             ChannelState[1] = new ChannelState();
             ChannelState[2] = new ChannelState();
+            LastNoteParams = new LastNoteParams[3];
+            LastNoteParams[0] = new LastNoteParams();
+            LastNoteParams[1] = new LastNoteParams();
+            LastNoteParams[2] = new LastNoteParams();
             HLStep = 4;
             KeyPressed = 0;
             ShownFrom = 0;

@@ -76,11 +76,11 @@ namespace LibVT
 
     public class LastNoteParams
     {
-        public byte Line;     // 0..255
-        public byte Sample;   // 0..31
-        public byte Ornament; // 0..15
-        public sbyte Volume;  // 1-15 - vol, 0 - prev vol
-        public byte Envelope;
+        public byte Line =0;     // 0..255
+        public byte Sample=0;   // 0..31
+        public byte Ornament=0; // 0..15
+        public sbyte Volume=0;  // 1-15 - vol, 0 - prev vol
+        public byte Envelope=0;
     }
 
     public class PatternTriple
@@ -445,7 +445,7 @@ namespace LibVT
             PlayArgs[ChipIndex].EnvBase = 0;
             PlayArgs[ChipIndex].IntCount = 0;
 
-            if (all)
+            if (all && VTM != null)
             {
                 for (int k = 0; k < 3; k ++ )
                 {
@@ -1752,7 +1752,7 @@ namespace LibVT
             bool decBaseNoiseOn = Main.DecBaseNoiseOn;
             bool envelopeAsNode = Main.EnvelopeAsNote;
 
-            using (FileStream fileStream = new FileStream(fileName, append ? FileMode.OpenOrCreate : FileMode.CreateNew, FileAccess.ReadWrite))
+            using (FileStream fileStream = new FileStream(fileName, append ? FileMode.OpenOrCreate : FileMode.Create, FileAccess.ReadWrite))
             {
                 using (TextWriter textWriter = new StreamWriter(fileStream))
                 {

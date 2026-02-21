@@ -14,7 +14,7 @@ public class TrackerViewModel : ViewModelBase, IDisposable
     private int _currentPattern;
     private bool _isPlaying;
     private string _statusText = "Ready";
-    private AudioEngineStub? _audioEngine;
+    private AudioEngineImpl? _audioEngine;
     
     public VTM? Module
     {
@@ -270,10 +270,10 @@ public class TrackerViewModel : ViewModelBase, IDisposable
     {
         try
         {
-            var backend = _audioEngine = new AudioEngineStub();
+            var backend = _audioEngine = new AudioEngineImpl();
             _audioEngine.Initialize();
             _audioEngine.PositionChanged += OnAudioPositionChanged;
-            StatusText = "Audio engine initialized (OpenAL)";
+            StatusText = "Audio ready (WaveOutAPI/OpenAL)";
         }
         catch (Exception ex)
         {
@@ -375,6 +375,7 @@ public class OrnamentLineViewModel
     public string LineNumberHex => $"{LineNumber:X2}";
     public string NoteStr => VTModule.NoteToStr(Note);
 }
+
 
 
 
