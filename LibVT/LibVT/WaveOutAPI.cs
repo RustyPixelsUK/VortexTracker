@@ -343,6 +343,7 @@ namespace LibVT
             StopOpenAL();
             UnResetPlayingInternal();
             AY.ClearRegisters();
+            AY.ClearSpec();
         }
 
         public static bool AllBuffersDone()
@@ -738,6 +739,8 @@ namespace LibVT
             soundChip.Noise.Seed = 0xFFFF;
             soundChip.Noise.Value = 0;
 
+            soundChip.ClearSpec();
+
             if (AY.AyumiChip[chip] != null)
                 AY.AyumiChip[chip].ResetChip();
         }
@@ -807,6 +810,9 @@ namespace LibVT
 
             PlayGridIndex = 0;
             TickCount = 0;
+
+            AY.ClearRegisters();
+            AY.ClearSpec();
         }
 
         public static void UnResetPlaying()

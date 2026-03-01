@@ -7,6 +7,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using LibVT;
 using System.Linq;
+using VortexTracker.Core.Services;
 using VTAvalonia.Services;
 using VTAvalonia.ViewModels;
 using VTAvalonia.Views;
@@ -15,6 +16,14 @@ namespace VTAvalonia
 {
     public partial class App : Application
     {
+        public IPlatformPathsService PlatformPaths { get; } = new AvaloniaPlatformPathsService();
+        public IAudioOutputService AudioOutput { get; } = new OpenAlAudioOutputService();
+        public IMidiService Midi { get; } = new RtMidiMidiService();
+        public ISerialPortService SerialPort { get; } = new DotNetSerialPortService();
+        public AppSettingsManager Settings { get; private set; } = null!;
+
+        public static App? Instance => Current as App;
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -77,6 +86,11 @@ namespace VTAvalonia
                         break;
                 }
             };
+
+            // Load persisted settings and apply to LibVT statics before any service
+            // that touches WaveOutAPI / AY / Main is constructed.
+            Settings = new AppSettingsManager(PlatformPaths);
+            Settings.Load();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {

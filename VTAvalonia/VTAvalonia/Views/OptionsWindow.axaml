@@ -6,16 +6,292 @@
         mc:Ignorable="d"
         x:Class="VTAvalonia.Views.OptionsWindow"
         x:DataType="vm:OptionsViewModel"
-        Width="420" Height="240"
+        Width="580" Height="510"
+        MinWidth="480" MinHeight="420"
         WindowStartupLocation="CenterOwner"
         Title="Options">
+
   <Design.DataContext>
     <vm:OptionsViewModel />
   </Design.DataContext>
 
-  <StackPanel Margin="16" Spacing="8">
-    <TextBlock Text="Options" FontSize="18" />
-    <TextBlock Text="Options dialog placeholder." />
-    <Button Content="Close" HorizontalAlignment="Right" Click="CloseButton_Click" />
-  </StackPanel>
+  <DockPanel>
+
+    <!-- OK / Cancel button row -->
+    <Border DockPanel.Dock="Bottom"
+            BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+            BorderThickness="0,1,0,0" Padding="8,6">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="6">
+        <Button Content="OK"     Command="{Binding SaveCommand}"   IsDefault="True" MinWidth="80" />
+        <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"  MinWidth="80" />
+      </StackPanel>
+    </Border>
+
+    <TabControl Margin="4">
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           TAB 1: Audio
+           ══════════════════════════════════════════════════════════════════════ -->
+      <TabItem Header="Audio">
+        <ScrollViewer>
+          <Grid Margin="12,8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                ColumnDefinitions="180,*">
+
+            <!-- Output Device -->
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Output Device"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <Grid Grid.Row="0" Grid.Column="1" ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+              <ComboBox Grid.Column="0"
+                        ItemsSource="{Binding AudioDevices}"
+                        SelectedItem="{Binding SelectedAudioDevice, Mode=TwoWay}" />
+              <Button Grid.Column="1" Content="↻" Width="28" Margin="4,0,0,0"
+                      ToolTip.Tip="Refresh device list"
+                      Command="{Binding RefreshAudioDevicesCommand}" />
+            </Grid>
+
+            <!-- Sample Rate -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Sample Rate"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding SampleRateOptions}"
+                      SelectedIndex="{Binding SampleRateIndex, Mode=TwoWay}" />
+
+            <!-- Bit Depth -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Bit Depth"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding SampleBitOptions}"
+                      SelectedIndex="{Binding SampleBitIndex, Mode=TwoWay}" />
+
+            <!-- Channels -->
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Channels"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding ChannelsOptions}"
+                      SelectedIndex="{Binding ChannelsIndex, Mode=TwoWay}" />
+
+            <!-- Buffer Length -->
+            <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,4">
+              <Run Text="Buffer Length (" />
+              <Run Text="{Binding BufferLengthMs}" />
+              <Run Text=" ms)" />
+            </TextBlock>
+            <Slider Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                    Minimum="20" Maximum="500" TickFrequency="10" IsSnapToTickEnabled="True"
+                    Value="{Binding BufferLengthMs, Mode=TwoWay}" Margin="0,0,0,8" />
+
+            <!-- Buffer Count -->
+            <TextBlock Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,4">
+              <Run Text="Buffer Count (" />
+              <Run Text="{Binding BufferCount}" />
+              <Run Text=")" />
+            </TextBlock>
+            <Slider Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
+                    Minimum="2" Maximum="16" TickFrequency="1" IsSnapToTickEnabled="True"
+                    Value="{Binding BufferCount, Mode=TwoWay}" Margin="0,0,0,0" />
+
+          </Grid>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           TAB 2: Chip
+           ══════════════════════════════════════════════════════════════════════ -->
+      <TabItem Header="Chip">
+        <ScrollViewer>
+          <Grid Margin="12,8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                ColumnDefinitions="180,*">
+
+            <!-- Chip Type -->
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Chip Type"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding ChipTypeOptions}"
+                      SelectedIndex="{Binding ChipTypeIndex, Mode=TwoWay}" />
+
+            <!-- Render Engine -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Render Engine"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding RenderEngineOptions}"
+                      SelectedIndex="{Binding RenderEngineIndex, Mode=TwoWay}" />
+
+            <!-- Chip Frequency -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Chip Frequency"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding ChipFreqOptions}"
+                      SelectedIndex="{Binding ChipFreqIndex, Mode=TwoWay}" />
+
+            <!-- Custom chip freq — visible only when "Custom…" is selected -->
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Custom Chip Hz"
+                       VerticalAlignment="Center" Margin="0,0,8,6"
+                       IsVisible="{Binding IsCustomChipFreq}" />
+            <NumericUpDown Grid.Row="3" Grid.Column="1" Margin="0,0,0,6"
+                           Minimum="100000" Maximum="10000000" Increment="1000"
+                           Value="{Binding CustomChipFreq, Mode=TwoWay}"
+                           IsVisible="{Binding IsCustomChipFreq}" />
+
+            <!-- Interrupt Frequency -->
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Interrupt Frequency"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding IntFreqOptions}"
+                      SelectedIndex="{Binding IntFreqIndex, Mode=TwoWay}" />
+
+            <!-- Custom int freq -->
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Custom Int Hz"
+                       VerticalAlignment="Center" Margin="0,0,8,6"
+                       IsVisible="{Binding IsCustomIntFreq}" />
+            <NumericUpDown Grid.Row="5" Grid.Column="1" Margin="0,0,0,6"
+                           Minimum="1000" Maximum="1000000" Increment="100"
+                           Value="{Binding CustomIntFreq, Mode=TwoWay}"
+                           IsVisible="{Binding IsCustomIntFreq}" />
+
+            <!-- Separator -->
+            <Separator Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,4,0,4" />
+
+            <!-- DC Filter Type -->
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="DC Filter Type"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <ComboBox Grid.Row="7" Grid.Column="1" Margin="0,0,0,6"
+                      ItemsSource="{Binding DcTypeOptions}"
+                      SelectedIndex="{Binding DcTypeIndex, Mode=TwoWay}" />
+
+            <!-- DC Cutoff -->
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="DC Cutoff (3–10)"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <NumericUpDown Grid.Row="8" Grid.Column="1" Margin="0,0,0,6"
+                           Minimum="3" Maximum="10" Increment="1"
+                           Value="{Binding DcCutOff, Mode=TwoWay}" />
+
+            <!-- Downsampling filter -->
+            <TextBlock Grid.Row="9" Grid.Column="0" Text="Downsamp. Filter"
+                       VerticalAlignment="Center" Margin="0,0,8,6" />
+            <CheckBox Grid.Row="9" Grid.Column="1" Content="Enabled"
+                      IsChecked="{Binding FilteringEnabled, Mode=TwoWay}" Margin="0,0,0,6" />
+
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Filter Length"
+                       VerticalAlignment="Center" Margin="0,0,8,0"
+                       IsEnabled="{Binding FilteringEnabled}" />
+            <NumericUpDown Grid.Row="10" Grid.Column="1"
+                           Minimum="8" Maximum="256" Increment="8"
+                           Value="{Binding FilterLength, Mode=TwoWay}"
+                           IsEnabled="{Binding FilteringEnabled}" />
+
+          </Grid>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           TAB 3: Module
+           ══════════════════════════════════════════════════════════════════════ -->
+      <TabItem Header="Module">
+        <Grid Margin="12,8" RowDefinitions="Auto,Auto,Auto"
+              ColumnDefinitions="180,*">
+
+          <!-- Features Level -->
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Features Level"
+                     VerticalAlignment="Center" Margin="0,0,8,6" />
+          <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,0,0,6"
+                    ItemsSource="{Binding FeaturesLevelOptions}"
+                    SelectedIndex="{Binding FeaturesLevelIndex, Mode=TwoWay}" />
+
+          <!-- Module Header -->
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="Module Header"
+                     VerticalAlignment="Center" Margin="0,0,8,6" />
+          <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,6"
+                    ItemsSource="{Binding ModuleHeaderOptions}"
+                    SelectedIndex="{Binding ModuleHeaderIndex, Mode=TwoWay}" />
+
+          <!-- Default Note Table -->
+          <TextBlock Grid.Row="2" Grid.Column="0" Text="Default Note Table"
+                     VerticalAlignment="Center" Margin="0,0,8,0" />
+          <ComboBox Grid.Row="2" Grid.Column="1"
+                    ItemsSource="{Binding NoteTableOptions}"
+                    SelectedIndex="{Binding DefaultNoteTableIndex, Mode=TwoWay}" />
+
+        </Grid>
+      </TabItem>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           TAB 4: MIDI
+           ══════════════════════════════════════════════════════════════════════ -->
+      <TabItem Header="MIDI">
+        <Grid Margin="12,8" RowDefinitions="Auto"
+              ColumnDefinitions="180,*">
+
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Output Device"
+                     VerticalAlignment="Center" Margin="0,0,8,0" />
+          <Grid Grid.Row="0" Grid.Column="1" ColumnDefinitions="*,Auto">
+            <ComboBox Grid.Column="0"
+                      ItemsSource="{Binding MidiDevices}"
+                      SelectedItem="{Binding SelectedMidiDevice, Mode=TwoWay}" />
+            <Button Grid.Column="1" Content="↻" Width="28" Margin="4,0,0,0"
+                    ToolTip.Tip="Refresh MIDI devices"
+                    Command="{Binding RefreshMidiDevicesCommand}" />
+          </Grid>
+
+        </Grid>
+      </TabItem>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           TAB 5: Serial Port
+           ══════════════════════════════════════════════════════════════════════ -->
+      <TabItem Header="Serial">
+        <Grid Margin="12,8" RowDefinitions="Auto,Auto"
+              ColumnDefinitions="180,*">
+
+          <!-- Port -->
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Port"
+                     VerticalAlignment="Center" Margin="0,0,8,6" />
+          <Grid Grid.Row="0" Grid.Column="1" ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+            <ComboBox Grid.Column="0"
+                      ItemsSource="{Binding SerialPorts}"
+                      SelectedItem="{Binding SelectedSerialPort, Mode=TwoWay}" />
+            <Button Grid.Column="1" Content="↻" Width="28" Margin="4,0,0,0"
+                    ToolTip.Tip="Refresh port list"
+                    Command="{Binding RefreshSerialPortsCommand}" />
+          </Grid>
+
+          <!-- Baud Rate -->
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="Baud Rate"
+                     VerticalAlignment="Center" Margin="0,0,8,0" />
+          <NumericUpDown Grid.Row="1" Grid.Column="1"
+                         Minimum="1200" Maximum="4000000" Increment="100"
+                         Value="{Binding SerialBaudRate, Mode=TwoWay}" />
+
+        </Grid>
+      </TabItem>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           TAB 6: Playback
+           ══════════════════════════════════════════════════════════════════════ -->
+      <TabItem Header="Playback">
+        <Grid Margin="12,8" RowDefinitions="Auto,Auto,Auto"
+              ColumnDefinitions="180,*">
+
+          <!-- Loop Mode -->
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Loop Mode"
+                     VerticalAlignment="Center" Margin="0,0,8,6" />
+          <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,0,0,6"
+                    ItemsSource="{Binding LoopModeOptions}"
+                    SelectedIndex="{Binding LoopModeIndex, Mode=TwoWay}" />
+
+          <!-- Global Volume -->
+          <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,4">
+            <Run Text="Global Volume (" />
+            <Run Text="{Binding GlobalVolume}" />
+            <Run Text=")" />
+          </TextBlock>
+          <Slider Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                  Minimum="0" Maximum="64" TickFrequency="4" IsSnapToTickEnabled="True"
+                  Value="{Binding GlobalVolume, Mode=TwoWay}" />
+
+        </Grid>
+      </TabItem>
+
+    </TabControl>
+  </DockPanel>
 </Window>
+

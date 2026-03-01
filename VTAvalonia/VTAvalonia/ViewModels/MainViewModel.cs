@@ -62,6 +62,7 @@ namespace VTAvalonia.ViewModels
         private int _moduleHeaderNoteTable;
         private bool _isLooping = true;
         private bool _isPlaying;
+        private int _hlStep = 4;
 
         public string Status
         {
@@ -130,6 +131,8 @@ namespace VTAvalonia.ViewModels
 
         public string PlayStopLabel => IsPlaying ? "■ Stop" : "▶ Play";
 
+        public bool HasRecentFiles => false;
+
         public string ModuleHeaderTitle
         {
             get => _moduleHeaderTitle;
@@ -168,6 +171,12 @@ namespace VTAvalonia.ViewModels
                 if (SetProperty(ref _isPlaying, value))
                     OnPropertyChanged(nameof(PlayStopLabel));
             }
+        }
+
+        public int HlStep
+        {
+            get => _hlStep;
+            set => SetProperty(ref _hlStep, value);
         }
 
         public int SelectedPatternIndex
