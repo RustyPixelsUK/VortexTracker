@@ -174,155 +174,267 @@
     </Border>
 
     <!-- ═══════════════ MAIN EDITOR AREA ═══════════════ -->
-    <Grid Margin="4" ColumnDefinitions="180,*">
+    <TabControl Margin="4">
 
-      <!-- ── LEFT: POSITIONS PANEL ── -->
-      <Border Grid.Column="0"
-              BorderBrush="{DynamicResource ThemeBorderLowBrush}"
-              BorderThickness="1" Margin="0,0,4,0" Padding="6">
-        <DockPanel>
-          <TextBlock DockPanel.Dock="Top" Text="Play Order" FontWeight="Bold" Margin="0,0,0,4" />
+      <!-- ══════════ TAB 1: PATTERNS ══════════ -->
+      <TabItem Header="Patterns">
+        <Grid ColumnDefinitions="180,*">
 
-          <!-- Positions list with context menu -->
-          <ListBox DockPanel.Dock="Top" Height="280"
-                   ItemsSource="{Binding Positions}"
-                   SelectedIndex="{Binding SelectedPositionIndex, Mode=TwoWay}">
-            <ListBox.Styles>
-              <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-                <Setter Property="Background" Value="#2D6CDF" />
-              </Style>
-            </ListBox.Styles>
-            <ListBox.ContextMenu>
-              <ContextMenu>
-                <MenuItem Header="Set Loop Here (L)"  Command="{Binding SetLoopPositionCommand}" />
-                <Separator />
-                <MenuItem Header="Insert Position"     Command="{Binding InsertPositionCommand}" />
-                <MenuItem Header="Delete Position"     Command="{Binding DeletePositionCommand}" />
-                <MenuItem Header="Duplicate Position"  Command="{Binding DuplicatePositionCommand}" />
-                <MenuItem Header="Clone Position"      Command="{Binding ClonePositionCommand}" />
-              </ContextMenu>
-            </ListBox.ContextMenu>
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock FontFamily="Consolas">
-                  <Run Text="{Binding LoopMarker}" Foreground="#FF4444" FontWeight="Bold" />
-                  <Run Text="{Binding Index,       StringFormat='{}{0:D2}'}" />
-                  <Run Text=": " />
-                  <Run Text="{Binding PatternIndex, StringFormat='{}{0:D2}'}" />
-                </TextBlock>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+          <!-- ── LEFT: POSITIONS PANEL ── -->
+          <Border Grid.Column="0"
+                  BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+                  BorderThickness="1" Margin="0,0,4,0" Padding="6">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Top" Text="Play Order" FontWeight="Bold" Margin="0,0,0,4" />
 
-          <!-- Position controls -->
-          <StackPanel DockPanel.Dock="Top" Margin="0,4,0,0">
-            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,2">
-              <Button Content="Ins"  ToolTip.Tip="Insert"    Command="{Binding InsertPositionCommand}"   Width="44" />
-              <Button Content="Del"  ToolTip.Tip="Delete"    Command="{Binding DeletePositionCommand}"   Width="44" />
-              <Button Content="Dup"  ToolTip.Tip="Duplicate" Command="{Binding DuplicatePositionCommand}" Width="44" />
+              <!-- Positions list with context menu -->
+              <ListBox DockPanel.Dock="Top" Height="280"
+                       ItemsSource="{Binding Positions}"
+                       SelectedIndex="{Binding SelectedPositionIndex, Mode=TwoWay}">
+                <ListBox.Styles>
+                  <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                    <Setter Property="Background" Value="#2D6CDF" />
+                  </Style>
+                </ListBox.Styles>
+                <ListBox.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Set Loop Here (L)"  Command="{Binding SetLoopPositionCommand}" />
+                    <Separator />
+                    <MenuItem Header="Insert Position"     Command="{Binding InsertPositionCommand}" />
+                    <MenuItem Header="Delete Position"     Command="{Binding DeletePositionCommand}" />
+                    <MenuItem Header="Duplicate Position"  Command="{Binding DuplicatePositionCommand}" />
+                    <MenuItem Header="Clone Position"      Command="{Binding ClonePositionCommand}" />
+                  </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock FontFamily="Consolas">
+                      <Run Text="{Binding LoopMarker}" Foreground="#FF4444" FontWeight="Bold" />
+                      <Run Text="{Binding Index,       StringFormat='{}{0:D2}'}" />
+                      <Run Text=": " />
+                      <Run Text="{Binding PatternIndex, StringFormat='{}{0:D2}'}" />
+                    </TextBlock>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+
+              <!-- Position controls -->
+              <StackPanel DockPanel.Dock="Top" Margin="0,4,0,0">
+                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,2">
+                  <Button Content="Ins"  ToolTip.Tip="Insert"    Command="{Binding InsertPositionCommand}"   Width="44" />
+                  <Button Content="Del"  ToolTip.Tip="Delete"    Command="{Binding DeletePositionCommand}"   Width="44" />
+                  <Button Content="Dup"  ToolTip.Tip="Duplicate" Command="{Binding DuplicatePositionCommand}" Width="44" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,2">
+                  <Button Content="Clone" ToolTip.Tip="Clone (new pattern)" Command="{Binding ClonePositionCommand}"   Width="64" />
+                  <Button Content="⟳Loop" ToolTip.Tip="Set loop here (L)"  Command="{Binding SetLoopPositionCommand}" Width="68" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,4,0,0">
+                  <TextBlock Text="Loop:"    VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="255" Width="72"
+                                 Value="{Binding LoopPositionIndex, Mode=TwoWay}" />
+                </StackPanel>
+              </StackPanel>
+            </DockPanel>
+          </Border>
+
+          <!-- ── RIGHT: PATTERN EDITOR ── -->
+          <Border Grid.Column="1"
+                  BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+                  BorderThickness="1" Padding="4">
+            <DockPanel>
+
+              <!-- Pattern selector bar -->
+              <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
+                <TextBlock Text="Pattern:" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="0" Maximum="255" Width="76"
+                               Value="{Binding SelectedPatternIndex, Mode=TwoWay}" />
+                <TextBlock Text="Length:"  VerticalAlignment="Center" />
+                <NumericUpDown Minimum="1" Maximum="256" Width="76"
+                               Value="{Binding PatternLength, Mode=TwoWay}" />
+                <TextBlock Text="Line:"    VerticalAlignment="Center" />
+                <TextBlock Text="{Binding SelectedPatternLineIndex}" VerticalAlignment="Center" Width="32" />
+                <TextBlock Text="of" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding PatternLength}" VerticalAlignment="Center" Width="32" />
+                <TextBlock Text="Hl:" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="1" Maximum="64" Width="68"
+                               Value="{Binding HlStep, Mode=TwoWay}" />
+              </StackPanel>
+
+              <!-- Channel editor rows + raw line editor — docked to bottom -->
+              <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical" Spacing="0" Margin="0,4,0,0">
+
+                <!-- Raw line editor -->
+                <Grid ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,0,0,4">
+                  <TextBox Grid.Column="0"
+                           Text="{Binding SelectedPatternLineText, Mode=TwoWay}"
+                           FontFamily="Consolas" FontSize="12" />
+                  <Button Grid.Column="1" Content="Apply"   Command="{Binding ApplyLineEditCommand}"  Margin="4,0,0,0" />
+                  <Button Grid.Column="2" Content="Ins"     Command="{Binding InsertLineCommand}"     Margin="4,0,0,0" />
+                  <Button Grid.Column="3" Content="Del"     Command="{Binding DeleteLineCommand}"     Margin="4,0,0,0" />
+                </Grid>
+
+                <!-- Channel A -->
+                <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,0,2">
+                  <TextBlock Text="Ch A:" VerticalAlignment="Center" FontWeight="Bold" />
+                  <TextBlock Text="Note"  VerticalAlignment="Center" />
+                  <TextBox Width="52" Text="{Binding ChannelANote,      Mode=TwoWay}" FontFamily="Consolas" />
+                  <TextBlock Text="Smp"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelASample,   Mode=TwoWay}" />
+                  <TextBlock Text="Orn"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelAOrnament, Mode=TwoWay}" />
+                  <TextBlock Text="Vol"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelAVolume,   Mode=TwoWay}" />
+                  <Button Content="Apply Ch A" Command="{Binding ApplyChannelACommand}" />
+                </StackPanel>
+
+                <!-- Channel B -->
+                <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,0,2">
+                  <TextBlock Text="Ch B:" VerticalAlignment="Center" FontWeight="Bold" />
+                  <TextBlock Text="Note"  VerticalAlignment="Center" />
+                  <TextBox Width="52" Text="{Binding ChannelBNote,      Mode=TwoWay}" FontFamily="Consolas" />
+                  <TextBlock Text="Smp"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelBSample,   Mode=TwoWay}" />
+                  <TextBlock Text="Orn"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelBOrnament, Mode=TwoWay}" />
+                  <TextBlock Text="Vol"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelBVolume,   Mode=TwoWay}" />
+                  <Button Content="Apply Ch B" Command="{Binding ApplyChannelBCommand}" />
+                </StackPanel>
+
+                <!-- Channel C -->
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <TextBlock Text="Ch C:" VerticalAlignment="Center" FontWeight="Bold" />
+                  <TextBlock Text="Note"  VerticalAlignment="Center" />
+                  <TextBox Width="52" Text="{Binding ChannelCNote,      Mode=TwoWay}" FontFamily="Consolas" />
+                  <TextBlock Text="Smp"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelCSample,   Mode=TwoWay}" />
+                  <TextBlock Text="Orn"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelCOrnament, Mode=TwoWay}" />
+                  <TextBlock Text="Vol"   VerticalAlignment="Center" />
+                  <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelCVolume,   Mode=TwoWay}" />
+                  <Button Content="Apply Ch C" Command="{Binding ApplyChannelCCommand}" />
+                </StackPanel>
+
+              </StackPanel>
+
+              <!-- Pattern grid — fills remaining space between selector bar and channel rows -->
+              <controls:PatternEditorControl
+                  MinHeight="80"
+                  PatternLines="{Binding PatternLines}"
+                  CursorLine="{Binding SelectedPatternLineIndex, Mode=TwoWay}"
+                  HlStep="{Binding HlStep}" />
+
+            </DockPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <!-- ══════════ TAB 2: SAMPLES ══════════ -->
+      <TabItem Header="Samples">
+        <Grid ColumnDefinitions="200,*" Margin="4">
+
+          <!-- Left: Sample selector + properties -->
+          <Border Grid.Column="0"
+                  BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+                  BorderThickness="1" Margin="0,0,4,0" Padding="8">
+            <StackPanel Spacing="8">
+              <TextBlock Text="Sample Editor" FontWeight="Bold" />
+
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="Sample #" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="0" Maximum="31" Width="76"
+                               Value="{Binding SelectedSampleIndex, Mode=TwoWay}" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="Length" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="1" Maximum="64" Width="76"
+                               Value="{Binding SampleLength, Mode=TwoWay}" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="Loop" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="0" Maximum="63" Width="76"
+                               Value="{Binding SampleLoop, Mode=TwoWay}" />
+              </StackPanel>
+
+              <Button Content="Clear Sample" Command="{Binding ClearSampleCommand}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,0,0,2">
-              <Button Content="Clone" ToolTip.Tip="Clone (new pattern)" Command="{Binding ClonePositionCommand}"   Width="64" />
-              <Button Content="⟳Loop" ToolTip.Tip="Set loop here (L)"  Command="{Binding SetLoopPositionCommand}" Width="68" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,4,0,0">
-              <TextBlock Text="Loop:"    VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="255" Width="72"
-                             Value="{Binding LoopPositionIndex, Mode=TwoWay}" />
-            </StackPanel>
-          </StackPanel>
-        </DockPanel>
-      </Border>
+          </Border>
 
-      <!-- ── RIGHT: PATTERN EDITOR ── -->
-      <Border Grid.Column="1"
-              BorderBrush="{DynamicResource ThemeBorderLowBrush}"
-              BorderThickness="1" Padding="4">
-        <DockPanel>
-
-          <!-- Pattern selector bar -->
-          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,4">
-            <TextBlock Text="Pattern:" VerticalAlignment="Center" />
-            <NumericUpDown Minimum="0" Maximum="255" Width="76"
-                           Value="{Binding SelectedPatternIndex, Mode=TwoWay}" />
-            <TextBlock Text="Length:"  VerticalAlignment="Center" />
-            <NumericUpDown Minimum="1" Maximum="256" Width="76"
-                           Value="{Binding PatternLength, Mode=TwoWay}" />
-            <TextBlock Text="Line:"    VerticalAlignment="Center" />
-            <TextBlock Text="{Binding SelectedPatternLineIndex}" VerticalAlignment="Center" Width="32" />
-            <TextBlock Text="of" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding PatternLength}" VerticalAlignment="Center" Width="32" />
-            <TextBlock Text="Hl:" VerticalAlignment="Center" />
-            <NumericUpDown Minimum="1" Maximum="64" Width="68"
-                           Value="{Binding HlStep, Mode=TwoWay}" />
-          </StackPanel>
-
-          <!-- Channel editor rows + raw line editor — docked to bottom -->
-          <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical" Spacing="0" Margin="0,4,0,0">
-
-            <!-- Raw line editor -->
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,0,0,4">
-              <TextBox Grid.Column="0"
-                       Text="{Binding SelectedPatternLineText, Mode=TwoWay}"
+          <!-- Right: Sample tick list -->
+          <Border Grid.Column="1"
+                  BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+                  BorderThickness="1" Padding="4">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Top" Text="Tick Data  (T=Tone N=Noise E=Env  +Tone ^Acc  +Env/Noise ^Acc  Amp Slide)"
+                         FontFamily="Consolas" FontSize="11" Margin="0,0,0,4" Foreground="Gray" />
+              <ListBox ItemsSource="{Binding SampleTickLines}"
+                       SelectedIndex="{Binding SelectedSampleTickIndex, Mode=TwoWay}"
                        FontFamily="Consolas" FontSize="12" />
-              <Button Grid.Column="1" Content="Apply"   Command="{Binding ApplyLineEditCommand}"  Margin="4,0,0,0" />
-              <Button Grid.Column="2" Content="Ins"     Command="{Binding InsertLineCommand}"     Margin="4,0,0,0" />
-              <Button Grid.Column="3" Content="Del"     Command="{Binding DeleteLineCommand}"     Margin="4,0,0,0" />
-            </Grid>
+            </DockPanel>
+          </Border>
+        </Grid>
+      </TabItem>
 
-            <!-- Channel A -->
-            <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,0,2">
-              <TextBlock Text="Ch A:" VerticalAlignment="Center" FontWeight="Bold" />
-              <TextBlock Text="Note"  VerticalAlignment="Center" />
-              <TextBox Width="52" Text="{Binding ChannelANote,      Mode=TwoWay}" FontFamily="Consolas" />
-              <TextBlock Text="Smp"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelASample,   Mode=TwoWay}" />
-              <TextBlock Text="Orn"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelAOrnament, Mode=TwoWay}" />
-              <TextBlock Text="Vol"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelAVolume,   Mode=TwoWay}" />
-              <Button Content="Apply Ch A" Command="{Binding ApplyChannelACommand}" />
+      <!-- ══════════ TAB 3: ORNAMENTS ══════════ -->
+      <TabItem Header="Ornaments">
+        <Grid ColumnDefinitions="200,*" Margin="4">
+
+          <!-- Left: Ornament selector + properties -->
+          <Border Grid.Column="0"
+                  BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+                  BorderThickness="1" Margin="0,0,4,0" Padding="8">
+            <StackPanel Spacing="8">
+              <TextBlock Text="Ornament Editor" FontWeight="Bold" />
+
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="Ornament #" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="0" Maximum="31" Width="76"
+                               Value="{Binding SelectedOrnamentIndex, Mode=TwoWay}" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="Length" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="1" Maximum="255" Width="76"
+                               Value="{Binding OrnamentLength, Mode=TwoWay}" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="Loop" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="0" Maximum="254" Width="76"
+                               Value="{Binding OrnamentLoop, Mode=TwoWay}" />
+              </StackPanel>
+
+              <Button Content="Clear Ornament" Command="{Binding ClearOrnamentCommand}" />
             </StackPanel>
+          </Border>
 
-            <!-- Channel B -->
-            <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,0,2">
-              <TextBlock Text="Ch B:" VerticalAlignment="Center" FontWeight="Bold" />
-              <TextBlock Text="Note"  VerticalAlignment="Center" />
-              <TextBox Width="52" Text="{Binding ChannelBNote,      Mode=TwoWay}" FontFamily="Consolas" />
-              <TextBlock Text="Smp"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelBSample,   Mode=TwoWay}" />
-              <TextBlock Text="Orn"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelBOrnament, Mode=TwoWay}" />
-              <TextBlock Text="Vol"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelBVolume,   Mode=TwoWay}" />
-              <Button Content="Apply Ch B" Command="{Binding ApplyChannelBCommand}" />
-            </StackPanel>
+          <!-- Right: Ornament offset list + edit -->
+          <Border Grid.Column="1"
+                  BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+                  BorderThickness="1" Padding="4">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Top" Text="Offsets (L=Loop point)"
+                         FontFamily="Consolas" FontSize="11" Margin="0,0,0,4" Foreground="Gray" />
 
-            <!-- Channel C -->
-            <StackPanel Orientation="Horizontal" Spacing="6">
-              <TextBlock Text="Ch C:" VerticalAlignment="Center" FontWeight="Bold" />
-              <TextBlock Text="Note"  VerticalAlignment="Center" />
-              <TextBox Width="52" Text="{Binding ChannelCNote,      Mode=TwoWay}" FontFamily="Consolas" />
-              <TextBlock Text="Smp"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelCSample,   Mode=TwoWay}" />
-              <TextBlock Text="Orn"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="31" Width="68" Value="{Binding ChannelCOrnament, Mode=TwoWay}" />
-              <TextBlock Text="Vol"   VerticalAlignment="Center" />
-              <NumericUpDown Minimum="0" Maximum="15" Width="68" Value="{Binding ChannelCVolume,   Mode=TwoWay}" />
-              <Button Content="Apply Ch C" Command="{Binding ApplyChannelCCommand}" />
-            </StackPanel>
+              <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                <TextBox Grid.Column="0"
+                         Text="{Binding SelectedOrnamentOffsetText, Mode=TwoWay}"
+                         FontFamily="Consolas" FontSize="12"
+                         Watermark="Enter offset value (e.g. -3, 0, +5)" />
+                <Button Grid.Column="1" Content="Apply" Command="{Binding ApplyOrnamentOffsetCommand}" Margin="4,0,0,0" />
+              </Grid>
 
-          </StackPanel>
+              <ListBox ItemsSource="{Binding OrnamentOffsetLines}"
+                       SelectedIndex="{Binding SelectedOrnamentOffsetIndex, Mode=TwoWay}"
+                       FontFamily="Consolas" FontSize="12" />
+            </DockPanel>
+          </Border>
+        </Grid>
+      </TabItem>
 
-          <!-- Pattern grid — fills remaining space between selector bar and channel rows -->
-          <controls:PatternEditorControl
-              MinHeight="80"
-              PatternLines="{Binding PatternLines}"
-              CursorLine="{Binding SelectedPatternLineIndex, Mode=TwoWay}"
-              HlStep="{Binding HlStep}" />
-
-        </DockPanel>
-      </Border>
-    </Grid>
+    </TabControl>
   </DockPanel>
 </UserControl>

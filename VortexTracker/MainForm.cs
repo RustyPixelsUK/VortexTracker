@@ -4619,6 +4619,13 @@ namespace VortexTracker
             }
 
             ChildForm activeForm = (ChildForm)this.ActiveMdiChild;
+
+            if (activeForm == null || activeForm.IsClosed || activeForm.ChangeList == null)
+            {
+                UIActionManager.Instance.SetEnabled(UIActionType.Undo, false);
+                return;
+            }
+
             UIActionManager.Instance.SetEnabled(UIActionType.Undo, this.MdiChildren.Length != 0 && (activeForm.ChangeCount > 0) || (activeForm.TabControl.SelectedIndex == 4));
         }
 

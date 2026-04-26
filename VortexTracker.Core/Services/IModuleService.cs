@@ -24,4 +24,20 @@ public interface IModuleService
     bool IsPlaying { get; }
     void ToggleLooping();
     bool LoopingEnabled { get; }
+
+    // Sample access
+    int SampleCount { get; }
+    SampleData? GetSample(int index);
+    bool UpdateSampleTick(int sampleIndex, int tickIndex, SampleTickData tick);
+    bool UpdateSampleLength(int sampleIndex, int length);
+    bool UpdateSampleLoop(int sampleIndex, int loop);
+    bool ClearSample(int sampleIndex);
+
+    // Ornament access
+    int OrnamentCount { get; }
+    OrnamentData? GetOrnament(int index);
+    bool UpdateOrnamentOffset(int ornamentIndex, int offsetIndex, sbyte value);
+    bool UpdateOrnamentLength(int ornamentIndex, int length);
+    bool UpdateOrnamentLoop(int ornamentIndex, int loop);
+    bool ClearOrnament(int ornamentIndex);
 }

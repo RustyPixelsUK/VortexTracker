@@ -7680,12 +7680,12 @@ namespace VortexTracker
             Globals.TrackInfoForm.Hide();
 
             DisposeUndo(true);
-            ChangeList = null;
-            ChangePatternsList = null;
-            ChangeOnePatternList = null;
-            ChangeSamplesList = null;
-            ChangeOrnamentsList = null;
-            ChangeNilPatternsList = null;
+            ChangeList = Array.Empty<ChangeListItem>();
+            ChangePatternsList = Array.Empty<ChangePattern[][]>();
+            ChangeOnePatternList = Array.Empty<ChangeOnePattern>();
+            ChangeSamplesList = Array.Empty<ChangeSample>();
+            ChangeOrnamentsList = Array.Empty<ChangeOrnament>();
+            ChangeNilPatternsList = Array.Empty<int[]>();
             // FreeAndNil(SampleTestLine);
             // FreeAndNil(OrnamentTestLine);
             // FreeAndNil(Samples);
@@ -8745,7 +8745,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
+                while (result != PlayLineResult.AllPatternsEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
 
                 WaveOutAPI.LineReady = true;
                 zeroLine = false;
@@ -8802,7 +8802,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
+                while (result != PlayLineResult.AllPatternsEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
 
                 WaveOutAPI.LineReady = true;
             }
@@ -8848,7 +8848,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
+                while (result != PlayLineResult.AllPatternsEnded && VTModule.PlayArgs[chipIndex].PositionIndex != PositionIndex);
                 WaveOutAPI.LineReady = true;
             }
 
@@ -9342,6 +9342,7 @@ namespace VortexTracker
             Array.Resize(ref ChangePatternsList, ChangePatternsList.Length + 1);
             Array.Resize(ref ChangeNilPatternsList, ChangePatternsList.Length);
             int index = ChangePatternsList.Length - 1;
+            ChangeNilPatternsList[index] ??= Array.Empty<int>();
             Array.Resize(ref ChangePatternsList[index], 2);
 
             int lastIndex = 0;
@@ -9353,7 +9354,7 @@ namespace VortexTracker
                 if (VTM.Patterns[i] == null)
                 {
                     // Increase dynamic array length
-                    Array.Resize(ref ChangeNilPatternsList[index], ChangeNilPatternsList[index].Length + 1);
+                    Array.Resize(ref ChangeNilPatternsList[index], (ChangeNilPatternsList[index]?.Length ?? 0) + 1);
 
                     // Get last index
                     lastIndex = ChangeNilPatternsList[index].Length - 1;
@@ -9376,7 +9377,8 @@ namespace VortexTracker
                     };
 
                     // Increase array length
-                    Array.Resize(ref ChangePatternsList[index][0], ChangePatternsList[index][0].Length + 1);
+
+                    Array.Resize(ref ChangePatternsList[index][0], (ChangePatternsList[index][0]?.Length ?? 0) + 1);
 
                     // Get last index
                     lastIndex = ChangePatternsList[index][0].Length - 1;
@@ -9387,7 +9389,7 @@ namespace VortexTracker
             }
 
             ChangeList[ChangeCount - 1].ComParams.Patterns = (ChangePattern[][])ChangePatternsList[index].Clone();
-            ChangeList[ChangeCount - 1].ComParams.NilPatterns = (int[])ChangeNilPatternsList[index].Clone();
+            ChangeList[ChangeCount - 1].ComParams.NilPatterns = (int[])(ChangeNilPatternsList[index]?.Clone() ?? Array.Empty<int>());
         }
 
         public void SaveTrackRedo()
@@ -9412,10 +9414,10 @@ namespace VortexTracker
                     };
 
                     // Increase array length
-                    Array.Resize(ref ChangePatternsList[index][1], ChangePatternsList[index][1].Length + 1);
+                    Array.Resize(ref ChangePatternsList[index][1], (ChangePatternsList[index][1]?.Length ?? 0) + 1);
 
                     // Get last index
-                    int lastIndex = ChangePatternsList[index][1].Length;
+                    int lastIndex = ChangePatternsList[index][1].Length - 1;
 
                     // Save pattern
                     ChangePatternsList[index][1][lastIndex] = savedPattern;
@@ -9450,6 +9452,7 @@ namespace VortexTracker
             // Increase array
             Array.Resize(ref ChangeOnePatternList, ChangeOnePatternList.Length + 1);
             int index = ChangeOnePatternList.Length - 1;
+            ChangeOnePatternList[index] = new ChangeOnePattern();
 
             // Save current pattern state
             ChangeOnePatternList[index].OldPattern.Length = Tracks.ShownPattern.Length;
@@ -9533,6 +9536,7 @@ namespace VortexTracker
             Array.Resize(ref ChangeOrnamentsList, ChangeOrnamentsList.Length + 1);
 
             int index = ChangeOrnamentsList.Length - 1;
+            ChangeOrnamentsList[index] = new ChangeOrnament();
 
             ChangeOrnamentsList[index].Number = (int)SampleNumUpDown.Value;
 
@@ -18812,8 +18816,8 @@ namespace VortexTracker
 
         public ComParams()
         {
-            //Patterns = ???;
-            //NilPatterns = ???;
+            Patterns = Array.Empty<ChangePattern[]>();
+            NilPatterns = Array.Empty<int>();
             ChangedPattern = new ChangeOnePattern();
             EntireSample = new ChangeSample();
             EntireOrnament = new ChangeOrnament();

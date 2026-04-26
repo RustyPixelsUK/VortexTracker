@@ -51,4 +51,18 @@ public sealed class NullModuleService : IModuleService
     public bool SwapChannels(int patternIndex, bool rightDirection) => false;
 
     public void ToggleLooping() { }
+
+    public int SampleCount => 0;
+    public SampleData? GetSample(int index) => null;
+    public bool UpdateSampleTick(int sampleIndex, int tickIndex, SampleTickData tick) => false;
+    public bool UpdateSampleLength(int sampleIndex, int length) => false;
+    public bool UpdateSampleLoop(int sampleIndex, int loop) => false;
+    public bool ClearSample(int sampleIndex) => false;
+
+    public int OrnamentCount => 0;
+    public OrnamentData? GetOrnament(int index) => null;
+    public bool UpdateOrnamentOffset(int ornamentIndex, int offsetIndex, sbyte value) => false;
+    public bool UpdateOrnamentLength(int ornamentIndex, int length) => false;
+    public bool UpdateOrnamentLoop(int ornamentIndex, int loop) => false;
+    public bool ClearOrnament(int ornamentIndex) => false;
 }

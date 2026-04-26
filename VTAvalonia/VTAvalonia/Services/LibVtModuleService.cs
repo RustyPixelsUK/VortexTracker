@@ -372,6 +372,159 @@ public sealed class LibVtModuleService : IModuleService
         _loopingEnabled = !_loopingEnabled;
     }
 
+    // ── Sample access ────────────────────────────────────────────────────────
+
+    public int SampleCount => _vtm?.Samples?.Length ?? 0;
+
+    public SampleData? GetSample(int index)
+    {
+        if (_vtm == null || index < 0 || index >= _vtm.Samples.Length)
+            return null;
+
+        var sample = _vtm.Samples[index];
+        if (sample == null)
+            return new SampleData(index, 0, 0, false, Array.Empty<string>());
+
+        var lines = new List<string>(sample.Length);
+        for (int i = 0; i < sample.Length; i++)
+        {
+            var prefix = i == sample.Loop ? "L " : "  ";
+            lines.Add(prefix + VTModule.GetSampleString(sample.Ticks[i], false, false));
+        }
+
+        return new SampleData(index, sample.Length, sample.Loop, sample.Enabled, lines);
+    }
+
+    public bool UpdateSampleTick(int sampleIndex, int tickIndex, SampleTickData tick)
+    {
+        if (_vtm == null || sampleIndex < 0 || sampleIndex >= _vtm.Samples.Length)
+            return false;
+
+        var sample = _vtm.Samples[sampleIndex];
+        if (sample == null || tickIndex < 0 || tickIndex >= sample.Length)
+            return false;
+
+        var t = sample.Ticks[tickIndex];
+        t.Mixer_Ton = tick.MixerTone;
+        t.Mixer_Noise = tick.MixerNoise;
+        t.Envelope_Enabled = tick.EnvelopeEnabled;
+        t.AddToTone = tick.AddToTone;
+        t.Ton_Accumulation = tick.ToneAccumulation;
+        t.Add_to_Envelope_or_Noise = tick.AddToEnvelopeOrNoise;
+        t.Envelope_or_Noise_Accumulation = tick.EnvelopeOrNoiseAccumulation;
+        t.Amplitude = tick.Amplitude;
+        t.Amplitude_Sliding = tick.AmplitudeSliding;
+        t.Amplitude_Slide_Up = tick.AmplitudeSlideUp;
+        return true;
+    }
+
+    public bool UpdateSampleLength(int sampleIndex, int length)
+    {
+        if (_vtm == null || sampleIndex < 0 || sampleIndex >= _vtm.Samples.Length)
+            return false;
+
+        var sample = _vtm.Samples[sampleIndex];
+        if (sample == null)
+            return false;
+
+        length = Math.Clamp(length, 1, VTModule.MaxSampleLength);
+        sample.Length = (byte)length;
+        if (sample.Loop >= length)
+            sample.Loop = (byte)(length - 1);
+        return true;
+    }
+
+    public bool UpdateSampleLoop(int sampleIndex, int loop)
+    {
+        if (_vtm == null || sampleIndex < 0 || sampleIndex >= _vtm.Samples.Length)
+            return false;
+
+        var sample = _vtm.Samples[sampleIndex];
+        if (sample == null || loop < 0 || loop >= sample.Length)
+            return false;
+
+        sample.Loop = (byte)loop;
+        return true;
+    }
+
+    public bool ClearSample(int sampleIndex)
+    {
+        if (_vtm == null || sampleIndex < 0 || sampleIndex >= _vtm.Samples.Length)
+            return false;
+
+        _vtm.Samples[sampleIndex] = new Sample();
+        return true;
+    }
+
+    // ── Ornament access ──────────────────────────────────────────────────────
+
+    public int OrnamentCount => _vtm?.Ornaments?.Length ?? 0;
+
+    public OrnamentData? GetOrnament(int index)
+    {
+        if (_vtm == null || index < 0 || index >= _vtm.Ornaments.Length)
+            return null;
+
+        var orn = _vtm.Ornaments[index];
+        if (orn == null)
+            return new OrnamentData(index, 0, 0, Array.Empty<sbyte>());
+
+        var offsets = new sbyte[orn.Length];
+        Array.Copy(orn.Offsets, offsets, orn.Length);
+        return new OrnamentData(index, orn.Length, orn.Loop, offsets);
+    }
+
+    public bool UpdateOrnamentOffset(int ornamentIndex, int offsetIndex, sbyte value)
+    {
+        if (_vtm == null || ornamentIndex < 0 || ornamentIndex >= _vtm.Ornaments.Length)
+            return false;
+
+        var orn = _vtm.Ornaments[ornamentIndex];
+        if (orn == null || offsetIndex < 0 || offsetIndex >= orn.Length)
+            return false;
+
+        orn.Offsets[offsetIndex] = value;
+        return true;
+    }
+
+    public bool UpdateOrnamentLength(int ornamentIndex, int length)
+    {
+        if (_vtm == null || ornamentIndex < 0 || ornamentIndex >= _vtm.Ornaments.Length)
+            return false;
+
+        var orn = _vtm.Ornaments[ornamentIndex];
+        if (orn == null)
+            return false;
+
+        length = Math.Clamp(length, 1, VTModule.MaxOrnamentLength);
+        orn.Length = length;
+        if (orn.Loop >= length)
+            orn.Loop = length - 1;
+        return true;
+    }
+
+    public bool UpdateOrnamentLoop(int ornamentIndex, int loop)
+    {
+        if (_vtm == null || ornamentIndex < 0 || ornamentIndex >= _vtm.Ornaments.Length)
+            return false;
+
+        var orn = _vtm.Ornaments[ornamentIndex];
+        if (orn == null || loop < 0 || loop >= orn.Length)
+            return false;
+
+        orn.Loop = loop;
+        return true;
+    }
+
+    public bool ClearOrnament(int ornamentIndex)
+    {
+        if (_vtm == null || ornamentIndex < 0 || ornamentIndex >= _vtm.Ornaments.Length)
+            return false;
+
+        _vtm.Ornaments[ornamentIndex] = new Ornament { Length = 1, Loop = 0 };
+        return true;
+    }
+
     public PatternLineData? GetPatternLineData(int patternIndex, int lineIndex, int channelIndex = 0)
     {
         if (_vtm == null || patternIndex < 0 || patternIndex >= _vtm.Patterns.Length)

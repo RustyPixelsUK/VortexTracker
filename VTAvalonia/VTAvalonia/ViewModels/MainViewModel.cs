@@ -64,6 +64,20 @@ namespace VTAvalonia.ViewModels
         private bool _isPlaying;
         private int _hlStep = 4;
 
+        // ── Sample editor state ──────────────────────────────────────────────
+        private int _selectedSampleIndex;
+        private int _sampleLength = 1;
+        private int _sampleLoop;
+        private int _selectedSampleTickIndex = -1;
+        private string _selectedSampleTickText = string.Empty;
+
+        // ── Ornament editor state ────────────────────────────────────────────
+        private int _selectedOrnamentIndex;
+        private int _ornamentLength = 1;
+        private int _ornamentLoop;
+        private int _selectedOrnamentOffsetIndex = -1;
+        private string _selectedOrnamentOffsetText = string.Empty;
+
         public string Status
         {
             get => _status;
@@ -177,6 +191,122 @@ namespace VTAvalonia.ViewModels
         {
             get => _hlStep;
             set => SetProperty(ref _hlStep, value);
+        }
+
+        // ── Sample editor properties ─────────────────────────────────────────
+
+        public ObservableCollection<string> SampleTickLines { get; } = new();
+
+        public int SelectedSampleIndex
+        {
+            get => _selectedSampleIndex;
+            set
+            {
+                if (SetProperty(ref _selectedSampleIndex, value))
+                    RefreshSample();
+            }
+        }
+
+        public int SampleLength
+        {
+            get => _sampleLength;
+            set
+            {
+                if (SetProperty(ref _sampleLength, value))
+                {
+                    _moduleService.UpdateSampleLength(_selectedSampleIndex, value);
+                    RefreshSample();
+                    IsDirty = true;
+                }
+            }
+        }
+
+        public int SampleLoop
+        {
+            get => _sampleLoop;
+            set
+            {
+                if (SetProperty(ref _sampleLoop, value))
+                {
+                    _moduleService.UpdateSampleLoop(_selectedSampleIndex, value);
+                    RefreshSample();
+                    IsDirty = true;
+                }
+            }
+        }
+
+        public int SelectedSampleTickIndex
+        {
+            get => _selectedSampleTickIndex;
+            set
+            {
+                if (SetProperty(ref _selectedSampleTickIndex, value))
+                    UpdateSelectedSampleTickText();
+            }
+        }
+
+        public string SelectedSampleTickText
+        {
+            get => _selectedSampleTickText;
+            set => SetProperty(ref _selectedSampleTickText, value);
+        }
+
+        // ── Ornament editor properties ───────────────────────────────────────
+
+        public ObservableCollection<string> OrnamentOffsetLines { get; } = new();
+
+        public int SelectedOrnamentIndex
+        {
+            get => _selectedOrnamentIndex;
+            set
+            {
+                if (SetProperty(ref _selectedOrnamentIndex, value))
+                    RefreshOrnament();
+            }
+        }
+
+        public int OrnamentLength
+        {
+            get => _ornamentLength;
+            set
+            {
+                if (SetProperty(ref _ornamentLength, value))
+                {
+                    _moduleService.UpdateOrnamentLength(_selectedOrnamentIndex, value);
+                    RefreshOrnament();
+                    IsDirty = true;
+                }
+            }
+        }
+
+        public int OrnamentLoop
+        {
+            get => _ornamentLoop;
+            set
+            {
+                if (SetProperty(ref _ornamentLoop, value))
+                {
+                    _moduleService.UpdateOrnamentLoop(_selectedOrnamentIndex, value);
+                    RefreshOrnament();
+                    IsDirty = true;
+                }
+            }
+        }
+
+        public int SelectedOrnamentOffsetIndex
+        {
+            get => _selectedOrnamentOffsetIndex;
+            set
+            {
+                if (SetProperty(ref _selectedOrnamentOffsetIndex, value))
+                    UpdateSelectedOrnamentOffsetText();
+            }
+        }
+
+        public string SelectedOrnamentOffsetText
+        {
+            get => _selectedOrnamentOffsetText;
+            set => SetProperty(ref _selectedOrnamentOffsetText, value);
         }
 
         public int SelectedPatternIndex
@@ -348,6 +478,9 @@ namespace VTAvalonia.ViewModels
         public IRelayCommand ApplyChannelCCommand { get; }
         public IRelayCommand ApplyModuleHeaderCommand { get; }
         public IRelayCommand<string> TransposeCommand { get; }
+        public IRelayCommand ClearSampleCommand { get; }
+        public IRelayCommand ClearOrnamentCommand { get; }
+        public IRelayCommand ApplyOrnamentOffsetCommand { get; }
 
         public MainViewModel()
             : this(new AvaloniaUIActionDispatcher(), new NullFileDialogService(), new NullClipboardService(), new NullWindowingService(), new NullModuleService(), new NullPlaybackService())
@@ -381,6 +514,9 @@ namespace VTAvalonia.ViewModels
             ApplyChannelCCommand = new RelayCommand(ApplyChannelC);
             ApplyModuleHeaderCommand = new RelayCommand(ApplyModuleHeader);
             TransposeCommand = new RelayCommand<string>(Transpose);
+            ClearSampleCommand = new RelayCommand(ClearSample);
+            ClearOrnamentCommand = new RelayCommand(ClearOrnament);
+            ApplyOrnamentOffsetCommand = new RelayCommand(ApplyOrnamentOffset);
             SeedActions(definitions);
         }
 
@@ -963,6 +1099,8 @@ namespace VTAvalonia.ViewModels
             OnPropertyChanged(nameof(SelectedPatternIndex));
 
             RefreshPatternLines();
+            RefreshSample();
+            RefreshOrnament();
         }
 
         private void ApplyModuleHeader()
@@ -1189,6 +1327,125 @@ namespace VTAvalonia.ViewModels
 
             RefreshPatternLines();
             IsDirty = true;
+        }
+
+        // ── Sample helpers ───────────────────────────────────────────────────
+
+        private void RefreshSample()
+        {
+            var data = _moduleService.GetSample(_selectedSampleIndex);
+            SampleTickLines.Clear();
+
+            if (data == null || data.Length == 0)
+            {
+                _sampleLength = 0;
+                OnPropertyChanged(nameof(SampleLength));
+                _sampleLoop = 0;
+                OnPropertyChanged(nameof(SampleLoop));
+                return;
+            }
+
+            _sampleLength = data.Length;
+            OnPropertyChanged(nameof(SampleLength));
+            _sampleLoop = data.Loop;
+            OnPropertyChanged(nameof(SampleLoop));
+
+            foreach (var line in data.TickLines)
+                SampleTickLines.Add(line);
+
+            if (SelectedSampleTickIndex >= data.Length)
+                SelectedSampleTickIndex = data.Length - 1;
+            else if (SelectedSampleTickIndex < 0 && data.Length > 0)
+                SelectedSampleTickIndex = 0;
+        }
+
+        private void UpdateSelectedSampleTickText()
+        {
+            if (_selectedSampleTickIndex >= 0 && _selectedSampleTickIndex < SampleTickLines.Count)
+                SelectedSampleTickText = SampleTickLines[_selectedSampleTickIndex];
+            else
+                SelectedSampleTickText = string.Empty;
+        }
+
+        private void ClearSample()
+        {
+            if (_moduleService.ClearSample(_selectedSampleIndex))
+            {
+                RefreshSample();
+                IsDirty = true;
+                Status = $"Sample {_selectedSampleIndex} cleared";
+            }
+        }
+
+        // ── Ornament helpers ─────────────────────────────────────────────────
+
+        private void RefreshOrnament()
+        {
+            var data = _moduleService.GetOrnament(_selectedOrnamentIndex);
+            OrnamentOffsetLines.Clear();
+
+            if (data == null || data.Length == 0)
+            {
+                _ornamentLength = 0;
+                OnPropertyChanged(nameof(OrnamentLength));
+                _ornamentLoop = 0;
+                OnPropertyChanged(nameof(OrnamentLoop));
+                return;
+            }
+
+            _ornamentLength = data.Length;
+            OnPropertyChanged(nameof(OrnamentLength));
+            _ornamentLoop = data.Loop;
+            OnPropertyChanged(nameof(OrnamentLoop));
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                var loopMark = i == data.Loop ? "L " : "  ";
+                var sign = data.Offsets[i] >= 0 ? "+" : "";
+                OrnamentOffsetLines.Add($"{loopMark}{i:D3}: {sign}{data.Offsets[i]}");
+            }
+
+            if (SelectedOrnamentOffsetIndex >= data.Length)
+                SelectedOrnamentOffsetIndex = data.Length - 1;
+            else if (SelectedOrnamentOffsetIndex < 0 && data.Length > 0)
+                SelectedOrnamentOffsetIndex = 0;
+        }
+
+        private void UpdateSelectedOrnamentOffsetText()
+        {
+            if (_selectedOrnamentOffsetIndex >= 0 && _selectedOrnamentOffsetIndex < OrnamentOffsetLines.Count)
+                SelectedOrnamentOffsetText = OrnamentOffsetLines[_selectedOrnamentOffsetIndex];
+            else
+                SelectedOrnamentOffsetText = string.Empty;
+        }
+
+        private void ApplyOrnamentOffset()
+        {
+            if (_selectedOrnamentOffsetIndex < 0)
+                return;
+
+            if (sbyte.TryParse(SelectedOrnamentOffsetText.Trim(), out var value))
+            {
+                if (_moduleService.UpdateOrnamentOffset(_selectedOrnamentIndex, _selectedOrnamentOffsetIndex, value))
+                {
+                    RefreshOrnament();
+                    IsDirty = true;
+                }
+            }
+            else
+            {
+                Status = "Invalid ornament offset value";
+            }
+        }
+
+        private void ClearOrnament()
+        {
+            if (_moduleService.ClearOrnament(_selectedOrnamentIndex))
+            {
+                RefreshOrnament();
+                IsDirty = true;
+                Status = $"Ornament {_selectedOrnamentIndex} cleared";
+            }
         }
 
         private sealed record LineEdit(int Index, string OldValue, string NewValue);
