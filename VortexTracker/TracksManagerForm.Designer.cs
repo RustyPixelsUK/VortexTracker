@@ -355,6 +355,8 @@ namespace VortexTracker
             // 
             // TracksManagerForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(274, 377);
             Controls.Add(Location2Box);
             Controls.Add(PatternLabel);

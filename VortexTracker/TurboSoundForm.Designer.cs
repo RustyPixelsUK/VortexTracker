@@ -41,6 +41,8 @@ namespace VortexTracker
             // 
             // TurboSoundForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(380, 246);
             Controls.Add(ListBox1);
             Font = new Font("Microsoft Sans Serif", 8.25F);

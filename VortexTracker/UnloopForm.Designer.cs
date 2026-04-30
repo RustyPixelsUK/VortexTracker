@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -86,6 +86,8 @@ namespace VortexTracker
             // 
             // UnloopForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(209, 176);
             Controls.Add(UnloopUpDown);
             Controls.Add(InfoLabel);

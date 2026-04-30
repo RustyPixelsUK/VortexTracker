@@ -168,6 +168,8 @@ namespace VortexTracker
             // 
             // FxmParamsForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(257, 174);
             Controls.Add(LengthLabel);
             Controls.Add(LoopInterruptLabel);

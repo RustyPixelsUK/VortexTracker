@@ -2119,6 +2119,8 @@ namespace VortexTracker
             // ChildForm
             // 
             AutoScroll = true;
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(634, 665);
             Controls.Add(SoloButton);
             Controls.Add(MuteButton);

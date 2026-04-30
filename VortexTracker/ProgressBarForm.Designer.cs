@@ -56,6 +56,8 @@ namespace VortexTracker
             // 
             // ProgressBarForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(393, 63);
             Controls.Add(ExportProgress);
             Font = new Font("Microsoft Sans Serif", 8.25F);

@@ -1424,6 +1424,8 @@ namespace VortexTracker
             // MainForm
             // 
             AllowDrop = true;
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(611, 579);
             Controls.Add(ToolStrip1);
             Controls.Add(StatusBar);

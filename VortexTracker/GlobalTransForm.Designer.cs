@@ -184,6 +184,8 @@ namespace VortexTracker
             // 
             // GlobalTransForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(325, 147);
             Controls.Add(ChannelsToTransposeBox);
             Controls.Add(GlobalOptionsBox);

@@ -51,6 +51,8 @@ namespace VortexTracker
             // 
             // TrackInfoForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.Black;
             ClientSize = new Size(619, 490);
             Controls.Add(Info);

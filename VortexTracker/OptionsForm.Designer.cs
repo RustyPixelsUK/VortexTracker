@@ -2303,6 +2303,8 @@ namespace VortexTracker
             // 
             // OptionsForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(546, 569);
             Controls.Add(OptionsTabControl);
             Controls.Add(OkButton);

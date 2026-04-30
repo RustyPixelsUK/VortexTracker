@@ -30,6 +30,7 @@ namespace VortexTracker
             // see https://aka.ms/applicationconfiguration.
             Application.EnableVisualStyles();
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.SetDefaultFont(new Font("Segoe UI", 9F));
             ApplicationConfiguration.Initialize();
             WaveOutAPI.Initialize();
             Globals.MainForm = new MainForm();

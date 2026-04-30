@@ -9993,7 +9993,9 @@ namespace VortexTracker
             StringGridCharHeight = charSize.Height;
 
             PositionsGrid.Columns[0].Width = (StringGridCharWidth * 3) + 4;
-            PositionsGrid.Rows[0].Height = StringGridCharHeight + 13 + StringGridAddHeight;
+            int rowPadding = (int)Math.Round(13 * (DeviceDpi / 96.0));
+            PositionsGrid.Rows[0].Height = StringGridCharHeight + rowPadding + StringGridAddHeight;
+            PositionsGrid.Height = PositionsGrid.Rows[0].Height + SystemInformation.HorizontalScrollBarHeight;
 
             visibleColCount = PositionsGrid.Width / PositionsGrid.Columns[0].Width;
             colCount = VTM.Positions.Length;

@@ -26,6 +26,8 @@ namespace VortexTracker
             // 
             // ToggleSamplesForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(192, 178);
             Font = new Font("Microsoft Sans Serif", 8.25F);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;

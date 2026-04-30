@@ -168,6 +168,8 @@ namespace VortexTracker
             // 
             // ExportWavOptionsForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(236, 366);
             Controls.Add(Chip);
             Controls.Add(SampleRate);

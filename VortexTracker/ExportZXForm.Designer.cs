@@ -431,6 +431,8 @@ namespace VortexTracker
             // 
             // ExportZXForm
             // 
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(516, 322);
             Controls.Add(OkButton);
             Controls.Add(CancelButton);

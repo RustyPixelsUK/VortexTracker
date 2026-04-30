@@ -61,6 +61,7 @@ namespace VortexTracker
             PluginsListView.UseCompatibleStateImageBehavior = false;
             PluginsListView.View = View.Details;
             PluginsListView.MouseDoubleClick += PluginsListView_MouseDoubleClick;
+            PluginsListView.Resize += PluginsListView_Resize;
             // 
             // columnHeader1
             // 
@@ -99,7 +100,8 @@ namespace VortexTracker
             // 
             // PluginManagerForm
             // 
-            AutoScaleBaseSize = new Size(6, 16);
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(544, 358);
             Controls.Add(PluginsListView);
             Controls.Add(statusStrip1);
@@ -108,7 +110,6 @@ namespace VortexTracker
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Plugin Manager";
             FormClosing += PluginManagerForm_FormClosing;
-            Resize += PluginManagerForm_Resize;
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             ResumeLayout(false);

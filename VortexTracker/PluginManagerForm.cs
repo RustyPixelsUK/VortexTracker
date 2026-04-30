@@ -190,18 +190,6 @@ namespace VortexTracker
             iniFile.Save();
         }
 
-        private void PluginManagerForm_Resize(object sender, System.EventArgs e)
-        {
-            for (int i = 0; i < PluginsListView.Columns.Count; i++)
-            {
-                if (PluginsListView.Columns[i].Width == 0)
-                    continue;
-
-                float columnRatio = (float)PluginsListView.Columns[i].Tag;
-                PluginsListView.Columns[i].Width = (int)(PluginsListView.Width * columnRatio);
-            }
-        }
-
         private void PluginsListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (PluginsListView.SelectedItems.Count == 0) return;
