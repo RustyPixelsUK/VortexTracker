@@ -46,4 +46,4 @@ The best music tracker for 8bit AY/YM chips.
 - (c) Ben Baker / [Rusty Pixels](https://www.rustypixels.uk) 2020-2026
 	- C# Port: Version 3.0+
 - Thanks to Richard Faulkner / [Technoshed Software](https://technoshedsoftware.com) for updates and code fixes
-- Thanks to Zingot / [Zingot Games](https://zingot.serv00.net) for the new logo
+- Thanks to Zingot / [Zingot Graphics](https://zingot.graphics) for the new logo
