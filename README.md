@@ -1,4 +1,4 @@
-# Vortex Tracker 3.0
+![](/.github/img/Vortex3.png?raw=true)
 
 The best music tracker for 8bit AY/YM chips.
 
@@ -41,7 +41,9 @@ The best music tracker for 8bit AY/YM chips.
 	- Sound improvements by Artem Vasilev (wbcbz7)
 - (c) Ivan Pirog (Flexx/Enhancers) 2017-2021
 	- Version 1.5 - 2.6
-- (c) Dexus (Volutar) 2022-2025
+- (c) Dexus / [Volutar](https://github.com/Volutar) 2022-2026
 	- Version 2.6.1
-- (c) Ben Baker (Rusty Pixels) 2025
-	- C# Port - Version 3.0+
+- (c) Ben Baker / [Rusty Pixels](https://www.rustypixels.uk) 2020-2026
+	- C# Port: Version 3.0+
+- Thanks to Richard Faulkner / [Technoshed Software](https://technoshedsoftware.com) for updates and code fixes
+- Thanks to Zingot / [Zingot Games](https://zingot.serv00.net) for the new logo
