@@ -1,4 +1,4 @@
-![](/.github/img/Vortex3.png?raw=true)
+![](/.github/img/Vortex3x3.png?raw=true)
 
 The best music tracker for 8bit AY/YM chips.
 
