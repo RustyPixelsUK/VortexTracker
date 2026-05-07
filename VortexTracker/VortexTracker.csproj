@@ -91,7 +91,7 @@
 	  </None>
 	</ItemGroup>
 
-	<Target Name="StampBuildDate" BeforeTargets="GenerateResources">
+	<Target Name="StampBuildDate" BeforeTargets="BeforeBuild;BeforeResGen">
 		<PropertyGroup>
 			<_UtcNow>$([System.DateTime]::UtcNow.ToString("O"))</_UtcNow>
 		</PropertyGroup>

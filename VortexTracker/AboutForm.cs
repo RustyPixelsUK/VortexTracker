@@ -42,7 +42,7 @@ namespace VortexTracker
 
             MyProductName.Text = Application.ProductName;
             Version.Text = MainForm.HalfVersString;
-            BuildDateLabel.Text = $"Date of build: {MainForm.BuildDateTime.ToString()}";
+            BuildDateLabel.Text = $"Date of build: {MainForm.BuildDateTime} UTC";
         }
 
         private void AboutForm_FormClosing(object sender, FormClosingEventArgs e)
