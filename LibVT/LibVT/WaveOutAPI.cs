@@ -1130,11 +1130,11 @@ namespace LibVT
                         {
                             ZXModule.Prepare(data2, ref fileType1, tsSize1);
 
-                            if (fileType2 != ModuleType.Unknown)
+                            if (fileType1 != ModuleType.Unknown)
                             {
                                 vtm2 = new VTM();
                                 VTM dummy = null;
-                                ConvertTrackerModule(fileName, data2, fileType2, zxAddr, tm, andSix, songName, authorName, vtm2, ref dummy, ref dummy);
+                                ConvertTrackerModule(fileName, data2, fileType1, zxAddr, tm, andSix, songName, authorName, vtm2, ref dummy, ref dummy);
 
                                 if (dummy != null)
                                     VTModule.FreeVTM(ref dummy);
