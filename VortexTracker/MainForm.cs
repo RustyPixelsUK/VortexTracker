@@ -2602,6 +2602,7 @@ namespace VortexTracker
 
             WaveOutAPI.InitForAllTypes(true);
             WaveOutAPI.StartWOThread();
+            PlayStop_Update(null, EventArgs.Empty);
         }
 
         public void PlayPatternFromStart_Execute(object sender, EventArgs e)
@@ -2644,6 +2645,7 @@ namespace VortexTracker
 
             WaveOutAPI.InitForAllTypes(false);
             WaveOutAPI.StartWOThread();
+            PlayStop_Update(null, EventArgs.Empty);
         }
 
         public void PlayPatternFromLine_Execute(object sender, EventArgs e)
@@ -2678,6 +2680,7 @@ namespace VortexTracker
                 activeForm.RestartPlayingTS(true, false);
 
             activeForm.CheckPositionsGridPosition();
+            PlayStop_Update(null, EventArgs.Empty);
         }
 
         private void RestoreTracksFocus()
@@ -3215,6 +3218,7 @@ namespace VortexTracker
             // Enable some context menu items
             RenumberPatterns.Enabled = true;
             AutoNumeratePatterns.Enabled = true;
+            PlayStop_Update(null, EventArgs.Empty);
         }
 
         public void ScrollToPlayingWindow()
@@ -5941,6 +5945,7 @@ namespace VortexTracker
 
                 ScrollToPlayingWindow();
                 WaveOutAPI.StartWOThread();
+                PlayStop_Update(null, EventArgs.Empty);
             }
 
             // Play sample, if samples tab is active
@@ -6203,6 +6208,7 @@ namespace VortexTracker
                 activeForm.RestartPlayingTS(false, false);
 
             WaveOutAPI.StartWOThread();
+            PlayStop_Update(null, EventArgs.Empty);
         }
 
         public void SaveAsTwoModules_Execute(object sender, EventArgs e)
