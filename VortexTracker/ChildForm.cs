@@ -10184,8 +10184,23 @@ namespace VortexTracker
                 {
                     string draggedText = PositionsGrid.Rows[y1].Cells[sourceCol].Value.ToString();
 
-                    // Start the drag-and-drop operation
-                    PositionsGrid.DoDragDrop(draggedText, DragDropEffects.Move);
+                    // Update selection to the clicked cell BEFORE starting drag.
+                    // DoDragDrop is synchronous - the grid won't update SelectedCells until after
+                    // MouseDown returns, which is too late for DragDrop to read the correct SourceCol.
+                    PositionsGrid.Selection = Rectangle.FromLTRB(sourceCol, y1, sourceCol, y1);
+                    PatternsOrderSelection = PositionsGrid.Selection;
+
+                    // Start the drag-and-drop operation with DataObject
+                    DataObject dataObject = new DataObject();
+                    dataObject.SetData("DragSource", PositionsGrid);
+                    dataObject.SetData(DataFormats.Text, draggedText);
+                    DragDropEffects result = PositionsGrid.DoDragDrop(dataObject, DragDropEffects.Move);
+
+                    // If no drag occurred (user just clicked), DoDragDrop returns None.
+                    // CurrentCellChanged won't fire because Selection setter doesn't change CurrentCell,
+                    // so we must update the pattern editor manually here.
+                    if (result == DragDropEffects.None)
+                        SelectPosition(sourceCol);
                 }
             }
         }
@@ -10263,7 +10278,7 @@ namespace VortexTracker
         public void PositionsGridDragDrop_MoveItemsFromRightToLeft()
         {
             // Shift columns to right
-            for (int i = SourceCol + NumSelectedCols - 1; i > DestCol + NumSelectedCols; i--)
+            for (int i = SourceCol + NumSelectedCols - 1; i >= DestCol + NumSelectedCols; i--)
             {
                 VTM.Positions.Value[i] = VTM.Positions.Value[i - NumSelectedCols];
                 VTM.Positions.Colors[i] = VTM.Positions.Colors[i - NumSelectedCols];
@@ -10407,7 +10422,8 @@ namespace VortexTracker
 
         public void PositionsGrid_DragDrop(object sender, DragEventArgs e)
         {
-            Globals.MouseToCell(PositionsGrid, e.X, e.Y, out DestCol, out DestRow);
+            Point clientPt = PositionsGrid.PointToClient(new Point(e.X, e.Y));
+            Globals.MouseToCell(PositionsGrid, clientPt.X, clientPt.Y, out DestCol, out DestRow);
             SourceCol = PositionsGrid.Selection.Left; // Left index of selection
             SourceColEnd = PositionsGrid.Selection.Right; // Right index of selection
             NumSelectedCols = PositionsGrid.Selection.Right - PositionsGrid.Selection.Left + 1;
@@ -10522,7 +10538,8 @@ namespace VortexTracker
 
         public void PositionsGrid_DragOver(object sender, DragEventArgs e)
         {
-            Globals.MouseToCell(PositionsGrid, e.X, e.Y, out int currentCol, out int currentRow);
+            Point clientPt = PositionsGrid.PointToClient(new Point(e.X, e.Y));
+            Globals.MouseToCell(PositionsGrid, clientPt.X, clientPt.Y, out int currentCol, out int currentRow);
             object dragSource = (object)e.Data.GetData("DragSource");
 
             bool accept = sender == dragSource && currentCol >= 0;
@@ -10533,11 +10550,24 @@ namespace VortexTracker
                     PositionsGrid.Selection = PatternsOrderSelection;
 
                 if (GetKeyState(Keys.Control) < 0)
+                {
                     PositionsGrid.Cursor = Cursors.Default;
+                    e.Effect = DragDropEffects.Copy;
+                }
                 else if (GetKeyState(Keys.Shift) < 0)
+                {
                     PositionsGrid.Cursor = Cursors.UpArrow;
+                    e.Effect = DragDropEffects.Move;
+                }
                 else
+                {
                     PositionsGrid.Cursor = Cursors.Default;
+                    e.Effect = DragDropEffects.Move;
+                }
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
             }
         }
 

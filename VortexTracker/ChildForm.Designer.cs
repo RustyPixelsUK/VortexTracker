@@ -344,6 +344,7 @@ namespace VortexTracker
             PositionsGrid.SelectionMode = DataGridViewSelectionMode.CellSelect;
             PositionsGrid.Size = new Size(626, 49);
             PositionsGrid.TabIndex = 0;
+            PositionsGrid.AllowDrop = true;
             PositionsGrid.MouseWheel += PositionsGrid_MouseWheel;
             PositionsGrid.CellPainting += PositionsGrid_CellPainting;
             PositionsGrid.CurrentCellChanged += PositionsGrid_CurrentCellChanged;

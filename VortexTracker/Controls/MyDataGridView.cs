@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -88,7 +88,7 @@ namespace VortexTracker.Controls
                     if (cell.ColumnIndex > maxCol) maxCol = cell.ColumnIndex;
                 }
 
-                return new Rectangle(minCol, minRow, maxCol - minCol + 1, maxRow - minRow + 1);
+                return new Rectangle(minCol, minRow, maxCol - minCol, maxRow - minRow);
             }
 
             set
