@@ -95,7 +95,7 @@ namespace VortexTracker
             label7.Name = "label7";
             label7.Size = new Size(252, 30);
             label7.TabIndex = 11;
-            label7.Text = "(c) Ben Baker (Rusty Pixels) 2025\r\nVersion 3.0+";
+            label7.Text = "(c) Ben Baker (Rusty Pixels) 2025 - 2026\r\nVersion 3.0+";
             // 
             // ProgramIcon
             // 
