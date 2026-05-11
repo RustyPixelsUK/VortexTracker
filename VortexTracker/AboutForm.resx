@@ -120,4 +120,25 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="AboutText.Text" xml:space="preserve">
+    <value>- Copyright (c) 2000-2009 S.V. Bulba
+- Thanks to Roman Scherbakov for idea and graphics
+- Thanks to Shiru Otaku for OrGen plug-in
+- Thanks to Denis Seleznev for icons
+- Thanks to MmcM, nq, bfox, mr287cc, Oisee, Flexx
+- (c) Oisee (Siril/4D) 2010
+	- Natural 4th table added, control improvement, MIDI
+- Ayumi Engine:
+	- Author: Peter Sovietov (True Grue)
+	- Vortex Tracker adaptation by Ivan Pirog (Flexx)
+	- Sound improvements by Artem Vasilev (wbcbz7)
+- (c) Ivan Pirog (Flexx/Enhancers) 2017-2021
+	- Version 1.5 - 2.6
+- (c) Dexus (Volutar) 2022-2026
+	- Version 2.6.1
+- (c) Ben Baker (Rusty Pixels) 2020-2026
+	- C# Port: Version 3.0+
+- Thanks to Richard Faulkner for updates and code fixes
+- Thanks to Zingot for the new logo</value>
+  </data>
 </root>

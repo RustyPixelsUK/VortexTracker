@@ -630,6 +630,49 @@ namespace LibVT
 
             return GetNoteByEnvelope2(VTM.NoteTable, e);
         }
+		
+
+        public static int GetNoteByTone(NoteTableType noteTableType, int tone)
+        {
+            ushort[] noteTable;
+
+            switch (noteTableType)
+            {
+                case NoteTableType.ProTracker: noteTable = PT3NoteTable_PT; break;
+                case NoteTableType.SoundTracker: noteTable = PT3NoteTable_ST; break;
+                case NoteTableType.ASM: noteTable = PT3NoteTable_ASM; break;
+                case NoteTableType.Real: noteTable = PT3NoteTable_Real; break;
+                case NoteTableType.Natural: noteTable = PT3NoteTable_Natural; break;
+                default: noteTable = CustomNoteTable; break;
+            }
+
+            int nearestNote = -1;
+            int bestDistance = int.MaxValue;
+
+            for (int i = 0; i < noteTable.Length; i++)
+            {
+                int d = Math.Abs(tone - noteTable[i]);
+
+                if (d < bestDistance)
+                {
+                    bestDistance = d;
+                    nearestNote = i;
+
+                    if (d == 0)
+                        break;
+                }
+            }
+
+            return nearestNote;
+        }
+
+        public static int GetNoteByTone(int tone)
+        {
+            if (VTM == null)
+                return -1;
+
+            return GetNoteByTone(VTM.NoteTable, tone);
+        }
 
         public static void Pattern_PlayOnlyCurrentLine_GetRegisters(ref int tempMixer, int chNum)
         {
