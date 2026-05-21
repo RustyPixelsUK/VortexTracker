@@ -276,6 +276,7 @@ namespace LibVT
         public const int MaxSampleLength = 64;    // not bigger than 64 (players limitation)
         public const int MaxPositionIndex = 255;  // max positions in track
         public const int MaxPositionCount = MaxPositionIndex + 1;
+        public const int NoteCount = 96;          // 8 octaves * 12 semitones
         public const int PreviewSampleIndex = 32;
         public const int PreviewOrnamentIndex = 32;
         public static FeaturesLevel FeaturesLevel = FeaturesLevel.VTII_PT36;

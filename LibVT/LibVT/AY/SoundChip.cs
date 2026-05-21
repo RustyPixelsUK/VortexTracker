@@ -24,7 +24,9 @@ namespace LibVT
         ChannelA = 0,
         ChannelB = 1,
         ChannelC = 2,
-        Envelope = 3
+        Envelope = 3,
+        Notes = 4,
+        NotesAndEnvelope = 5
     }
 
     public class AYRegisters
@@ -157,13 +159,15 @@ namespace LibVT
 
         private const int SpecBands = 42;
         private const int SpecRange = 1000;
-        private const float SpecDecay = 0.06f;
+        private const float SpecDecay = 0.12f;
 
         public float[] VULevel = new float[3];
         private const float VUDecay = 0.06f;
 
         public float[] SpecLevels = new float[SpecBands];
         public SpecType[] SpecTypes = new SpecType[SpecBands];
+
+        public SpecType Spectrum = SpecType.NotesAndEnvelope;
 
         public delegate void EnvTypeDelegate();
 
@@ -582,10 +586,30 @@ namespace LibVT
             }
         }
 
+        private void SpecAddAtBand(int off, int level, SpecType type)
+        {
+            float[] curve = { 0.25f, 0.5f, 1.0f, 0.5f, 0.25f };
+            float normLevel = level / 15f; // Normalize input level (0..15) to 0..1
+
+            for (int i = 0; i < 5; ++i)
+            {
+                if (off >= 0 && off < SpecBands)
+                {
+                    float weight = curve[i] * normLevel;
+
+                    if (weight > SpecLevels[off])
+                    {
+                        SpecLevels[off] = weight;
+                        SpecTypes[off] = type;
+                    }
+                }
+
+                ++off;
+            }
+        }
+
         public void SpecAdd(int hz, int level, SpecType type)
         {
-            float[] curve = { 0.1f, 0.2f, 0.5f, 0.2f, 0.1f };
-
             if (hz == 0)
                 return;
 
@@ -594,35 +618,46 @@ namespace LibVT
             if (off > SpecBands - 1)
                 off = SpecBands - 1;
 
-            float normLevel = level / 15f; // Normalize input level (0..15) to 0..1
+            SpecAddAtBand(off, level, type);
+        }
 
-            for (int i = 0; i < 5; ++i)
-            {
-                if (off >= 0 && off < SpecBands)
-                {
-                    SpecLevels[off] += curve[i] * normLevel;
+        public void SpecAddNote(int note, int level, SpecType type)
+        {
+            // GetNoteByTone returns -1 when no module is loaded; skip in that case.
+            if (note < 0)
+                return;
 
-                    if (SpecLevels[off] > 1.0f)
-                        SpecLevels[off] = 1.0f;
+            // 2 semitones per bar (matches Fractalicious PlasmaBars' PB_NOTE_SHIFT=1):
+            // notes 0..83 fit into SpecBands=42 with the bell-curve centred on
+            // the note. Notes above 83 fall off the right edge silently. The
+            // -2 offset places the leftmost of the 5-bar bell at `off`.
+            int off = (note >> 1) - 2;
 
-                    SpecTypes[off] = type;
-                }
+            if (off > SpecBands - 1)
+                off = SpecBands - 1;
 
-                ++off;
-            }
+            SpecAddAtBand(off, level, type);
         }
 
         public void SpecAddAY(int ayClock)
         {
+            bool useNotes = Spectrum == SpecType.Notes || Spectrum == SpecType.NotesAndEnvelope;
+            bool useEnvelope = Spectrum == SpecType.Envelope || Spectrum == SpecType.NotesAndEnvelope;
+
             // Channel A
             if ((AYRegisters.Mixer & 0x01) == 0 && (AYRegisters.AmplitudeA & 0x10) == 0)
             {
                 int toneA = AYRegisters.ToneA;
 
                 if (toneA != 0)
-                    SpecAdd(ayClock / 16 / toneA, AYRegisters.AmplitudeA, SpecType.ChannelA);
+                {
+                    if (useNotes)
+                        SpecAddNote(VTModule.GetNoteByTone(toneA), AYRegisters.AmplitudeA, SpecType.ChannelA);
+                    else
+                        SpecAdd(ayClock / 16 / toneA, AYRegisters.AmplitudeA, SpecType.ChannelA);
+                }
 
-                VULevel[0] = MathF.Max(VULevel[0], AYRegisters.AmplitudeA / 15f); // Normalize to 0.0f–1.0f
+                VULevel[0] = MathF.Max(VULevel[0], AYRegisters.AmplitudeA / 15f); // Normalize to 0.0f-1.0f
             }
 
             // Channel B
@@ -631,7 +666,12 @@ namespace LibVT
                 int toneB = AYRegisters.ToneB;
 
                 if (toneB != 0)
-                    SpecAdd(ayClock / 16 / toneB, AYRegisters.AmplitudeB, SpecType.ChannelB);
+                {
+                    if (useNotes)
+                        SpecAddNote(VTModule.GetNoteByTone(toneB), AYRegisters.AmplitudeB, SpecType.ChannelB);
+                    else
+                        SpecAdd(ayClock / 16 / toneB, AYRegisters.AmplitudeB, SpecType.ChannelB);
+                }
 
                 VULevel[1] = MathF.Max(VULevel[1], AYRegisters.AmplitudeB / 15f);
             }
@@ -642,13 +682,18 @@ namespace LibVT
                 int toneC = AYRegisters.ToneC;
 
                 if (toneC != 0)
-                    SpecAdd(ayClock / 16 / toneC, AYRegisters.AmplitudeC, SpecType.ChannelC);
+                {
+                    if (useNotes)
+                        SpecAddNote(VTModule.GetNoteByTone(toneC), AYRegisters.AmplitudeC, SpecType.ChannelC);
+                    else
+                        SpecAdd(ayClock / 16 / toneC, AYRegisters.AmplitudeC, SpecType.ChannelC);
+                }
 
                 VULevel[2] = MathF.Max(VULevel[2], AYRegisters.AmplitudeC / 15f);
             }
 
             // Envelope
-            if ((AYRegisters.AmplitudeA & 0x10) != 0 || (AYRegisters.AmplitudeB & 0x10) != 0 || (AYRegisters.AmplitudeC & 0x10) != 0)
+            if (useEnvelope && ((AYRegisters.AmplitudeA & 0x10) != 0 || (AYRegisters.AmplitudeB & 0x10) != 0 || (AYRegisters.AmplitudeC & 0x10) != 0))
             {
                 int envelope = AYRegisters.Envelope;
 
