@@ -3005,7 +3005,8 @@ namespace VortexTracker
 
         public void ToggleChip_Execute(object sender, EventArgs e)
         {
-            UIActionManager.Instance.SetText(UIActionType.ToggleChip, AY.EmulatingChip == ChipType.AY ? "YM" : "AY");
+            AY.EmulatingChip = AY.EmulatingChip == ChipType.AY ? ChipType.YM : ChipType.AY;
+            UIActionManager.Instance.SetText(UIActionType.ToggleChip, AY.EmulatingChip == ChipType.AY ? "AY" : "YM");
 
             if (AY.StdChannelsAllocation >= 0 && AY.StdChannelsAllocation <= 6)
                 AY.SetStdChannelsAllocation(AY.StdChannelsAllocation);
