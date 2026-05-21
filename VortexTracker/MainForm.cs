@@ -1787,7 +1787,14 @@ namespace VortexTracker
             // 1) find all ZIPs for this category
             var zips = asm.GetManifestResourceNames()
                           .Where(r => r.StartsWith(prefix, StringComparison.Ordinal)
-                                   && r.EndsWith(zipExt, StringComparison.Ordinal));
+                                   && r.EndsWith(zipExt, StringComparison.Ordinal))
+                          .ToList();
+
+            // Multi-bundle categories (e.g. Plugins) have several zips that extract
+            // into the same outDirectory, each placing its content inside a subfolder
+            // named after the bundle. Single-bundle categories (DemoSongs, Fonts,
+            // Instruments) extract directly into outDirectory.
+            bool multiBundle = zips.Count > 1;
 
             foreach (var zipRes in zips)
             {
@@ -1804,8 +1811,18 @@ namespace VortexTracker
                 string stored = ini.GetValue("Resources", iniKey, "");
                 string buildIso = buildStamp.ToString("O", CultureInfo.InvariantCulture);
 
+                // For multi-bundle categories, treat the per-bundle subfolder as
+                // the "already extracted" sentinel so that a sibling extraction
+                // creating outDirectory doesn't cause us to skip this bundle.
+                // For single-bundle categories, an empty or missing outDirectory
+                // means we still need to extract even if the stamp matches.
+                bool bundleExtracted = multiBundle
+                    ? Directory.Exists(Path.Combine(outDirectory, bundle))
+                    : Directory.Exists(outDirectory)
+                      && Directory.EnumerateFileSystemEntries(outDirectory).Any();
+
                 if (skipIfUnchanged
-                    && Directory.Exists(outDirectory)
+                    && bundleExtracted
                     && string.Equals(stored, buildIso, StringComparison.Ordinal))
                 {
                     continue;
@@ -1813,8 +1830,6 @@ namespace VortexTracker
 
                 // 5) (re)create the output folder
                 // Don't delete the directory so user files are maintained
-                //if (Directory.Exists(outDir))
-                //    Directory.Delete(outDir, recursive: true);
                 Directory.CreateDirectory(outDirectory);
 
                 // 6) extract ZIP into that sub-folder
