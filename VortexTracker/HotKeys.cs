@@ -239,7 +239,7 @@ namespace VortexTracker
             listViewItem.SubItems[1].Text = shortCutText;
         }
 
-        public static void HandleHotKey(Keys keyData)
+        public static bool HandleHotKey(Keys keyData)
         {
             foreach (var hotKey in AllHotKeys)
             {
@@ -251,9 +251,11 @@ namespace VortexTracker
                 if ((Keys)shortcut == keyData)
                 {
                     hotKey.Action?.Invoke();
-                    break;
+                    return true;
                 }
             }
+
+            return false;
         }
 
         public static bool MatchesShortcut(string shortcutText, KeyEventArgs e)

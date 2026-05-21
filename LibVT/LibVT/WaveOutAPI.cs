@@ -337,11 +337,17 @@ namespace LibVT
 
             IsPlaying = false;
 
+            // Release ResetMutex before joining the WO thread. If ResetPlaying was
+            // active (e.g. after a Tracks_KeyUp following a note preview), the WO
+            // thread is blocked on ResetMutex.WaitOne and would never see the
+            // IsPlaying = false until the mutex is released — causing Join to time
+            // out and leaving audio in a broken state for the next StartWOThread.
+            UnResetPlayingInternal();
+
             // Wait for the WO thread to finish all AL calls before destroying the context.
             WOThread?.Join(3000);
 
             StopOpenAL();
-            UnResetPlayingInternal();
             AY.ClearRegisters();
             AY.ClearSpec();
         }
@@ -437,14 +443,24 @@ namespace LibVT
             {
                 Debug.WriteLine("WOThreadFunc finally reached");
 
+                // If IsPlaying is still true at this point the loop exited on its own
+                // (song reached the end with looping disabled). If it's false, an
+                // external StopPlaying triggered the exit and the caller is already
+                // restoring UI state, so we must not post FinalizeWO — that handler
+                // races with a stop-then-restart sequence (PlayStop_Execute) and would
+                // flip PlayStopState back to Play after the new playback already
+                // started, making subsequent Play/Stop clicks restart instead of stop.
+                bool naturalEnd = IsPlaying;
+
                 if (resetMutex)
                 {
                     try { ResetMutex.ReleaseMutex(); }
                     catch (ApplicationException) { }
                 }
 
-                // If we exit the loop, finalize
-                AppEvents.PostEvent(EventType.FinalizeWO);
+                if (naturalEnd)
+                    AppEvents.PostEvent(EventType.FinalizeWO);
+
                 VTModule.UnlimitedDelay = false;
                 IsPlaying = false;
                 PlaybackEnded?.Invoke();

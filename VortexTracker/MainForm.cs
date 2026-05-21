@@ -7214,7 +7214,11 @@ namespace VortexTracker
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            HotKeys.HandleHotKey(e.KeyData);
+            if (HotKeys.HandleHotKey(e.KeyData))
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
         }
 
         public static bool UnderWine()
