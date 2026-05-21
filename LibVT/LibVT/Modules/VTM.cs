@@ -96,8 +96,8 @@ namespace LibVT
         {
             Positions = new Position
             {
-                Value = new int[256],
-                Colors = new int[256]
+                Value = new int[VTModule.MaxPositionCount],
+                Colors = new int[VTModule.MaxPositionCount]
             };
 
             Samples = new Sample[VTModule.MaxSampleLength + 1];
@@ -360,8 +360,8 @@ namespace LibVT
         {
             vtm.Positions = new Position
             {
-                Value = new int[VTModule.MaxPatternCount],
-                Colors = new int[VTModule.MaxPatternCount],
+                Value = new int[VTModule.MaxPositionCount],
+                Colors = new int[VTModule.MaxPositionCount],
                 Length = 0,
                 Loop = 0
             };
@@ -370,6 +370,9 @@ namespace LibVT
 
             foreach (string part in parts)
             {
+                if (vtm.Positions.Length >= VTModule.MaxPositionCount)
+                    break;
+
                 string trimmed = part.Trim();
                 bool isLoop = trimmed.StartsWith("L");
                 if (isLoop)

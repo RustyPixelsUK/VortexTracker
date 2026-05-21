@@ -8707,7 +8707,7 @@ namespace VortexTracker
                 {
                     result = VTModule.Module_PlayCurrentLine();
                 }
-                while (result != PlayLineResult.PatternEnded && VTModule.PlayArgs[chipIndex].PositionIndex != position);
+                while (result != PlayLineResult.AllPatternsEnded && VTModule.PlayArgs[chipIndex].PositionIndex != position);
 
                 WaveOutAPI.LineReady = true;
             }
@@ -16243,7 +16243,7 @@ namespace VortexTracker
             binaryWriter.Write((byte)0);
 
             // 4) zero digidrums => 2 bytes (Delphi was blockwrite(dw,2) with dw=0 => little-endian)
-            // But it’s 0, so either endianness is effectively the same:
+            // But itï¿½s 0, so either endianness is effectively the same:
             binaryWriter.Write((byte)0);
             binaryWriter.Write((byte)0);
 
