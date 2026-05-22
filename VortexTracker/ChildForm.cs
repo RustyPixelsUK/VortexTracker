@@ -9117,8 +9117,8 @@ namespace VortexTracker
 
             if (Tracks.IsTrackPlaying() && columnIndex >= VTM.Positions.Length)
             {
-                columnIndex = VTM.Positions.Length - 1;
-                SelectPosition2(columnIndex);
+                int clampedIndex = VTM.Positions.Length - 1;
+                BeginInvoke(new Action(() => SelectPosition2(clampedIndex)));
             }
             else
             {
