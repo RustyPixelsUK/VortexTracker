@@ -545,6 +545,9 @@ namespace VortexTracker
 
         public void SetWidth(int clientWidth, bool fixedWidth)
         {
+            MinimumSize = new Size(0, MinimumSize.Height);
+            MaximumSize = Size.Empty;
+
             ClientSize = new Size(clientWidth, ClientSize.Height);
 
             if (!fixedWidth)
@@ -1047,7 +1050,7 @@ namespace VortexTracker
             Ornaments.InitMetrics();
 
             // PageControl & tracks width
-            TabControl.Width = Tracks.Width + 8;
+            TabControl.Width = (Tracks.PatternWidth > 0 ? Tracks.PatternWidth : Tracks.Width) + 8;
             if (TabControl.Width < ToolBoxesWidth)
                 TabControl.Width = ToolBoxesWidth;
 
