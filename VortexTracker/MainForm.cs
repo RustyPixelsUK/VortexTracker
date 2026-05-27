@@ -798,12 +798,50 @@ namespace VortexTracker
             else if (childCount == 1)
             {
                 ChildForm childForm = (ChildForm)this.MdiChildren[0];
-                result = childForm.TabControl.Width;
+                result = ChildNaturalWidth(childForm);
             }
             else
             {
-                ChildForm childForm = (ChildForm)this.MdiChildren[0];
-                result = childForm.Width * childCount + 5;
+                result = 5;
+
+                for (int i = 0; i < childCount; i++)
+                {
+                    ChildForm childForm = (ChildForm)this.MdiChildren[i];
+
+                    if (childForm.IsClosed)
+                        continue;
+
+                    int borderWidth = childForm.Width - childForm.ClientSize.Width;
+                    result += ChildNaturalWidth(childForm) + borderWidth;
+                }
+            }
+
+            return result;
+        }
+
+        private int ChildNaturalWidth(ChildForm childForm)
+        {
+            if (childForm?.Tracks != null && childForm.Tracks.PatternWidth > 0)
+                return childForm.Tracks.PatternWidth + 8;
+
+            if (childForm?.TabControl != null && childForm.TabControl.Width > 0)
+                return childForm.TabControl.Width;
+
+            return LastChildWidth;
+        }
+
+        private int ChildsNaturalWidth()
+        {
+            int result = LastChildWidth;
+
+            for (int i = 0; i < this.MdiChildren.Length; i++)
+            {
+                ChildForm childForm = (ChildForm)this.MdiChildren[i];
+
+                if (childForm.IsClosed)
+                    continue;
+
+                result = Math.Max(result, ChildNaturalWidth(childForm));
             }
 
             return result;
@@ -1288,16 +1326,18 @@ namespace VortexTracker
                         continue;
 
                     ChildsEventsBlocked = true;
+                    int naturalWidth = ChildNaturalWidth(childForm);
 
                     childForm.SuspendLayout();
                     childForm.TabControl.Left = 0;
                     childForm.TabControl.Top = 0;
 
+                    childForm.TopBackgroundPanel.Visible = false;
+                    childForm.SetWidth(naturalWidth, true);
+                    childForm.TabControl.Width = naturalWidth;
+
                     childForm.MuteButton.Left = childForm.TabControl.Left + childForm.TabControl.Width - childForm.MuteButton.Width * 2 - 16;
                     childForm.SoloButton.Left = childForm.MuteButton.Left + childForm.MuteButton.Width + 2;
-
-                    childForm.TopBackgroundPanel.Visible = false;
-                    childForm.SetWidth(childForm.TabControl.Width, true);
 
                     if (MaximizeChilds)
                         childForm.Height = WorkAreaHeight(this.ClientSize.Height) - childForm.Top;
@@ -1310,8 +1350,7 @@ namespace VortexTracker
                 }
             }
 
-            childForm = (ChildForm)this.MdiChildren[0];
-            LastChildWidth = childForm.TabControl.Width;
+            LastChildWidth = ChildsNaturalWidth();
             LastChildHeight = ChildsMaxHeight();
 
             ChildsEventsBlocked = prevEventsFlag;
@@ -1515,7 +1554,31 @@ namespace VortexTracker
 
                 childForm.Height = WorkAreaHeight(this.ClientSize.Height);
                 childForm.TabControl.Height = childForm.ClientSize.Height;
-                childForm.ClientSize = new Size(childForm.TabControl.Width, childForm.ClientSize.Height);
+                childForm.SetWidth(ChildNaturalWidth(childForm), false);
+                LastChildHeight = childForm.Height;
+
+                ResetConstraints(false);
+            }
+
+            // When creating a TS from a single (possibly maximised) window, normalise the
+            // existing child so AutoMetricsForChilds has correct per-window dimensions.
+            // Tracks.Width + 8 is always the font-correct natural width regardless of the
+            // current window state (maximised windows have TabControl.Width == MDI area width).
+            if (this.MdiChildren.Length == 1 && turboSoundCount > 1)
+            {
+                childForm = (ChildForm)this.MdiChildren[0];
+
+                // Font-correct natural width: TabControl = Tracks + 8 padding
+                int naturalWidth = ChildNaturalWidth(childForm);
+
+                childForm.WindowState = FormWindowState.Normal;
+                SetSizable(childForm, true);
+                childForm.TabControl.Left = 0;
+                childForm.TabControl.Top = 0;
+                childForm.Height = WorkAreaHeight(this.ClientSize.Height);
+                childForm.TabControl.Height = childForm.ClientSize.Height;
+                childForm.SetWidth(naturalWidth, false);
+                LastChildWidth = naturalWidth;
                 LastChildHeight = childForm.Height;
 
                 ResetConstraints(false);
